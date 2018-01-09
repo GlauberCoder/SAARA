@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAARA", "SAARA\SAARA.csproj", "{F5BE3D83-BA56-4B49-883E-FF041457BC97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{D9209FDA-3015-4BC5-AB58-DE0F614F4C37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.Test", "Domain.Test\Domain.Test.csproj", "{597F6849-CA4B-4756-84FE-3C3A6F39B131}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{F5BE3D83-BA56-4B49-883E-FF041457BC97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5BE3D83-BA56-4B49-883E-FF041457BC97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5BE3D83-BA56-4B49-883E-FF041457BC97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9209FDA-3015-4BC5-AB58-DE0F614F4C37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9209FDA-3015-4BC5-AB58-DE0F614F4C37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9209FDA-3015-4BC5-AB58-DE0F614F4C37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9209FDA-3015-4BC5-AB58-DE0F614F4C37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{597F6849-CA4B-4756-84FE-3C3A6F39B131}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{597F6849-CA4B-4756-84FE-3C3A6F39B131}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{597F6849-CA4B-4756-84FE-3C3A6F39B131}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{597F6849-CA4B-4756-84FE-3C3A6F39B131}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
