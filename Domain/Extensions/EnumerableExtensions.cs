@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Collections;
+using Domain.Abstractions;
+using Domain.Abstractions.Entitys;
 
 namespace Domain.Extensions
 {
     public static class EnumerableExtensions
 	{
-		public static decimal EMA(this IList<Candle> candles, int length)
+		public static decimal EMA(this IList<ICandle> candles, int length)
 		{
 			return candles.TakeLast(length * 2).Select(c => c.Close).ToList().EMA(length);
 		}

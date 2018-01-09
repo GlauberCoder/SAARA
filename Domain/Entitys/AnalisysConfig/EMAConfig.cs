@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Domain.Abstractions.Entitys.AnalisysConfig;
+using Domain.Entitys;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.AnalisysConfig
+namespace Domain.Entitys.AnalisysConfig
 {
-	public class EMAConfig : BaseEntity
+	public class EMAConfig : BaseEntity, IEMAConfig
 	{
 
 		public virtual int EMA1 { get; set; }

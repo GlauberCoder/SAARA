@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain
+namespace Domain.Abstractions.Enums
 {
-	public enum CandleTimespanType
+	public enum CandleTimespan
 	{
 		OneMinute = 1,
 		FiveMinutes = 5,

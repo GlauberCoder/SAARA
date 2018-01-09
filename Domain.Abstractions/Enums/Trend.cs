@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain
+namespace Domain.Abstractions.Enums
 {
-	public class Exchanger : BaseEntity
+	public enum Trend
 	{
+		Down = -1,
+		High = 1
 	}
 }
