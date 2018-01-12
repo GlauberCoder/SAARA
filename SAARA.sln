@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Abstractions", "Infra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Test", "Infra.Test\Infra.Test.csproj", "{F67CB8AB-38C0-48D9-9831-E389298E9EB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util", "Util\Util.csproj", "{08899559-9AC2-451B-90FA-5AD075006322}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Util", "Util\Util.csproj", "{08899559-9AC2-451B-90FA-5AD075006322}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Util.Test", "Util.Test\Util.Test.csproj", "{FD7D3D17-BB67-4635-ACF6-3140543E5309}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{08899559-9AC2-451B-90FA-5AD075006322}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08899559-9AC2-451B-90FA-5AD075006322}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08899559-9AC2-451B-90FA-5AD075006322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
