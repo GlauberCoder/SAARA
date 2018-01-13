@@ -3,11 +3,17 @@ import { FormsModule} from '@angular/forms';
 import { NgModule } from '@angular/core';
 import '../extensions/number.extensions';
 
-
 import { AppComponent } from './app.component';
 import { LeftBarComponent } from './left-bar/left-bar.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { CalculatorComponent } from './calculator/calculator.component';
+import { PlanningComponent } from './planning/planning.component';
+import {RouterModule, Routes} from '@angular/router';
+
+const appRoutes: Routes = [
+  {path: '', component: CalculatorComponent},
+  {path: 'planning', component: PlanningComponent},
+];
 
 
 @NgModule({
@@ -15,11 +21,13 @@ import { CalculatorComponent } from './calculator/calculator.component';
     AppComponent,
     LeftBarComponent,
     TopBarComponent,
-    CalculatorComponent
+    CalculatorComponent,
+    PlanningComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]
