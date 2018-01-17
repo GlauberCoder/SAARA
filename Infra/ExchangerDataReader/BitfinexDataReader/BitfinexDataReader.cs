@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using Util.Extensions;
 
-namespace Infra.ExchangerDataReader
+namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 {
 	public class BitfinexDataReader : ExchangerDataReader, IBitfinexDataReader
 	{
@@ -40,7 +40,7 @@ namespace Infra.ExchangerDataReader
 		}
 
 
-		private IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan)
+		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan)
 		{
 			var dictionary = new Dictionary<string, string>();
 			dictionary.Add(symbolKey, symbol.Name);

@@ -12,7 +12,7 @@ namespace SAARA.JobSchedule
 	{
 		public static async Task Start()
 		{
-			var OneHour = 3600;
+			var oneMinute = 60;
 
 			var props = new NameValueCollection
 			{
@@ -32,9 +32,10 @@ namespace SAARA.JobSchedule
 				.WithIdentity("TriggerMinute", "group1")
 				.StartNow()
 				.WithSimpleSchedule(x => x
-					.WithIntervalInSeconds(OneHour)
+					.WithIntervalInSeconds(oneMinute)
 					.RepeatForever())
 				.Build();
+
 
 			await scheduler.ScheduleJob(job, trigger);
 

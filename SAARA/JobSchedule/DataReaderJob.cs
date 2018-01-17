@@ -6,6 +6,7 @@ using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
 using Domain.Entitys;
 using Infra.ExchangerDataReader;
+using Infra.ExchangerDataReader.BitcoinTradeDataReader;
 using Quartz;
 
 namespace SAARA.JobSchedule
@@ -15,10 +16,28 @@ namespace SAARA.JobSchedule
 
 		public async Task Execute(IJobExecutionContext context)
 		{
+			await Task.Run((Action) ReadBitfinex);
+			await Task.Run((Action) ReadBitcoinTrade);
+
+			Console.WriteLine("\n");
+
+			//TODO: saveCandle
+		}
+
+		private void ReadBitfinex()
+		{
 			var symbolName = "BTCUSD";
+			var candle = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute);
+			Console.Write("\nBitfinex : ");
+			PrintCandle(candle);
+		}
 
-			var candleBitfinex = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute);
-
+		private void ReadBitcoinTrade()
+		{
+			var symbolName = "BTC";
+			var candle = new BitcoinTradeDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour);
+			Console.Write("\nBitcoinTrade : ");
+			PrintCandle(candle);
 		}
 
 		public void PrintCandle(ICandle candle)
