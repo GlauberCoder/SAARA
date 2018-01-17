@@ -15,8 +15,8 @@ namespace Domain.Services
 	public class RSIAnaliser : IRSIAnaliser
 	{
 		public virtual decimal RSI { get; private set; }
-		public virtual PriceSignal PriceSignal => throw new NotImplementedException();
-		public virtual Trend RSIRange => throw new NotImplementedException();
+		public virtual PriceSignal PriceSignal { get; private set; }
+		public virtual Trend RSIRange { get; private set; }
 		public virtual Trend Divergence => throw new NotImplementedException();
 		public virtual Trend FailSwing => throw new NotImplementedException();
 		public virtual Trend PositiveNegativeReversal => throw new NotImplementedException();
@@ -24,13 +24,32 @@ namespace Domain.Services
 		public virtual IRSIAnaliser Calculate(IRSIConfig config, ICandleAnalyser analysis)
 		{
 			RSI = CalculateRSI(config, analysis.Previous);
-			//TODO: Calcular PriceSignal
-			//TODO: Calcular RSIRange
+			PriceSignal = CalculatePriceSignal(RSI);
+			RSIRange = CalculateRangeTrend(RSI);
 			//TODO: Calcular Divergence
 			//TODO: Calcular FailSwing
 			//TODO: Calcular PositiveNegativeReversal
 
 			return this;
+		}
+
+		private PriceSignal CalculatePriceSignal(decimal rsi)
+		{
+			var overBoughtLimit = 70;
+			var overSoldLimit = 30;
+			if (rsi >= overBoughtLimit) return PriceSignal.Overbough;
+			if (rsi <= overSoldLimit) return PriceSignal.Overbough;
+			return PriceSignal.Neutral;
+		}
+		private Trend CalculateRangeTrend(decimal rsi)
+		{
+			var uptrendLowerLimit = 60;
+			var uptrendHigherLimit = 90;
+			var downtrendLowerLimit = 10;
+			var downtrendHigherLimit = 40;
+			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.High;
+			if (rsi >= downtrendLowerLimit && rsi <= downtrendHigherLimit) return Trend.Down;
+			return Trend.Netural;
 		}
 
 		private decimal CalculateRSI(IRSIConfig config, IList<ICandle> previousCandles)
