@@ -42,6 +42,5 @@ namespace Domain.Abstractions.Services
 		/// </summary>
 		Trend PositiveNegativeReversal { get; }
 		IRSIAnaliser Calculate(IRSIConfig config, ICandleAnalyser analysis);
-		IRSIAnaliser Calculate(IRSIConfig config, ICandleAnalyser analysis, ICandle candle);
 	}
 }
