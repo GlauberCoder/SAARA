@@ -27,7 +27,7 @@ namespace SAARA.JobSchedule
 		private void ReadBitfinex()
 		{
 			var symbolName = "BTCUSD";
-			var candle = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute);
+			var candle = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute, DateTime.Now);
 			Console.Write("\nBitfinex : ");
 			PrintCandle(candle);
 		}
@@ -35,7 +35,7 @@ namespace SAARA.JobSchedule
 		private void ReadBitcoinTrade()
 		{
 			var symbolName = "BTC";
-			var candle = new BitcoinTradeDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour);
+			var candle = new BitcoinTradeDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour,DateTime.Now);
 			Console.Write("\nBitcoinTrade : ");
 			PrintCandle(candle);
 		}

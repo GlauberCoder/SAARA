@@ -29,18 +29,18 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		protected override string QueryURL => $@"candles/trade:{timespanKey}:t{symbolKey}/last";
 		
 
-		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan)
+		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
 			var url = TemplateURL;
 
-			foreach (var item in GetParameters(symbol, timespan))
+			foreach (var item in GetParameters(symbol, timespan, date))
 				url = url.Replace(item.Key, item.Value);
 
 			return url;
 		}
 
 
-		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan)
+		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
 			var dictionary = new Dictionary<string, string>();
 			dictionary.Add(symbolKey, symbol.Name);
