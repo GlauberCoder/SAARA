@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Domain.Services
 {
-	public class MACDAnaliser : BaseEntity, IMACDAnaliser
+	public class MACDAnaliser : IMACDAnaliser
 	{
 		public virtual decimal LongEMA { get; set; }
 		public virtual decimal ShortEMA { get; set; }
