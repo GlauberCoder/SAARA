@@ -24,9 +24,10 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		}
 		private string symbolKey => "{{symbol}}";
 		private string timespanKey => "{{timespan}}";
+		private string endTimeKey => "{{endTime}}";
 		protected override string BaseURL => @"https://api.bitfinex.com/v2/";
 
-		protected override string QueryURL => $@"candles/trade:{timespanKey}:t{symbolKey}/last";
+		protected override string QueryURL => $@"candles/trade:{timespanKey}:t{symbolKey}/hist?end={endTimeKey}&limit=1";
 		
 
 		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
@@ -45,8 +46,20 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 			var dictionary = new Dictionary<string, string>();
 			dictionary.Add(symbolKey, symbol.Name);
 			dictionary.Add(timespanKey, GetTimespanValueFrom(timespan));
+			dictionary.Add(endTimeKey, GetTimeInMillisecondsFrom(date));
 
 			return dictionary;
+		}
+
+		private string GetTimeInMillisecondsFrom(DateTime date)
+		{
+			return (
+						 date
+						.ToUniversalTime()
+						.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+						.TotalMilliseconds
+					)
+					.ToString();
 		}
 
 		private string GetTimespanValueFrom(CandleTimespan timespan)
@@ -70,7 +83,7 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 		public override ICandle GetCandleFrom(string response)
 		{
-			var values = response.Deserilize<string[]>();
+			var values = response.Deserilize<string[][]>()[0];
 
 			return new Candle()
 			{

@@ -13,14 +13,14 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 	public class BitcoinTradeDataReader : ExchangerDataReader, IBitcoinTradeDataReader
 	{
 		private string symbolKey => "{{symbol}}";
-		private string startTime => "{{startTime}}";
-		private string endTime => "{{endTime}}";
-		private string pageSize => "{{pageSize}}";
-		private string currentPage => "{{currentPage}}";
+		private string startTimeKey => "{{startTime}}";
+		private string endTimeKey => "{{endTime}}";
+		private string pageSizeKey => "{{pageSize}}";
+		private string currentPageKey => "{{currentPage}}";
 
 		protected override string BaseURL => @"https://api.bitcointrade.com.br/v1/";
 
-		protected override string QueryURL => $@"public/{symbolKey}/trades?start_time={startTime}&end_time={endTime}&page_size={pageSize}&current_page={currentPage}";
+		protected override string QueryURL => $@"public/{symbolKey}/trades?start_time={startTimeKey}&end_time={endTimeKey}&page_size={pageSizeKey}&current_page={currentPageKey}";
 
 		public override ICandle GetCandleFrom(string response)
 		{
@@ -45,8 +45,8 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		{
 			var dictionary = GetTimeValues(timespan, date);
 			dictionary.Add(symbolKey, symbol.Name);
-			dictionary.Add(pageSize, "200");
-			dictionary.Add(currentPage, "1");
+			dictionary.Add(pageSizeKey, "200");
+			dictionary.Add(currentPageKey, "1");
 
 			return dictionary;
 		}
@@ -89,13 +89,13 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		{
 			var dateFormat = "yyyy-MM-ddTHH:mm:ss-03:00";
 
-			var _startTime = endDateTime.AddMinutes(-timeSpan).ToString(dateFormat);
-			var _endTime = endDateTime.AddSeconds(-1).ToString(dateFormat);
+			var startTime = endDateTime.AddMinutes(-timeSpan).ToString(dateFormat);
+			var endTime = endDateTime.AddSeconds(-1).ToString(dateFormat);
 
 			var dictionary = new Dictionary<string, string>();
 
-			dictionary.Add(startTime, _startTime);
-			dictionary.Add(endTime, _endTime);
+			dictionary.Add(startTimeKey, startTime);
+			dictionary.Add(endTimeKey, endTime);
 
 			return dictionary;
 		}

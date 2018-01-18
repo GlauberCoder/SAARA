@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Util", "Util\Util.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Util.Test", "Util.Test\Util.Test.csproj", "{FD7D3D17-BB67-4635-ACF6-3140543E5309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataReaderSchedulerTest", "DataReaderSchedulerTest\DataReaderSchedulerTest.csproj", "{14E3CFF4-00B4-4645-AE25-E81D85767B3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Playground", "Playground\Playground.csproj", "{D673BC6F-80C0-46F7-840D-094F35E131B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,10 +65,10 @@ Global
 		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD7D3D17-BB67-4635-ACF6-3140543E5309}.Release|Any CPU.Build.0 = Release|Any CPU
-		{14E3CFF4-00B4-4645-AE25-E81D85767B3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{14E3CFF4-00B4-4645-AE25-E81D85767B3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{14E3CFF4-00B4-4645-AE25-E81D85767B3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{14E3CFF4-00B4-4645-AE25-E81D85767B3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D673BC6F-80C0-46F7-840D-094F35E131B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D673BC6F-80C0-46F7-840D-094F35E131B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D673BC6F-80C0-46F7-840D-094F35E131B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D673BC6F-80C0-46F7-840D-094F35E131B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
