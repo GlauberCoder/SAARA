@@ -8,6 +8,8 @@ namespace Infra.Abstractions.ExchangerDataReader
 {
 	public interface IExchangerDataReader
 	{
-		ICandle Read(ISymbol symbol, CandleTimespan timespan);
+		ICandle ReadOneMinuteCandle(ISymbol symbol, DateTime? date);
+
+		ICandle Read(ISymbol symbol, CandleTimespan timespan, DateTime? date);
 	}
 }
