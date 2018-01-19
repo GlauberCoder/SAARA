@@ -16,7 +16,7 @@ namespace Domain.Services
 	{
 		public virtual decimal RSI { get; private set; }
 		public virtual PriceSignal PriceSignal { get; private set; }
-		public virtual Trend RSIRange { get; private set; }
+		public virtual Trend Range { get; private set; }
 		public virtual Trend Divergence => throw new NotImplementedException();
 		public virtual Trend FailSwing => throw new NotImplementedException();
 		public virtual Trend PositiveNegativeReversal => throw new NotImplementedException();
@@ -25,7 +25,7 @@ namespace Domain.Services
 		{
 			RSI = CalculateRSI(config, analysis.Previous);
 			PriceSignal = CalculatePriceSignal(RSI);
-			RSIRange = CalculateRangeTrend(RSI);
+			Range = CalculateRangeTrend(RSI);
 			//TODO: Calcular Divergence
 			//TODO: Calcular FailSwing
 			//TODO: Calcular PositiveNegativeReversal
@@ -38,7 +38,7 @@ namespace Domain.Services
 			var overBoughtLimit = 70;
 			var overSoldLimit = 30;
 			if (rsi >= overBoughtLimit) return PriceSignal.Overbough;
-			if (rsi <= overSoldLimit) return PriceSignal.Overbough;
+			if (rsi <= overSoldLimit) return PriceSignal.Oversold;
 			return PriceSignal.Neutral;
 		}
 		private Trend CalculateRangeTrend(decimal rsi)
