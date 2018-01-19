@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Domain.Abstractions.Enums
 {
-	public enum Trend
+	public enum PriceSignal
 	{
-		Down = -1,
-		Netural = 0,
-		High = 1
+		Overbough = -1,
+		Neutral = 0,
+		Oversold = 1
 	}
 }

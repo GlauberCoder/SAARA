@@ -21,9 +21,9 @@ namespace Domain.Extensions
 			decimal k = 2m / (length + 1);
 
 			foreach (var value in matureValues)
-				ema = k * (value-ema) + ema;
+				ema = k * (value - ema) + ema;
 
-			return decimal.Round(ema,2);
+			return decimal.Round(ema, 2);
 		}
 
 		public static IList<T> TakePrevious<T>(this IList<T> values, T value, int length)

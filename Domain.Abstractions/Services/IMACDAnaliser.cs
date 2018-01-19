@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Domain.Abstractions.Services
 {
-    public interface IMACDAnaliser : IBaseEntity
+    public interface IMACDAnaliser
 	{
 		decimal LongEMA { get; set; }
 		decimal ShortEMA { get; set; }
