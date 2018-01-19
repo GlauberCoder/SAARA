@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Abstractions.Enums
+﻿namespace Domain.Abstractions.Enums
 {
 	public enum PriceSignal
 	{

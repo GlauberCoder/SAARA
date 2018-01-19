@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Util.Extensions;
 using Xunit;
 
@@ -7,7 +5,7 @@ namespace Infra.Test
 {
 	public class BitfinexDataReaderTest
 	{
-		
+
 		[
 			Theory(DisplayName = "The Proporção Of A Double In Another Should Be"),
 			InlineData(0.1, 20, 200),
@@ -31,6 +29,5 @@ namespace Infra.Test
 			var actual = value.PercentageOn(total);
 			Assert.Equal(expected, actual);
 		}
-
 	}
 }

@@ -1,8 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Entitys
 {
@@ -16,6 +14,5 @@ namespace Domain.Entitys
 		public virtual decimal Vol { get; set; }
 		public virtual CandleTimespan TimespanType { get; set; }
 		public virtual DateTime Date { get; set; }
-
 	}
 }

@@ -1,7 +1,4 @@
-﻿using Domain.Abstractions.Entitys;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Domain.Abstractions.Entitys.AnalisysConfig
 {

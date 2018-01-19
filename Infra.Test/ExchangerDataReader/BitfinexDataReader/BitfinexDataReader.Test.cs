@@ -1,9 +1,7 @@
 using Domain.Abstractions.Enums;
 using Domain.Entitys;
-using Infra.ExchangerDataReader;
 using Infra.ExchangerDataReader.BitcoinTradeDataReader;
 using System;
-using System.Linq;
 using Xunit;
 
 namespace Infra.Test
@@ -34,7 +32,6 @@ namespace Infra.Test
 			var actual = new BitfinexDataReader().GetUrlFrom(new Symbol() { Name = symbolName }, timespan, new DateTime(2017, 10, 10, 10, 10, 10));
 			Assert.Equal(expected, actual);
 		}
-
 
 		[
 			Theory(DisplayName = "The Bitfinex Open Value To Response Shoul Be"),
@@ -69,7 +66,6 @@ namespace Infra.Test
 			Assert.Equal(expected, actual.High);
 		}
 
-
 		[
 			Theory(DisplayName = "The Bitfinex Low Value To Response Shoul Be"),
 			InlineData(13751, "[[1515696720000,13758,13753,13759,13751,3.26320671]]"),
@@ -81,7 +77,6 @@ namespace Infra.Test
 			Assert.Equal(expected, actual.Low);
 		}
 
-
 		[
 			Theory(DisplayName = "The Bitfinex Volume Value To Response Shoul Be"),
 			InlineData(3, "[[1515696720000,13758,13753,13759,13751,3]]"),
@@ -92,6 +87,5 @@ namespace Infra.Test
 			var actual = new BitfinexDataReader().GetCandleFrom(response);
 			Assert.Equal(expected, actual.Vol);
 		}
-
 	}
 }

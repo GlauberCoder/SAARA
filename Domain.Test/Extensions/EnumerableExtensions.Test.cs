@@ -1,7 +1,6 @@
-using System;
+using Domain.Extensions;
 using System.Linq;
 using Xunit;
-using Domain.Extensions;
 
 namespace Domain.Test
 {
@@ -24,9 +23,6 @@ namespace Domain.Test
 		{
 			Assert.True(expected.SequenceEqual(values.ToList().TakePrevious(value, quantity)));
 		}
-
-
-
 
 		[
 			Theory(DisplayName = "The EMA Should be correct"),

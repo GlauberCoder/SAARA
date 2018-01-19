@@ -1,6 +1,5 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Entitys.AnalisysConfig;
-using System;
 using System.Collections.Generic;
 
 namespace Domain.Abstractions.Services

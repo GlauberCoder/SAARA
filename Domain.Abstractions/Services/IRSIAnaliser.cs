@@ -1,10 +1,5 @@
-﻿using Domain.Abstractions.Entitys;
-using Domain.Abstractions.Entitys.AnalisysConfig;
+﻿using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
-using Domain.Abstractions.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Abstractions.Services
 {
