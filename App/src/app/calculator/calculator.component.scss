@@ -9,4 +9,11 @@ input{
 .card{
   border-radius: 10px;
   height: 100%;
+  background: #1b262d;
+  color: white;
+}
+
+app-input{
+  display: inline;
+  width: 50%;
 }

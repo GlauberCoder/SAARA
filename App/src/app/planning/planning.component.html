@@ -1,3 +1,54 @@
-<p>
-  planning works!
-</p>
+<div class="card">
+  <div class="card-body">
+    <app-input placeHolder="Entry Price" addon="R$" [(appModel)]="entryPrice"></app-input>
+    <app-input placeHolder="Entry Value" addon="R$" [(appModel)]="investiment"></app-input>
+    <app-input placeHolder="Entry Percentage" addon="%" [(appModel)]="percentage"></app-input>
+    <div id="transactionType">
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input [(ngModel)]="transactionType" class="form-check-input" type="radio" name="transactionType" value="buy"> Buy
+        </label>
+      </div>
+      <div class="form-check form-check-inline">
+        <label class="form-check-label">
+          <input [(ngModel)]="transactionType" class="form-check-input" type="radio" name="transactionType"  value="sell"> Sell
+        </label>
+      </div>
+    </div>
+
+    <button class="btn btn-outline-dark mt-3" (click)="addTransaction()">Add Transaction</button>
+    <button class="btn btn-outline-dark mt-3" (click)="calculateProjection()">Calculate end</button>
+
+    <div class="col-12 col-md-9">
+      <div class="card">
+        <div class="card-body ">
+          <div class="d-item text-center">
+            <table class="table table-responsive table-stripeds">
+              <thead class="thead-dark" >
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Entry Price</th>
+                <th scope="col">Entry Value</th>
+                <th scope="col">Percentage</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of planner.Transactions; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{item.entryPrice}}</td>
+                <td>{{item.investiment}}</td>
+                <td>{{item.percentage}}</td>
+                <td>{{item.type}}</td>
+
+              </tr>
+
+
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

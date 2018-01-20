@@ -9,6 +9,7 @@ import { TopBarComponent } from './top-bar/top-bar.component';
 import { CalculatorComponent } from './calculator/calculator.component';
 import { PlanningComponent } from './planning/planning.component';
 import {RouterModule, Routes} from '@angular/router';
+import { InputComponent } from './commons/input/input.component';
 
 const appRoutes: Routes = [
   {path: '', component: CalculatorComponent},
@@ -22,7 +23,8 @@ const appRoutes: Routes = [
     LeftBarComponent,
     TopBarComponent,
     CalculatorComponent,
-    PlanningComponent
+    PlanningComponent,
+    InputComponent
   ],
   imports: [
     BrowserModule,

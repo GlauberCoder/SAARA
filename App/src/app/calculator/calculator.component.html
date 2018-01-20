@@ -1,124 +1,136 @@
 <div class="container p-3">
   <div class="row">
 
-    <div class="col-12 col-md-3">
-      <div class="card ">
-        <div class="card-body">
-          <div class="d-item py-5 text-center">
-            <div> Projection Values</div>
-
-            <div class="input-group input-group-sm py-2">
-              <span class="input-group-addon">R$</span>
-              <input [(ngModel)]="buyPrice" type="text" class="form-control" placeholder="Buy Price" aria-describedby="sizing-addon2">
-            </div>
-
-            <div class="input-group input-group-sm py-2">
-              <span class="input-group-addon">R$</span>
-              <input [(ngModel)]="buyAmount" type="text" class="form-control" placeholder="Buy Amount" aria-describedby="sizing-addon2">
-            </div>
-
-            <div class="input-group input-group-sm py-2">
-              <span class="input-group-addon">%</span>
-              <input [(ngModel)]="expectedProfit" type="text" class="form-control" placeholder="Expected Profit" aria-describedby="sizing-addon2">
-            </div>
-
-            <div class="input-group input-group-sm py-2">
-              <span class="input-group-addon">%</span>
-              <input [(ngModel)]="buyTax" type="text" class="form-control" placeholder="Buy Tax" aria-describedby="sizing-addon2">
-            </div>
-
-            <div class="input-group input-group-sm py-2">
-              <span class="input-group-addon">%</span>
-              <input [(ngModel)]="sellTax" type="text" class="form-control" placeholder="Sell Tax" aria-describedby="sizing-addon2">
-            </div>
-
-            <button class="btn btn-outline-dark mt-5" (click)="calculateProjection()">Calculate</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-12 col-md-9">
+    <div class="col-12 col-md-6">
       <div class="card">
-        <div class="card-body ">
+        <div class="card-body">
           <div class="d-item text-center">
-            <table class="table table-responsive table-stripeds">
-              <thead class="thead-dark" >
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Buy Value</th>
-                <th scope="col">Sell Value</th>
-                <th scope="col">Nominal Gain</th>
-                <th scope="col">Real Gain</th>
-                <th scope="col">Gross Gain</th>
-                <th scope="col">After Taxes Gain</th>
-                <!--<th scope="col">Expected Profit</th>-->
-                <!--<th scope="col">Final Error</th>-->
-                <th scope="col">Final Profit</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let projection of projections; let i = index">
-                <td>{{i + 1}}</td>
-                <td> R$ {{projection.buyPrice}}</td>
-                <td> R$ {{projection.sellPrice()}}</td>
-                <td>{{projection.nominalGain()}}%</td>
-                <td>{{projection.realGainInPercentage()}}%</td>
-                <td>R$ {{projection.grossGainValue()}}</td>
-                <td>R$ {{projection.sellValueWithoutTaxes()}}</td>
-                <!--<td>R$ {{projection.expectedProfitValue()}}</td>-->
-                <!--<td>{{projection.finalExpectedValueRealValueErrors()}}%</td>-->
-                <td>R$ {{projection.finalProfit()}}</td>
-              </tr>
+            <div class="pb-3"> Projection Values</div>
+
+            <div class="row">
+              <div class="col-sm-12 col-md-4">
+                <app-input [placeHolder]="'Entry Price'" [(appModel)]="calculator.entryPrice" (appModelChange)="onSetEntryPrice()" [addon]="'R$'"></app-input>
+              </div>
+              <div class="col-sm-12 col-md-4">
+                <app-input [placeHolder]="'Amount'" [(appModel)]="calculator.amount" (appModelChange)="onSetAmount()" [addon]="''"></app-input>
+              </div>
+              <div class="col-sm-12  col-md-4">
+                <app-input [placeHolder]="'Entry Value'" [(appModel)]="calculator.entryValue" (appModelChange)="onSetEntryValue()" [addon]="'R$'"></app-input>
+              </div>
+            </div>
 
 
-              </tbody>
-            </table>
+            <div class="row">
+              <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit Price '" [(appModel)]="calculator.exitPrice" (appModelChange)="onSetExitPrice()" [addon]="'R$'"></app-input></div>
+              <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit Value'" [(appModel)]="calculator.exitValue" (appModelChange)="onSetExitValue()"  [addon]="'R$'"></app-input></div>
+              <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit P/L'"  [(appModel)]="calculator.exitPL" (appModelChange)="onSetExitPL()" [addon]="'R$'"></app-input></div>
+              <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit P/L'"  [(appModel)]="calculator.exitPLpercent" (appModelChange)="onSetExitPLPercent()" [addon]="'%'"></app-input></div>
+            </div>
+
+
+
+
+
+
+            <label class="custom-control custom-radio">
+              <input [(ngModel)]="calculator.type" (ngModelChange)="onSetType()" id="radio1" name="radio" type="radio" class="custom-control-input" value="long">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Long</span>
+            </label>
+
+            <label class="custom-control custom-radio">
+              <input [(ngModel)]="calculator.type" (ngModelChange)="onSetType()" id="radio2" name="radio" type="radio" class="custom-control-input" value="short">
+              <span class="custom-control-indicator"></span>
+              <span class="custom-control-description">Short</span>
+            </label>
+
           </div>
-
         </div>
       </div>
     </div>
   </div>
 </div>
 
+    <!--<div class="col-12 col-md-9">-->
+      <!--<div class="card">-->
+        <!--<div class="card-body ">-->
+          <!--<div class="d-item text-center">-->
+            <!--<table class="table table-responsive table-stripeds">-->
+              <!--<thead class="thead-dark" >-->
+              <!--<tr>-->
+                <!--<th scope="col">#</th>-->
+                <!--<th scope="col">Buy Value</th>-->
+                <!--<th scope="col">Sell Value</th>-->
+                <!--<th scope="col">Nominal Gain</th>-->
+                <!--<th scope="col">Real Gain</th>-->
+                <!--<th scope="col">Gross Gain</th>-->
+                <!--<th scope="col">After Taxes Gain</th>-->
+                <!--&lt;!&ndash;<th scope="col">Expected Profit</th>&ndash;&gt;-->
+                <!--&lt;!&ndash;<th scope="col">Final Error</th>&ndash;&gt;-->
+                <!--<th scope="col">Final Profit</th>-->
+              <!--</tr>-->
+              <!--</thead>-->
+              <!--<tbody>-->
+              <!--<tr *ngFor="let projection of projections; let i = index">-->
+                <!--<td>{{i + 1}}</td>-->
+                <!--<td> R$ {{projection.buyPrice}}</td>-->
+                <!--<td> R$ {{projection.sellPrice()}}</td>-->
+                <!--<td>{{projection.nominalGain()}}%</td>-->
+                <!--<td>{{projection.realGainInPercentage()}}%</td>-->
+                <!--<td>R$ {{projection.grossGainValue()}}</td>-->
+                <!--<td>R$ {{projection.sellValueWithoutTaxes()}}</td>-->
+                <!--&lt;!&ndash;<td>R$ {{projection.expectedProfitValue()}}</td>&ndash;&gt;-->
+                <!--&lt;!&ndash;<td>{{projection.finalExpectedValueRealValueErrors()}}%</td>&ndash;&gt;-->
+                <!--<td>R$ {{projection.finalProfit()}}</td>-->
+              <!--</tr>-->
 
-<div class="cotainer">
-  <div class="row">
-    <div class="col-10 m-auto py-3 my-md-0 col-md-4">
-      <div class="card ml-md-4" style="background-color: #1ab394; color: white;">
-        <div class="card-body">
-          <div class="d-item text-center">
-            <h4><b>Current Currency:</b></h4>
-            <h5>{{calculateAmountOfCurrency(projections)}}</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-10 m-auto py-3 my-md-0 col-md-4">
-      <div class="card" style="background-color: #23c6c8; color: white;">
-        <div class="card-body">
-          <div class="d-item  text-center">
-            <h4><b>Average Currency Price:</b></h4>
-            <h5>R$ {{calculateAvaregeCurrencyPrice(projections) ? calculateAvaregeCurrencyPrice(projections) : 0 }}</h5>
-          </div>
-        </div>
-      </div>
 
-    </div>
-    <div class="col-10 m-auto py-3 my-md-0 col-md-4">
-      <div class="card" style="background-color: #2a363B; color: white;">
-        <div class="card-body">
-          <div class="d-item text-center">
-            <h4><b>Overall Profit:</b></h4>
-            <h5>R$ {{calculateOverallProjectionProfit(projections)}}</h5>
-          </div>
-        </div>
-      </div>
+              <!--</tbody>-->
+            <!--</table>-->
+          <!--</div>-->
+
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
 
 
-    </div>
-  </div>
-</div>
+
+<!--<div class="cotainer">-->
+  <!--<div class="row">-->
+    <!--<div class="col-10 m-auto py-3 my-md-0 col-md-4">-->
+      <!--<div class="card ml-md-4" style="background-color: #1ab394; color: white;">-->
+        <!--<div class="card-body">-->
+          <!--<div class="d-item text-center">-->
+            <!--<h4><b>Current Currency:</b></h4>-->
+            <!--<h5>{{calculateAmountOfCurrency(projections)}}</h5>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="col-10 m-auto py-3 my-md-0 col-md-4">-->
+      <!--<div class="card" style="background-color: #23c6c8; color: white;">-->
+        <!--<div class="card-body">-->
+          <!--<div class="d-item  text-center">-->
+            <!--<h4><b>Average Currency Price:</b></h4>-->
+            <!--<h5>R$ {{calculateAvaregeCurrencyPrice(projections) ? calculateAvaregeCurrencyPrice(projections) : 0 }}</h5>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+
+    <!--</div>-->
+    <!--<div class="col-10 m-auto py-3 my-md-0 col-md-4">-->
+      <!--<div class="card" style="background-color: #2a363B; color: white;">-->
+        <!--<div class="card-body">-->
+          <!--<div class="d-item text-center">-->
+            <!--<h4><b>Overall Profit:</b></h4>-->
+            <!--<h5>R$ {{calculateOverallProjectionProfit(projections)}}</h5>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
+
+
+    <!--</div>-->
+  <!--</div>-->
+<!--</div>-->
 
 

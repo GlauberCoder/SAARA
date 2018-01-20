@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {OperationModel} from '../models/operations.model';
+import {MovimentDomain} from '../domain/moviment.domain';
 
 @Component({
   selector: 'app-root',

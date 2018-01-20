@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import {OperationModel} from '../../models/operations.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {MovimentDomain} from '../../domain/moviment.domain';
 import '../../extensions/number.extensions'
+import {ExchangerDomain} from "../../domain/exchanger.domain";
+import {CalculatorDomain} from "../../domain/calculator.domain";
+import {TypesOfTransaction} from "../../enum/variables.enum";
 
 @Component({
   selector: 'app-calculator',
@@ -9,73 +12,72 @@ import '../../extensions/number.extensions'
 })
 export class CalculatorComponent implements OnInit {
 
-  public buyPrice;
-  public buyAmount;
-  public expectedProfit;
-  public buyTax;
-  public sellTax;
-  public projections: Array<OperationModel> = [];
-
-  public projection: OperationModel;
+  public amount: number;
+  public entryPrice: number;
+  public entryValue: number;
+  public exitPrice: number;
+  public exitValue: number;
+  public exitPL: number;
+  public exchanger: ExchangerDomain;
+  public calculator: CalculatorDomain;
 
   constructor() {
-    this.getProjectionsOnLocalStorage();
-    this.calculateAmountOfCurrency(this.projections);
+    this.calculator = new CalculatorDomain();
+    this.calculator.type = TypesOfTransaction.long;
+    this.calculator.exchanger = new ExchangerDomain(0.5, 0.5);
   }
 
   ngOnInit() {
   }
 
-  calculateProjection() {
-    localStorage.clear();
-    this.projection = new OperationModel(parseFloat(this.buyPrice), parseFloat(this.buyAmount), parseFloat(this.expectedProfit), parseFloat(this.buyTax), parseFloat(this.sellTax));
-    this.saveProjectionOnLocalStorage();
+  onSetAmount(){
+      this.calculator.entryValue = !isNaN(this.calculator.calculateEntryValue()) ? this.calculator.calculateEntryValue() : null;
+      this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+      this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+      this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
+  onSetEntryPrice(){
 
-  saveProjectionOnLocalStorage(){
-    this.projections.push(this.projection);
-    localStorage.setItem('projections', JSON.stringify(this.projections));
+    this.calculator.entryValue = !isNaN(this.calculator.calculateEntryValue()) ? this.calculator.calculateEntryValue() : null;
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
-  clearLocalStorage(){
-    localStorage.clear();
+  onSetEntryValue() {
+    this.calculator.amount = !isNaN(this.calculator.calculateAmount()) ? this.calculator.calculateAmount() : null;
+    this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
-  getProjectionsOnLocalStorage(){
-    if(!localStorage.getItem('projections')){
-      this.projections = [];
-    } else{
-      let items = JSON.parse(localStorage.getItem('projections'));
-      for (let item of items ){
-        this.projections.push(new OperationModel(parseFloat(item.buyPrice), parseFloat(item.buyAmount), parseFloat(item.excpectedProfit), parseFloat(item.buyTax), parseFloat(item.sellTax)));
-      }
-    }
+  onSetExitPrice(){
+    this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
-  public calculateAmountOfCurrency(values: Array<OperationModel>){
-    let sum = 0;
-    for(let item of values){
-      sum += item.buyAmount/item.buyPrice;
-    }
-    return sum;
+  onSetExitValue(){
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
+    this.calculator.exitPrice = !isNaN(this.calculator.calculateExitPrice()) ? this.calculator.calculateExitPrice() : null;
   }
 
-  public calculateAvaregeCurrencyPrice(values: Array<OperationModel>){
-    let sum = 0, weight = 0;
-    for(let item of values){
-      sum += item.buyPrice * item.buyAmount;
-      weight += item.buyAmount;
-    }
-    return sum / weight;
+  onSetExitPL(){
+    this.calculator.exitPrice = !isNaN(this.calculator.calculateExitPriceWithPL()) ? this.calculator.calculateExitPriceWithPL() : null;
+    this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
-  public calculateOverallProjectionProfit(values: Array<OperationModel>){
-    let sum = 0;
-    for(let item of values){
-      sum += item.finalProfit();
-    }
-    return sum ;
+  onSetExitPLPercent(){
+    this.calculator.exitPrice = !isNaN(this.calculator.calculateExitPriceWithPLPercentage()) ? this.calculator.calculateExitPriceWithPLPercentage() : null;
+    this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+  }
+
+  onSetType(){
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
 
