@@ -12,6 +12,7 @@ import {RouterModule, Routes} from '@angular/router';
 import { InputComponent } from './commons/input/input.component';
 import {PlanningCalculatorService} from "../providers/planning-calculator.service";
 import { CardComponent } from './commons/card/card.component';
+import { ExchangerService } from '../providers/exchanger.service';
 
 const appRoutes: Routes = [
   {path: '', component: PlanningComponent},
@@ -35,7 +36,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    PlanningCalculatorService
+    PlanningCalculatorService,
+    ExchangerService
   ],
   bootstrap: [AppComponent]
 })

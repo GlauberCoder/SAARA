@@ -1,6 +1,6 @@
-import {ExchangerDomain} from "./exchanger.domain";
 import {TypesOfTransaction} from "../enum/variables.enum";
 import {EventEmitter} from "@angular/core";
+import {ExchangerSymbolDomain} from './exchanger-symbol.domain';
 
 export class CalculatorDomain{
 
@@ -11,22 +11,23 @@ export class CalculatorDomain{
   public exitValue: any;
   public exitPL: any;
   public exitPLpercent: any;
-  public exchanger: ExchangerDomain;
+  public exchangers: Array<ExchangerSymbolDomain>;
+  public exchangerSymbol: ExchangerSymbolDomain;
   public type: TypesOfTransaction;
-  public calculatedEvent = new EventEmitter();
+
 
   constructor(){}
 
   calculateEntryValue(){// Amount, EntryPrice, EntryValue
-    return (this.amount * this.entryPrice * (1 + this.exchanger.getBuyTax().toPercent()) ).round(2);
+    return (this.amount * this.entryPrice * (1 + this.exchangerSymbol.exchanger.getBuyTax().toPercent()) ).round(2);
   }
 
   calculateAmount(){
-    return (this.entryValue * (1 - this.exchanger.getBuyTax().toPercent()) / (this.entryPrice)).round(8);
+    return (this.entryValue * (1 - this.exchangerSymbol.exchanger.getBuyTax().toPercent()) / (this.entryPrice)).round(8);
   }
 
   public calculateExitPrice(){
-    let exitPrice = (( this.exitValue/this.entryValue ) * (1 - this.exchanger.getBuyTax().toPercent()) / (1 - this.exchanger.getSellTax().toPercent()));
+    let exitPrice = (( this.exitValue/this.entryValue ) * (1 - this.exchangerSymbol.exchanger.getBuyTax().toPercent()) / (1 - this.exchangerSymbol.exchanger.getSellTax().toPercent()));
     return (exitPrice * this.entryPrice).round(2);
   }
 
@@ -41,7 +42,7 @@ export class CalculatorDomain{
   }
 
   calculatePL(value: number){
-    return (value * ( 1 - this.exchanger.getBuyTax().toPercent() )- this.entryValue * ( 1 - this.exchanger.getSellTax().toPercent())).round(2);
+    return (value * ( 1 - this.exchangerSymbol.exchanger.getBuyTax().toPercent() )- this.entryValue * ( 1 - this.exchangerSymbol.exchanger.getSellTax().toPercent())).round(2);
   }
 
   public calculateExitPLPercentage(){
@@ -64,7 +65,7 @@ export class CalculatorDomain{
     return {
       entryPrice: parseFloat(this.entryPrice),
       entryValue: this.entryValue,
-      tax: this.exchanger.getBuyTax(),
+      tax: this.exchangerSymbol.exchanger.getBuyTax(),
       type: this.type
     };
   }

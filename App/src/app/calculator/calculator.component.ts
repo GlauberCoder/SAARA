@@ -5,6 +5,7 @@ import {ExchangerDomain} from "../../domain/exchanger.domain";
 import {CalculatorDomain} from "../../domain/calculator.domain";
 import {TypesOfTransaction} from "../../enum/variables.enum";
 import {PlanningCalculatorService} from "../../providers/planning-calculator.service";
+import { ExchangerService } from '../../providers/exchanger.service';
 
 @Component({
   selector: 'app-calculator',
@@ -22,10 +23,12 @@ export class CalculatorComponent implements OnInit {
   public exchanger: ExchangerDomain;
   public calculator: CalculatorDomain;
 
-  constructor(public planningCalculatorService:PlanningCalculatorService) {
+  constructor(public planningCalculatorService:PlanningCalculatorService, public exchangerService: ExchangerService) {
     this.calculator = new CalculatorDomain();
     this.calculator.type = TypesOfTransaction.long;
-    this.calculator.exchanger = new ExchangerDomain(0.5, 0.5);
+    // this.calculator.exchanger = this.exchangerService.getExchangersSymbols();
+    this.calculator.exchangers = this.exchangerService.getExchangers();
+    this.calculator.exchangerSymbol = this.calculator.exchangers[0];
   }
 
   ngOnInit() {
@@ -40,7 +43,6 @@ export class CalculatorComponent implements OnInit {
   }
 
   onSetEntryPrice(){
-
     this.calculator.entryValue = !isNaN(this.calculator.calculateEntryValue()) ? this.calculator.calculateEntryValue() : null;
     this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
     this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
@@ -82,9 +84,16 @@ export class CalculatorComponent implements OnInit {
     this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
   }
 
+  onSetExchanger(value){
+    this.calculator.exchangerSymbol = this.calculator.exchangers[value];
+    this.calculator.entryValue = !isNaN(this.calculator.calculateEntryValue()) ? this.calculator.calculateEntryValue() : null;
+    this.calculator.exitValue = !isNaN(this.calculator.calculateExitValue()) ? this.calculator.calculateExitValue() : null;
+    this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
+    this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
+  }
+
   sendVariables(){
     this.planningCalculatorService.passingData.emit(this.calculator.sendMoviment());
   }
-
 
 }

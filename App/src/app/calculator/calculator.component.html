@@ -10,14 +10,21 @@
             <div class="row">
               <div class="col-sm-8">
               <div class="row">
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-3">
                   <app-input [placeHolder]="'Entry Price'" [(appModel)]="calculator.entryPrice" (appModelChange)="onSetEntryPrice()" [addon]="'R$'"></app-input>
                 </div>
-                <div class="col-sm-12 col-md-4">
+                <div class="col-sm-12 col-md-3">
                   <app-input [placeHolder]="'Amount'" [(appModel)]="calculator.amount" (appModelChange)="onSetAmount()" [addon]="''"></app-input>
                 </div>
-                <div class="col-sm-12  col-md-4">
+                <div class="col-sm-12  col-md-3">
                   <app-input [placeHolder]="'Entry Value'" [(appModel)]="calculator.entryValue" (appModelChange)="onSetEntryValue()" [addon]="'R$'"></app-input>
+                </div>
+
+                <div class="col-sm-12 col-md-3">
+                  <div class="label">Exchanger taxes</div>
+                  <select name="exchanger" id="exchanger" [(ngModel)]="exchanger" (ngModelChange)="onSetExchanger(exchanger)" >
+                    <option *ngFor="let exchanger of calculator.exchangers; let i = index" value="{{i}}"> {{exchanger.symbol.name + ' ('+exchanger.exchanger.getBuyTax() +'/'+exchanger.exchanger.getSellTax()  +')'}}</option>
+                  </select>
                 </div>
               </div>
 
