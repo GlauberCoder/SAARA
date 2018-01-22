@@ -1,0 +1,62 @@
+<div class="container">
+  <div class="row">
+
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-item text-center">
+            <div class="pb-3"> Projection Values</div>
+
+            <div class="row">
+              <div class="col-sm-8">
+              <div class="row">
+                <div class="col-sm-12 col-md-3">
+                  <app-input [placeHolder]="'Entry Price'" [(appModel)]="calculator.entryPrice" (appModelChange)="onSetEntryPrice()" [addon]="'R$'"></app-input>
+                </div>
+                <div class="col-sm-12 col-md-3">
+                  <app-input [placeHolder]="'Amount'" [(appModel)]="calculator.amount" (appModelChange)="onSetAmount()" [addon]="''"></app-input>
+                </div>
+                <div class="col-sm-12  col-md-3">
+                  <app-input [placeHolder]="'Entry Value'" [(appModel)]="calculator.entryValue" (appModelChange)="onSetEntryValue()" [addon]="'R$'"></app-input>
+                </div>
+
+                <div class="col-sm-12 col-md-3">
+                  <div class="label">Exchanger taxes</div>
+                  <select name="exchanger" id="exchanger" [(ngModel)]="exchanger" (ngModelChange)="onSetExchanger(exchanger)" >
+                    <option *ngFor="let exchanger of calculator.exchangers; let i = index" value="{{i}}"> {{exchanger.symbol.name + ' ('+exchanger.exchanger.getBuyTax() +'/'+exchanger.exchanger.getSellTax()  +')'}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit Price '" [(appModel)]="calculator.exitPrice" (appModelChange)="onSetExitPrice()" [addon]="'R$'"></app-input></div>
+                <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit Value'" [(appModel)]="calculator.exitValue" (appModelChange)="onSetExitValue()"  [addon]="'R$'"></app-input></div>
+                <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit P/L'"  [(appModel)]="calculator.exitPL" (appModelChange)="onSetExitPL()" [addon]="'R$'"></app-input></div>
+                <div class="col-sm-12 col-md-3"><app-input [placeHolder]="'Exit P/L'"  [(appModel)]="calculator.exitPLpercent" (appModelChange)="onSetExitPLPercent()" [addon]="'%'"></app-input></div>
+              </div>
+
+              <label class="custom-control custom-radio">
+                <input [(ngModel)]="calculator.type" (ngModelChange)="onSetType()" id="radio1" name="radio" type="radio" class="custom-control-input" value="long">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Long</span>
+              </label>
+
+              <label class="custom-control custom-radio">
+                <input [(ngModel)]="calculator.type" (ngModelChange)="onSetType()" id="radio2" name="radio" type="radio" class="custom-control-input" value="short">
+                <span class="custom-control-indicator"></span>
+                <span class="custom-control-description">Short</span>
+              </label>
+              </div>
+
+              <div class="col-sm-4">
+                <button class="btn btn-outline-light mt-3" (click)="sendVariables()">Add Transaction</button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
