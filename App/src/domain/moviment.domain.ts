@@ -5,11 +5,20 @@ export class MovimentDomain{
 
   constructor(
     public entryPrice?: number,
-    public investiment?: number,
+    public entryValue?: number,
     public tax?: number,
     public type?: TypesOfTransaction,
   ){}
 
+  valueSpentOnTaxes(): number{
+    return this.entryValue * this.tax.toPercent();
+  }
+
+  movimentValueWithTaxes(){
+    return this.entryValue * (1 - this.tax.toPercent());
+  }
+
+  //
   // public sellPrice(): number{
   //   let value = ((this.entryPrice * (1 + this.expectedProfit.toPercent() + this.exchangerSymbol.exchanger.getBuyTax().toPercent())) / ( 1 - this.exchangerSymbol.exchanger.getSellTax().toPercent()));
   //   return value.round(2);
@@ -46,16 +55,15 @@ export class MovimentDomain{
   // public finalExpectedValueRealValueErrors(): number{
   //   return (1 - (this.sellValueWithoutTaxes() / this.expectedProfitValue()));
   // }
-  //
-  // public returnVariablesOnJson(): string{
-  //   return JSON.stringify({
-  //       entryPrice: this.entryPrice,
-  //       investiment: this.investiment,
-  //       expectedProfit: this.expectedProfit,
-  //       buyTax: this.exchangerSymbol.exchanger.getBuyTax(),
-  //       sellTax : this.exchangerSymbol.exchanger.getSellTax()
-  //   });
-  // }
+
+  public returnVariablesOnJson(): string{
+    return JSON.stringify({
+        entryPrice: this.entryPrice,
+        entryValue: this.entryValue,
+        tax: this.tax,
+        type: this.type
+    });
+  }
 
 }
 

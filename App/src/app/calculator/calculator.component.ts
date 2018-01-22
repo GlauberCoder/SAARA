@@ -1,9 +1,10 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {MovimentDomain} from '../../domain/moviment.domain';
 import '../../extensions/number.extensions'
 import {ExchangerDomain} from "../../domain/exchanger.domain";
 import {CalculatorDomain} from "../../domain/calculator.domain";
 import {TypesOfTransaction} from "../../enum/variables.enum";
+import {PlanningCalculatorService} from "../../providers/planning-calculator.service";
 
 @Component({
   selector: 'app-calculator',
@@ -21,7 +22,7 @@ export class CalculatorComponent implements OnInit {
   public exchanger: ExchangerDomain;
   public calculator: CalculatorDomain;
 
-  constructor() {
+  constructor(public planningCalculatorService:PlanningCalculatorService) {
     this.calculator = new CalculatorDomain();
     this.calculator.type = TypesOfTransaction.long;
     this.calculator.exchanger = new ExchangerDomain(0.5, 0.5);
@@ -29,6 +30,7 @@ export class CalculatorComponent implements OnInit {
 
   ngOnInit() {
   }
+
 
   onSetAmount(){
       this.calculator.entryValue = !isNaN(this.calculator.calculateEntryValue()) ? this.calculator.calculateEntryValue() : null;
@@ -78,6 +80,10 @@ export class CalculatorComponent implements OnInit {
   onSetType(){
     this.calculator.exitPL = !isNaN(this.calculator.calculateExitPL()) ? this.calculator.calculateExitPL() : null;
     this.calculator.exitPLpercent = !isNaN(this.calculator.calculateExitPLPercentage()) ? this.calculator.calculateExitPLPercentage() : null;
+  }
+
+  sendVariables(){
+    this.planningCalculatorService.passingData.emit(this.calculator.sendMoviment());
   }
 
 

@@ -9,10 +9,10 @@ export class InputComponent implements OnInit {
 
   @Input() placeHolder: string;
   @Input() addon: string;
-  @Input() appModel: string;
   @Input() type: string;
   @Input() name: string;
   @Input() value: any;
+  @Input() appModel: string;
   @Output() appModelChange: EventEmitter<any> = new EventEmitter();
 
   change(newValue){

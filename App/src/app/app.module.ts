@@ -10,9 +10,11 @@ import { CalculatorComponent } from './calculator/calculator.component';
 import { PlanningComponent } from './planning/planning.component';
 import {RouterModule, Routes} from '@angular/router';
 import { InputComponent } from './commons/input/input.component';
+import {PlanningCalculatorService} from "../providers/planning-calculator.service";
+import { CardComponent } from './commons/card/card.component';
 
 const appRoutes: Routes = [
-  {path: '', component: CalculatorComponent},
+  {path: '', component: PlanningComponent},
   {path: 'planning', component: PlanningComponent},
 ];
 
@@ -24,14 +26,17 @@ const appRoutes: Routes = [
     TopBarComponent,
     CalculatorComponent,
     PlanningComponent,
-    InputComponent
+    InputComponent,
+    CardComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [
+    PlanningCalculatorService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

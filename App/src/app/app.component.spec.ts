@@ -177,6 +177,8 @@ import '../extensions/number.extensions';
 import {async} from "q";
 import {ExchangerDomain} from "../domain/exchanger.domain";
 import {TypesOfTransaction} from "../enum/variables.enum";
+import {OperationDomain} from "../domain/operation.domain";
+import {MovimentDomain} from "../domain/moviment.domain";
 
 // describe('Check calculator calculations with tax 0% and short: ', () => {
 //   it('should return correct calculus', async( () => {
@@ -267,26 +269,65 @@ describe('Check calculator calculations with tax 0% and long', () => {
 
 });
 
+describe('Check calculator calculations with tax 0.5% and long', () => {
+  let calc = new CalculatorDomain();
+  beforeEach(() => {
+    calc.exchanger = new ExchangerDomain(0.5, 0.5);
+    calc.entryPrice = 100;
+    calc.amount = 0.086;
+    calc.entryValue = 8.6;
+    calc.exitValue = 10.42;
+    calc.exitPrice = 121.11;
+    calc.type = TypesOfTransaction.long;
+  });
+
+  it('should return correct Amount', async( () => {
+    expect(calc.calculateAmount()).toBe(0.08557);
+  }));
+  it('should return correct Entry Value', async( () => {
+    expect(calc.calculateEntryValue()).toBe(8.64);
+  }));
+  it('should return correct Exit Price', async( () => {
+    expect(calc.calculateExitPrice()).toBe(121.16);
+  }));
+  it('should return correct Exit Value', async( () => {
+    expect(calc.calculateExitValue()).toBe(10.42);
+  }));
+  it('should return correct Calculate Exit PL', async( () => {
+    expect(calc.calculateExitPL()).toBe(1.81);
+  }));
+  it('should return correct Calculate PL', async( () => {
+    expect(calc.calculateExitPLPercentage()).toBe(21.11);
+  }));
+
+});
+
+describe('Check Operations Calculations', () => {
+  let operations = new OperationDomain();
+  beforeEach(() => {
+    operations.moviments = [
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.long),
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.short),
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.long),
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.short),
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.long),
+      new MovimentDomain(100, 8.6, 0.5, TypesOfTransaction.short),
+    ]
+  });
+
+  it('should return correct Value Spent on taxes', async( () => {
+    expect(operations.getAmountSpentOnTaxes()).toBe(0.258 );
+  }));
+  it('should return correct Of Calculate profit', async( () => {
+    expect(operations.calculateProfit()).toBe(0);
+  }));
+  it('should return correct Of Investiment', async( () => {
+    expect(operations.calculateInvestment()).toBe(25.8);
+  }));
+  it('should return correct Of Amount spent on taxes', async( () => {
+    expect(operations.getPercentAmountSpentOnTaxes()).toBe(0.01);
+  }));
+
+});
 
 
-//
-// describe('Check calculator calculations with taxes', () => {
-//   it('should return correct calculus', async( () => {
-//     const calc = new CalculatorDomain();
-//     calc.exchanger = new ExchangerDomain(0.5, 0.5);
-//     calc.amount = 0.086;
-//     calc.entryPrice = 100;
-//     calc.exitPrice = 120;
-//     calc.entryValue = 8.6;
-//     calc.type = TypesOfTransaction.long;
-//
-//     expect(calc.calculateAmount()).toBe(0.086);
-//     expect(calc.calculateEntryValue()).toBe(8.6);
-//     expect(calc.calculateExitValue()).toBe(10.42);
-//     expect(calc.calculateExitPL()).toBe(1.81);
-//     expect(calc.calculateExitPLPercentage()).toBe(21.21);
-//     // expect(calc.calculateOnReceiveExitPrice()).toBe(10.32);
-//
-//   }));
-//
-// });

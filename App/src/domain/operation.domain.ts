@@ -1,61 +1,76 @@
 import {TypesOfTransaction} from "../enum/variables.enum";
 import {MovimentDomain} from "./moviment.domain";
 import {ExchangerSymbolDomain} from "./exchanger-symbol.domain";
+import {CalculatorDomain} from "./calculator.domain";
 
-export class Operation{
+export class OperationDomain{
 
   public currencyAmount: number;
-  public Moviments: Array<MovimentDomain> = [];
+  public moviments: Array<any> = [];
   public exchangerSymbol: ExchangerSymbolDomain;
 
   constructor(){}
 
-  // checkTransactions(transaction: Array<Transaction>, amount?: number, bought?: number){
-  //   let amountBought = bought || 0, amountMoney = amount || 0; //TO DO: Trocar os nomes
-  //   for(let item of transaction){
-  //     if(item.type === TypesOfTransaction.buy){
-  //       if(amountMoney > 0){
-  //         amountBought += (amountMoney * item.percentage.toPercent()) / item.MovimentDomain.entryPrice;
-  //         amountMoney = (amountMoney * (1 - item.percentage.toPercent()));
-  //       } else {
-  //         console.log('can\'t buy, don\'t have enougth money')
-  //       }
-  //     } else {
-  //       if(amountBought > 0){
-  //         amountMoney += (amountBought * (item.percentage.toPercent())) * item.MovimentDomain.entryPrice;
-  //         amountBought -= (amountBought * (item.percentage.toPercent()));
-  //       } else {
-  //         console.log('can\'t sell, don\'t have enougth amount')
-  //       }
-  //     }
-  //   }
-  //   return {amountBought, amountMoney, profit: amountMoney/amount };
-  // }
-  //
-  // averageSpent(){
-  //   let poundedAverage;
-  //   poundedAverage = this.pundedAverageOfTransactions(this.Transactions);
-  //   return (poundedAverage.sum/ poundedAverage.amountOfItems).round(2);
-  // }
-  //
-  // pundedAverageOfTransactions(array: Array<Transaction>){
-  //   let sum = 0, amountOfItems = 0;
-  //   for(let item of array){
-  //     sum += item.MovimentDomain.entryPrice * item.MovimentDomain.investiment;
-  //     amountOfItems+= item.MovimentDomain.investiment;
-  //   }
-  //   return {sum, amountOfItems}
-  // }
+  getCurrencyAmount(){
+    let sum = 0;
+    for(let item of this.moviments){
+      if(item.check) {
+        if (item.type === TypesOfTransaction.long) {
+          sum += this.calculateAmount(item.entryValue, item.entryPrice, item.tax);
+        } else {
+          sum -= this.calculateAmount(item.entryValue, item.entryPrice, item.tax);
+        }
+      }
+    }
+    return sum.round(8);
+  }
 
-}
+  calculateAmount(entryValue, entryPrice, tax){
+    return (entryValue * (1 - tax.toPercent()) / (entryPrice)).round(8);
+  }
 
-export class MoviemntPlan{
 
-  constructor(
-    public MovimentDomain?: MovimentDomain,
-    // public limitValue?: number,
-    public percentage?: number,
-  ){};
+  getAmountSpentOnTaxes(){
+    let sum = 0;
+    for(let item of this.moviments){
+      if(item.check) {
+        sum += (item.entryValue * item.tax.toPercent());
+      }
+    }
+    return sum.round(4);
+  }
+
+  getPercentAmountSpentOnTaxes(){
+    return (this.getAmountSpentOnTaxes()/this.calculateInvestment()).round(2);
+  }
+
+
+  calculateProfit(){
+    let sum = 0;
+    for(let item of this.moviments){
+      if(item.check){
+        if(item.type === TypesOfTransaction.short){
+          sum +=  item.entryValue * (1 - item.tax.toPercent());
+        } else {
+          sum -= item.entryValue * (1 - item.tax.toPercent());
+        }
+      }
+    }
+    return sum.round(2);
+  }
+
+  calculateInvestment(){
+    let sum = 0;
+    for(let item of this.moviments){
+      if(item.check) {
+        if (item.type === TypesOfTransaction.long) {
+          sum += item.entryValue;
+        }
+      }
+    }
+    return sum.round(2);
+  }
+
 
 
 }

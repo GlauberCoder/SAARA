@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {Operation} from "../../domain/operation.domain";
-import { TypesOfTransaction } from "../../enum/variables.enum";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {OperationDomain} from "../../domain/operation.domain";
+import {PlanningCalculatorService} from "../../providers/planning-calculator.service";
 import {MovimentDomain} from "../../domain/moviment.domain";
 
 @Component({
@@ -8,36 +8,56 @@ import {MovimentDomain} from "../../domain/moviment.domain";
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.scss']
 })
-export class PlanningComponent implements OnInit {
+export class PlanningComponent implements OnInit, OnDestroy {
 
   public currentPrice: number;
   public amountToUse: number;
   public currencyAmount: number;
 
-  public planner: Operation;
+  public planner: OperationDomain;
   public entryPrice: number;
   public investiment: number;
   public percentage: number;
   public transactionType: string;
+  public moviments: Array<MovimentDomain> = [];
 
-  constructor() {
-    this.planner = new Operation();
+
+  public unsubGetCalculatorVariables;
+
+  constructor(public planningCalculatorService: PlanningCalculatorService) {
+    this.planner = new OperationDomain();
+
+    this.unsubGetCalculatorVariables = this.planningCalculatorService.passingData.subscribe( (data) => {
+      data.check = true;
+      this.moviments.push(data);
+      this.planner.moviments.push(data);
+    });
   }
 
   ngOnInit() {
   }
 
-  // addTransaction(){
-  //   this.planner.Transactions.push( this.createNewTransaction(this.entryPrice, this.investiment, this.percentage, this.transactionType));
-  // }
-  //
-  // createNewTransaction(entryPrice: number, investiment: number, percentage: number, transactionType: string){
-  //   return new Transaction(new MovimentDomain(entryPrice, investiment) , percentage,
-  //     transactionType === 'buy' ? TypesOfTransaction.buy : TypesOfTransaction.stop);
-  // }
-  //
-  // calculateProjection(){
-  //   this.planner.checkTransactions(this.planner.Transactions, 100, 0);
-  // }
+  ngOnDestroy(){
+    this.unsubGetCalculatorVariables.unsubscribe();
+  }
+
+  moveUpItem(index){
+    if(index > 0){
+      let item = this.planner.moviments.splice(index, 1)[0];
+      this.planner.moviments.splice(index - 1, 0, item);
+    }
+  }
+
+  moveDownItem(index){
+    if(index < this.planner.moviments.length){
+      let item = this.planner.moviments.splice(index, 1)[0];
+      this.planner.moviments.splice(index + 1, 0, item);
+    }
+  }
+
+  deleteItem(index){
+    this.planner.moviments.splice(index, 1);
+  }
+
 
 }

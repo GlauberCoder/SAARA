@@ -1,5 +1,6 @@
 import {ExchangerDomain} from "./exchanger.domain";
 import {TypesOfTransaction} from "../enum/variables.enum";
+import {EventEmitter} from "@angular/core";
 
 export class CalculatorDomain{
 
@@ -12,6 +13,7 @@ export class CalculatorDomain{
   public exitPLpercent: any;
   public exchanger: ExchangerDomain;
   public type: TypesOfTransaction;
+  public calculatedEvent = new EventEmitter();
 
   constructor(){}
 
@@ -24,24 +26,22 @@ export class CalculatorDomain{
   }
 
   public calculateExitPrice(){
-    let exitPrice = (( this.exitValue/this.entryValue ) / (1 - this.exchanger.getSellTax().toPercent()));
-    // let value = (this.entryPrice * (1 - this.exchanger.getBuyTax().toPercent())) / ( )
-    // console.log(value);
+    let exitPrice = (( this.exitValue/this.entryValue ) * (1 - this.exchanger.getBuyTax().toPercent()) / (1 - this.exchanger.getSellTax().toPercent()));
     return (exitPrice * this.entryPrice).round(2);
   }
 
   public calculateExitValue(): number{
-    let value = ((this.exitPrice * (1 - this.exchanger.getBuyTax().toPercent())));
+    let value = ((this.exitPrice));
     return ((value/this.entryPrice) * this.entryValue).round(2);
   }
 
   public calculateExitPL(): number {
-    let value = ((this.exitValue * (1 + this.exchanger.getBuyTax().toPercent())) / (1 - this.exchanger.getSellTax().toPercent()));
+    let value = ((this.exitValue ));
     return this.type === TypesOfTransaction.long ? this.calculatePL(value) : -1 * this.calculatePL(value);
   }
 
   calculatePL(value: number){
-    return (value - this.entryValue).round(2);
+    return (value * ( 1 - this.exchanger.getBuyTax().toPercent() )- this.entryValue * ( 1 - this.exchanger.getSellTax().toPercent())).round(2);
   }
 
   public calculateExitPLPercentage(){
@@ -60,9 +60,13 @@ export class CalculatorDomain{
     return (parseFloat(this.entryPrice) * ( 1 + parseFloat(this.exitPLpercent).toPercent())).round(2);
   }
 
-
-
-
-
+  public sendMoviment(){
+    return {
+      entryPrice: parseFloat(this.entryPrice),
+      entryValue: this.entryValue,
+      tax: this.exchanger.getBuyTax(),
+      type: this.type
+    };
+  }
 
 }
