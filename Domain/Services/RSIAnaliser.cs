@@ -1,14 +1,10 @@
-﻿using Domain.Abstractions;
-using Domain.Abstractions.Entitys;
+﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
-using Domain.Entitys;
-using Domain.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Domain.Services
 {
@@ -16,7 +12,7 @@ namespace Domain.Services
 	{
 		public virtual decimal RSI { get; private set; }
 		public virtual PriceSignal PriceSignal { get; private set; }
-		public virtual Trend RSIRange { get; private set; }
+		public virtual Trend Range { get; private set; }
 		public virtual Trend Divergence => throw new NotImplementedException();
 		public virtual Trend FailSwing => throw new NotImplementedException();
 		public virtual Trend PositiveNegativeReversal => throw new NotImplementedException();
@@ -25,7 +21,7 @@ namespace Domain.Services
 		{
 			RSI = CalculateRSI(config, analysis.Previous);
 			PriceSignal = CalculatePriceSignal(RSI);
-			RSIRange = CalculateRangeTrend(RSI);
+			Range = CalculateRangeTrend(RSI);
 			//TODO: Calcular Divergence
 			//TODO: Calcular FailSwing
 			//TODO: Calcular PositiveNegativeReversal
@@ -38,9 +34,10 @@ namespace Domain.Services
 			var overBoughtLimit = 70;
 			var overSoldLimit = 30;
 			if (rsi >= overBoughtLimit) return PriceSignal.Overbough;
-			if (rsi <= overSoldLimit) return PriceSignal.Overbough;
+			if (rsi <= overSoldLimit) return PriceSignal.Oversold;
 			return PriceSignal.Neutral;
 		}
+
 		private Trend CalculateRangeTrend(decimal rsi)
 		{
 			var uptrendLowerLimit = 60;
@@ -59,7 +56,6 @@ namespace Domain.Services
 			var lossAvg = CalculateAVG(differences, d => d < 0, config.Length);
 
 			return lossAvg == 0 ? 100 : CalculateRSI(gainAvg, lossAvg);
-
 		}
 
 		private decimal CalculateRSI(decimal gainAvg, decimal lossAvg)
@@ -81,8 +77,6 @@ namespace Domain.Services
 			return differences;
 		}
 
-
-
 		private decimal CalculateAVG(IList<decimal> values, Func<decimal, bool> filter, int length)
 		{
 			var workValues = values.Skip(length);
@@ -93,13 +87,11 @@ namespace Domain.Services
 				lastAvg = CalculateAVG(lastAvg, filter(value) ? value : 0, length);
 
 			return Math.Abs(lastAvg);
-
 		}
 
 		private decimal CalculateAVG(decimal previousAvg, decimal currentValue, int length)
 		{
 			return ((previousAvg * (length - 1)) + currentValue) / length;
 		}
-
 	}
 }

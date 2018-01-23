@@ -16,10 +16,27 @@ namespace Infra.ExchangerDataReader
 		protected abstract string BaseURL { get; }
 		protected abstract string QueryURL { get; }
 		public virtual string TemplateURL { get { return $"{BaseURL}{QueryURL}"; } }
-		public virtual ICandle Read(ISymbol symbol, CandleTimespan timespan)
+
+		public virtual string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
+		{
+			var url = TemplateURL;
+
+			foreach (var item in GetParameters(symbol, timespan, date))
+				url = url.Replace(item.Key, item.Value);
+
+			return url;
+		}
+
+		public virtual ICandle ReadOneMinuteCandle(ISymbol symbol, DateTime? date)
+		{
+			return Read(symbol, CandleTimespan.OneMinute, date);
+		}
+
+		public virtual ICandle Read(ISymbol symbol, CandleTimespan timespan, DateTime? date)
 		{
 			ICandle candle = null;
-			var url = GetUrlFrom(symbol, timespan);
+			var baseDate = date ?? DateTime.Now;
+			var url = GetUrlFrom(symbol, timespan, baseDate);
 
 			var request = (HttpWebRequest)WebRequest.Create(url);
 			request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -40,6 +57,7 @@ namespace Infra.ExchangerDataReader
 
 		public abstract ICandle GetCandleFrom(string response);
 
-		public abstract string GetUrlFrom(ISymbol symbol, CandleTimespan timespan);
+		protected abstract IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date);
+
 	}
 }

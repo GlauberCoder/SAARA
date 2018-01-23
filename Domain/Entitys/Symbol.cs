@@ -1,5 +1,4 @@
 ﻿using Domain.Abstractions.Entitys;
-using System;
 
 namespace Domain.Entitys
 {

@@ -1,10 +1,5 @@
-﻿using Domain.Abstractions.Entitys;
-using Domain.Abstractions.Entitys.AnalisysConfig;
+﻿using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
-using Domain.Abstractions.Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Abstractions.Services
 {
@@ -25,7 +20,7 @@ namespace Domain.Abstractions.Services
 		/// <summary>
 		/// RSI tends to fluctuate between 40 and 90 in a uptrend and between 10 and 60 in a downtrend with the 50-60 zone acting as neutral.
 		/// </summary>
-		Trend RSIRange { get; }
+		Trend Range { get; }
 		/// <summary>
 		/// A uptrend divergence occurs when the underlying security makes a lower low and RSI forms a higher low 
 		/// A downtrend divergence forms when the security records a higher high and RSI forms a lower high.

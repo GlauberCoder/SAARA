@@ -1,6 +1,4 @@
-﻿using Domain.Abstractions;
-using Domain.Abstractions.Entitys;
-using System;
+﻿using Domain.Abstractions.Entitys;
 
 namespace Domain.Entitys
 {
