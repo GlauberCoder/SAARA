@@ -4,6 +4,7 @@ interface Number{
   overPercentage(): number;
   toPercent(): number;
   round(value: number): number;
+  isNumber();
 }
 
 Number.prototype.proportionOn = function (value:number, decimalPlaces?: number) {
@@ -17,7 +18,8 @@ Number.prototype.percentageOn = function (value:number, decimalPlaces?: number) 
 };
 
 Number.prototype.round = function (value: number) {
-  return parseFloat(this.toFixed(value));
+  // return parseFloat(this.toFixed(value));
+  return Math.round(this * Math.pow(10, value)) / Math.pow(10, value);
 };
 
 Number.prototype.toPercent = function () {
