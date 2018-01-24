@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Abstractions.Entitys.AnalisysConfig
 {
-	public interface IMACDConfig : IBaseEntity
+	public interface IMACDConfig : IBaseEntity<IMACDConfig>
 	{
 		int ShortEMA { get; }
 		int LongEMA { get; }

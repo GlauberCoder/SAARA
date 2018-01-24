@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Entitys
 {
-	public class Account : BaseEntity, IAccount
+	public class Account : BaseEntity<Account>, IAccount
 	{
 	}
 }

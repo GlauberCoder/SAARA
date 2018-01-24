@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Domain.Entitys.AnalisysConfig
 {
-	public class MACDConfig : BaseEntity, IMACDConfig
+	public class MACDConfig : BaseEntity<MACDConfig>, IMACDConfig
 	{
 		//TODO: composicao do EMA
 		public virtual int EMA1 { get; set; }

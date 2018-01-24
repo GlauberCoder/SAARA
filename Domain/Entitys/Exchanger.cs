@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Domain.Entitys
 {
-	public class Exchanger : BaseEntity, IExchanger
+	public class Exchanger : BaseEntity<Exchanger>, IExchanger
 	{
 	}
 }

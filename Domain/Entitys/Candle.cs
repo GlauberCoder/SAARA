@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Domain.Entitys
 {
-	public class Candle : BaseEntity, ICandle
+	public class Candle : BaseEntity<Candle>, ICandle
 	{
 		public virtual IExchangerSymbol Symbol { get; set; }
 		public virtual decimal Open { get; set; }
