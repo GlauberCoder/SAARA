@@ -14,21 +14,17 @@ namespace Domain.Entitys
 		IBaseEntity<T>
 		where T : class
 	{
-		public virtual bool Excluded { get { return Exclusion.HasValue; } }
-		public virtual bool Saved { get { return ID != InstanceID; } }
-		public virtual bool Saving { get { return ID == InstanceID; } }
+		public virtual bool Excluded { get => Exclusion.HasValue;  }
+		public virtual bool Saved { get => ID != InstanceID;  }
+		public virtual bool Saving { get => ID == InstanceID;  }
 		public virtual DateTime? Exclusion { get; set; }
 		public virtual long ID { get; set; }
-		public virtual long InstanceID { get { return 0; } }
+		public virtual long InstanceID { get => 0;  }
 		public virtual string Name { get; set; }
 
 		public virtual void Normalize()
 		{
 
-		}
-		public virtual string Identification()
-		{
-			return Name;
 		}
 		public static bool operator ==(BaseEntity<T> x, BaseEntity<T> y)
 		{
@@ -43,10 +39,6 @@ namespace Domain.Entitys
 					return x.GetHashCode() == y.GetHashCode() && x.ID == y.ID && equalTypes;
 			}
 		}
-		public static bool operator !=(BaseEntity<T> x, BaseEntity<T> y)
-		{
-			return !(x == y);
-		}
 		public override bool Equals(object obj)
 		{
 			if (obj is BaseEntity<T>)
@@ -54,47 +46,20 @@ namespace Domain.Entitys
 			else
 				return base.Equals(obj);
 		}
-		public virtual bool Equals(IBaseEntity other)
-		{
-			return other.ID == ID;
-		}
-		public virtual bool Equals(BaseEntity<T> other)
-		{
-			return other.ID == ID;
-		}
 
-		public virtual bool Equals(IBaseEntity x, IBaseEntity y)
-		{
-			return x == y;
-		}
-		public virtual bool Equals(BaseEntity<T> x, BaseEntity<T> y)
-		{
-			return x == y;
-		}
-		public virtual int Compare(BaseEntity<T> x, BaseEntity<T> y)
-		{
-			return x == y ? 0 : 1;
-		}
-		public virtual int GetHashCode(IBaseEntity obj)
-		{
-			return obj.ID.GetHashCode();
-		}
-		public virtual int GetHashCode(BaseEntity<T> obj)
-		{
-			return obj.ID.GetHashCode();
-		}
-		public override int GetHashCode()
-		{
-			return ((IBaseEntity)this).ID.GetHashCode();
-		}
-		public virtual int Compare(IBaseEntity x, IBaseEntity y)
-		{
-			return x == y ? 0 : 1;
-		}
-		public virtual object Simplify()
-		{
-			return new { id = ID, name = Identification() };
-		}
+		public static bool operator !=(BaseEntity<T> x, BaseEntity<T> y) => !(x == y);
+		public virtual string Identification() => Name;
+		public virtual bool Equals(IBaseEntity other) => other.ID == ID;
+		public virtual bool Equals(BaseEntity<T> other) => other.ID == ID;
+		public virtual bool Equals(IBaseEntity x, IBaseEntity y) => x == y;
+		public virtual bool Equals(BaseEntity<T> x, BaseEntity<T> y) => x == y;
+		public virtual int Compare(BaseEntity<T> x, BaseEntity<T> y) => x == y ? 0 : 1;
+		public virtual int GetHashCode(IBaseEntity obj) => obj.ID.GetHashCode();
+		public virtual int GetHashCode(BaseEntity<T> obj) => obj.ID.GetHashCode();
+		public override int GetHashCode() => ((IBaseEntity)this).ID.GetHashCode();
+		public virtual int Compare(IBaseEntity x, IBaseEntity y) => x == y? 0 : 1;
+		public virtual object Simplify() => new { id = ID, name = Identification() };
+
 		public BaseEntity()
 		{
 			ID = InstanceID;
