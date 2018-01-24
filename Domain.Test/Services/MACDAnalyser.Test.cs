@@ -17,7 +17,7 @@ namespace Domain.Test.Services
 		{
 			var i = 1;
 			var config = new MACDConfig { EMA1 = shortEMA, EMA2 = longEMA, SignalEMA = signalEMA };
-			var candles = closeValueCandle.Select(a => (ICandle)new Candle() { ID = i++, Close = decimal.Parse(a.ToString()) }).ToList();
+			var candles = closeValueCandle.Select(a => new Candle() { ID = i++, Close = decimal.Parse(a.ToString()) }).ToList<ICandle>();
 			var analyser =  new CandleAnalyser { Previous = candles };
 
 			return candleID.HasValue ? new MACDAnalyser(config, analyser, analyser.Previous.First(c => c.ID == candleID)) :  new MACDAnalyser(config, analyser);
@@ -66,7 +66,7 @@ namespace Domain.Test.Services
 		]
 		public void The_Signal_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, double[] closeValueCandle, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
-			var actual = genarateCandles(closeValueCandle, shortEMA, longEMA, referenceCandle).Signal;
+			var actual = genarateCandles(closeValueCandle, shortEMA, longEMA, signalEMA, referenceCandle).Signal;
 			Assert.Equal(expected, actual);
 		}
 
@@ -77,7 +77,7 @@ namespace Domain.Test.Services
 		]
 		public void The_Histogram_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, double[] closeValueCandle, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
-			var actual = genarateCandles(closeValueCandle, shortEMA, longEMA, referenceCandle).Histogram;
+			var actual = genarateCandles(closeValueCandle, shortEMA, longEMA, signalEMA, referenceCandle).Histogram;
 			Assert.Equal(expected, actual);
 		}
 

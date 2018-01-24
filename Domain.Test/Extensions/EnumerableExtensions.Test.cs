@@ -2,61 +2,54 @@ using System;
 using System.Linq;
 using Xunit;
 using Domain.Extensions;
+using Util.Extensions;
+using System.Collections.Generic;
 
 namespace Domain.Test
 {
 	public class EnumerableExtensionsTest
 	{
+		private IList<decimal> EMASequence1 => new decimal[] { 22.27m, 22.19m, 22.08m, 22.17m, 22.18m, 22.13m, 22.23m, 22.43m, 22.24m, 22.29m, 22.15m, 22.39m, 22.38m, 22.61m, 23.36m, 24.05m, 23.75m, 23.83m, 23.95m, 23.63m, 23.82m, 23.87m, 23.65m, 23.19m, 23.10m, 23.33m, 22.68m, 23.10m, 22.40m, 22.17m };
+
 		[
-			Theory(DisplayName = "The sequence of previous itens should be"),
-			InlineData(new long[] { 1 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 2, 1),
-			InlineData(new long[] { 6, 7 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 8, 2),
-			InlineData(new long[] { 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 10, 3),
-			InlineData(new long[] { 1, 2, 3, 4 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 5, 4),
-			InlineData(new long[] { 1, 2, 3, 4 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 5, 5),
-			InlineData(new long[] { 4, 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 10, 6),
-			InlineData(new long[] { 1, 2, 3, 4, 5, 6 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 7, 7),
-			InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 9, 8),
-			InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 10, 9),
-			InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 10, 10)
+			Theory(DisplayName = "The EMA Should be correct"),
+			InlineData(23.34, 20, 10),
+			InlineData(23.43, 21, 10),
+			InlineData(23.51, 22, 10),
+			InlineData(23.53, 23, 10),
+			InlineData(23.47, 24, 10),
+			InlineData(23.39, 25, 10),
+			InlineData(23.37, 26, 10),
+			InlineData(23.23, 27, 10),
+			InlineData(23.20, 28, 10),
+			InlineData(23.05, 29, 10),
+			InlineData(22.90, 30, 10)
 		]
-		public void The_sequence_of_previous_itens_should_be(long[] expected, long[] values, long value, int quantity)
+		public void The_EMA_Should_be_correct(decimal expected, int numberOfValues,  int length)
 		{
-			Assert.True(expected.SequenceEqual(values.ToList().TakePrevious(value, quantity)));
+			var values = EMASequence1.Take(numberOfValues).Select(v => decimal.Parse(v.ToString())).ToList();
+
+			Assert.Equal(expected, values.EMA(length));
 		}
 
 
 
-
 		[
-			Theory(DisplayName = "The EMA Should be correct"),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29 }, 22.22, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15 }, 22.21, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39 }, 22.24, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38 }, 22.27, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61 }, 22.33, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36 }, 22.52, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05 }, 22.80, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75 }, 22.97, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83 }, 23.13, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95 }, 23.28, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63 }, 23.34, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82 }, 23.43, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87 }, 23.51, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65 }, 23.53, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19 }, 23.47, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10 }, 23.40, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33 }, 23.39, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68 }, 23.26, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68, 23.10 }, 23.23, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68, 23.10, 22.40 }, 23.08, 10),
-			InlineData(new double[] { 22.27, 22.19, 22.08, 22.17, 22.18, 22.13, 22.23, 22.43, 22.24, 22.29, 22.15, 22.39, 22.38, 22.61, 23.36, 24.05, 23.75, 23.83, 23.95, 23.63, 23.82, 23.87, 23.65, 23.19, 23.10, 23.33, 22.68, 23.10, 22.40, 22.17 }, 22.92, 10),
+			Theory(DisplayName = "The EMA Should throw argument exception when the number of values are bellow the minimum"),
+			InlineData(10, 10),
+			InlineData(11, 10),
+			InlineData(12, 10),
+			InlineData(13, 10),
+			InlineData(14, 10),
+			InlineData(15, 10),
+			InlineData(16, 10),
+			InlineData(17, 10),
+			InlineData(18, 10),
+			InlineData(19, 10)
 		]
-		public void The_EMA_Should_be_correct(double[] doubleValues, decimal expected, int length)
+		public void The_EMA_Should_Throw_Argument_Exception_When_The_Number_Of_Values_Are_Bellow_The_Minimum(int numberOfValues, int length)
 		{
-			var values = doubleValues.Select(v => decimal.Parse(v.ToString())).ToList();
-
-			Assert.Equal(expected, values.EMA(length));
+			Assert.Throws<ArgumentException>(() => EMASequence1.Take(numberOfValues).ToList().EMA(length));
 		}
 	}
 }

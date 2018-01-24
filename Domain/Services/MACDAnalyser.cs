@@ -1,13 +1,9 @@
-﻿using Domain.Abstractions;
-using Domain.Abstractions.Entitys;
+﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Services;
-using Domain.Entitys;
 using Domain.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Util.Extensions;
 
 namespace Domain.Services
 {
@@ -40,17 +36,14 @@ namespace Domain.Services
 			LongEMA = analysis.EMA(config.LongEMA);
 			ShortEMA = analysis.EMA(config.ShortEMA);
 			MACD = ShortEMA - LongEMA;
-			var previous = analysis
-							.Previous
-							.TakePrevious(candle, config.SignalEMA);
-			
-			if(previous.Any())
-				Signal = analysis
-								.Previous
-								.TakePrevious(candle, config.SignalEMA)
+			var previous = analysis.Previous.TakePrevious(candle, config.SignalEMA);
+			if (previous.NotEmpty())
+			{
+				Signal = previous
 								.Select(c => new MACDAnalyser(config, analysis, c).MACD)
 								.ToList()
 								.EMA(config.SignalEMA);
+			}
 
 			Histogram = MACD - Signal;
 
