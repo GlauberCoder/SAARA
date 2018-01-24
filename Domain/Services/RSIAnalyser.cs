@@ -15,11 +15,13 @@ namespace Domain.Services
 	public class RSIAnalyser : IRSIAnalyser
 	{
 		public virtual decimal RSI { get; private set; }
+		public virtual TradeSignal Signal { get; private set; }
 		public virtual PriceSignal PriceSignal { get; private set; }
 		public virtual Trend Range { get; private set; }
 		public virtual Trend Divergence => throw new NotImplementedException();
 		public virtual Trend FailSwing => throw new NotImplementedException();
 		public virtual Trend PositiveNegativeReversal => throw new NotImplementedException();
+		public virtual IList<Trend> Trends { get => new List<Trend> { Range, Divergence, FailSwing, PositiveNegativeReversal }; }
 
 		public virtual IRSIAnalyser Calculate(IRSIConfig config, ICandleAnalyser analysis)
 		{
@@ -29,6 +31,7 @@ namespace Domain.Services
 			//TODO: Calcular Divergence
 			//TODO: Calcular FailSwing
 			//TODO: Calcular PositiveNegativeReversal
+			
 
 			return this;
 		}
