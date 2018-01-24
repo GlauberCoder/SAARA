@@ -30,7 +30,7 @@ namespace Domain.Extensions
 		{
 			var index = values.IndexOf(value);
 
-			if (index < 0) return new List<T>();
+			if (index <= 0) return new List<T>();
 
 			return values.Take(index).TakeLast(length).ToList(); 
 		}

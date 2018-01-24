@@ -18,6 +18,7 @@ namespace Domain.Services
 		public virtual decimal MACD { get; set; }
 		public virtual decimal Signal { get; set; }
 		public virtual decimal Histogram { get; set; }
+
 		public MACDAnalyser()
 		{
 
@@ -39,12 +40,17 @@ namespace Domain.Services
 			LongEMA = analysis.EMA(config.LongEMA);
 			ShortEMA = analysis.EMA(config.ShortEMA);
 			MACD = ShortEMA - LongEMA;
-			Signal = analysis
+			var previous = analysis
 							.Previous
-							.TakePrevious(candle, config.SignalEMA)
-							.Select(c => new MACDAnalyser(config, analysis, c).MACD)
-							.ToList()
-							.EMA(config.SignalEMA);
+							.TakePrevious(candle, config.SignalEMA);
+			
+			if(previous.Any())
+				Signal = analysis
+								.Previous
+								.TakePrevious(candle, config.SignalEMA)
+								.Select(c => new MACDAnalyser(config, analysis, c).MACD)
+								.ToList()
+								.EMA(config.SignalEMA);
 
 			Histogram = MACD - Signal;
 
