@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Abstractions.Entitys.AnalisysConfig
 {
-	public interface IRSIConfig : IBaseEntity
+	public interface IRSIConfig : IBaseEntity<IRSIConfig>
 	{
 		int Length { get; }
 	}

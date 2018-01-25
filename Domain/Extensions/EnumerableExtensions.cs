@@ -8,11 +8,21 @@ namespace Domain.Extensions
 	{
 		public static decimal EMA(this IList<ICandle> candles, int length)
 		{
-			return candles.TakeLast(length * 2).Select(c => c.Close).ToList().EMA(length);
+			return candles.Select(c => c.Close).ToList().EMA(length);
 		}
-
+		public static decimal EMA(this IList<double> values, int length)
+		{
+			return values.Select(c => decimal.Parse(c.ToString())).ToList().EMA(length);
+		}
 		public static decimal EMA(this IList<decimal> values, int length)
 		{
+			var minNumberOfValues = length * 2;
+
+			if (values.Count < minNumberOfValues)
+				throw new ArgumentException("Number of values is bellow to the minimal for this length.");
+
+			values = values.Take(minNumberOfValues).ToList();
+
 			var matureValues = values.Skip(length);
 			var ema = values.Take(length).Average();
 			decimal k = 2m / (length + 1);
@@ -23,20 +33,6 @@ namespace Domain.Extensions
 			return decimal.Round(ema, 2);
 		}
 
-		public static IList<T> TakePrevious<T>(this IList<T> values, T value, int length)
-		{
-			var index = values.IndexOf(value);
-
-			if (index < 0) return new List<T>();
-
-			return values.Take(index).TakeLast(length).ToList();
-		}
-
-		public static T TakePrevious<T>(this IList<T> values, T value)
-		{
-			var index = values.IndexOf(value);
-			return index > 0 ? values[index - 1] : default(T);
-		}
 
 	}
 }
