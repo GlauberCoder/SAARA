@@ -55,11 +55,14 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The ShortEMA after Calculate method should be"),
-			InlineData(22.28, 20, 6, 10),
-			InlineData(22.28, 21, 6, 10),
-			InlineData(22.37, 21, 7, 10),
-			InlineData(22.91, 21, 8, 10),
-			InlineData(23.19, 21, 9, 10)
+			InlineData(23.59, 20, 6, 10),
+			InlineData(23.66, 21, 6, 10),
+			InlineData(23.72, 22, 6, 10),
+			InlineData(23.70, 23, 6, 10),
+			InlineData(23.55, 24, 6, 10),
+			InlineData(23.60, 21, 7, 10),
+			InlineData(23.54, 21, 8, 10),
+			InlineData(23.48, 21, 9, 10)
 
 		]
 		public void The_ShortEMA_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
@@ -72,7 +75,10 @@ namespace Domain.Test.Services
 		[
 			Theory(DisplayName = "The LongEMA after Calculate method should be"),
 			InlineData(23.34, 20, 6, 10),
-			InlineData(23.34, 22, 6, 10),
+			InlineData(23.43, 21, 6, 10),
+			InlineData(23.51, 22, 6, 10),
+			InlineData(23.53, 23, 6, 10),
+			InlineData(23.47, 24, 6, 10),
 			InlineData(23.46, 22, 6, 11),
 			InlineData(23.41, 24, 6, 12),
 			InlineData(23.33, 26, 6, 13)

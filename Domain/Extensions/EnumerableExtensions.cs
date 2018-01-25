@@ -20,12 +20,10 @@ namespace Domain.Extensions
 		}
 		public static decimal EMA(this IList<decimal> values, int length)
 		{
-			var minNumberOfValues = length * 2;
+			var minNumberOfValues = length;
 
 			if (values.Count < minNumberOfValues)
 				throw new ArgumentException("Number of values is bellow to the minimal for this length.");
-
-			values = values.Take(minNumberOfValues).ToList();
 
 			var matureValues = values.Skip(length);
 			var ema = values.Take(length).Average();

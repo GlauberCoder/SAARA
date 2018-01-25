@@ -55,13 +55,17 @@ namespace Domain.Services
 		private IMACDAnalyser calculateSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
 			var MACDsList = new List<decimal>();
-			var previous = analysis.Previous.TakePrevious(candle, 2*config.SignalEMA);
+
+			var candles = analysis.Previous;
+
+			var length = candles.Count - config.LongEMA;
+			var previous = candles.TakePrevious(candle, length);
+			previous.Add(candle);
 
 
 			foreach (ICandle c in previous)
 			{
-				var partialPrevious = analysis.Previous.TakePrevious(c, 2*config.LongEMA);
-				var candleAnalyser = new CandleAnalyser { Previous = partialPrevious };
+				var candleAnalyser = new CandleAnalyser { Previous = candles.TakeAllPrevious(c) };
 				MACDsList.Add( new MACDAnalyser().calculateMACD(config, candleAnalyser).MACD );
 			}
 
