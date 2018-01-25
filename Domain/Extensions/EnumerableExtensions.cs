@@ -23,7 +23,7 @@ namespace Domain.Extensions
 			var minNumberOfValues = length * 2;
 
 			if (values.Count < minNumberOfValues)
-				throw new ArgumentException("NUmber of values is bellow to the minimal for this length.");
+				throw new ArgumentException("Number of values is bellow to the minimal for this length.");
 
 			values = values.Take(minNumberOfValues).ToList();
 
