@@ -84,11 +84,11 @@ namespace Domain.Test.Services
 		}
 
 		[
-			Theory(DisplayName = "The_EMAAnalyser_should_raise_exception when candle count is not double longEMA"),
+			Theory(DisplayName = "The_EMAAnalyser_should_raise_exception when candle count is not double of longEMA"),
 			InlineData(5, 6, 10),
 			InlineData(9, 6, 10)
 		]
-		public void The_EMAAnalyser_should_raise_exception_when_candlecount_is_not_double_longEMA(int candleCount, int shortEMA, int longEMA)
+		public void The_EMAAnalyser_should_raise_exception_when_candlecount_is_not_double_of_longEMA(int candleCount, int shortEMA, int longEMA)
 		{
 			var config = GetConfig(shortEMA, longEMA);
 			var closeValueCandle = GetCloseCandleValues(candleCount);

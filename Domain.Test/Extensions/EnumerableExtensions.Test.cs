@@ -14,16 +14,12 @@ namespace Domain.Test
 		[
 			Theory(DisplayName = "The EMA Should be correct"),
 			InlineData(23.34, 20, 10),
-			InlineData(23.43, 21, 10),
-			InlineData(23.51, 22, 10),
-			InlineData(23.53, 23, 10),
-			InlineData(23.47, 24, 10),
-			InlineData(23.39, 25, 10),
-			InlineData(23.37, 26, 10),
-			InlineData(23.23, 27, 10),
-			InlineData(23.20, 28, 10),
-			InlineData(23.05, 29, 10),
-			InlineData(22.90, 30, 10)
+			InlineData(23.34, 21, 10),
+			InlineData(23.46, 22, 11),
+			InlineData(23.41, 24, 12),
+			InlineData(23.33, 26, 13),
+			InlineData(23.21, 28, 14),
+			InlineData(22.97, 30, 15)
 		]
 		public void The_EMA_Should_be_correct(decimal expected, int numberOfValues,  int length)
 		{
