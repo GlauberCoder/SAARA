@@ -21,7 +21,7 @@ namespace Util.Extensions
 		{
 			var index = values.IndexOf(value);
 
-			if (index <= 0) return new List<T>();
+			if (index < 0) return new List<T>();
 
 			return values.Take(index).TakeLast(length).ToList();
 		}
@@ -30,6 +30,15 @@ namespace Util.Extensions
 		{
 			var index = values.IndexOf(value);
 			return index > 0 ? values[index - 1] : default(T);
+		}
+
+		public static IList<T> TakeAllPrevious<T>(this IList<T> values, T value)
+		{
+			var index = values.IndexOf(value);
+
+			if (index < 0) return new List<T>();
+
+			return values.Take(index + 1).ToList();
 		}
 	}
 }
