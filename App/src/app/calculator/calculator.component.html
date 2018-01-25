@@ -1,12 +1,10 @@
-<div class="container">
+<section>
   <div class="row">
-
     <div class="col-12">
       <div class="card">
         <div class="card-body">
           <div class="d-item text-center">
-            <div class="pb-3"> Projection Values</div>
-
+            <div class="pb-3">Projection Values</div>
             <div class="row">
               <div class="col-sm-8">
               <div class="row">
@@ -21,9 +19,9 @@
                 </div>
 
                 <div class="col-sm-12 col-md-3">
-                  <div class="label">Exchanger taxes</div>
+                  <div class="text-left"><small>Exchanger taxes</small></div>
                   <select name="exchanger" id="exchanger" [(ngModel)]="exchanger" (ngModelChange)="onSetExchanger(exchanger)" >
-                    <option *ngFor="let exchanger of calculator.exchangers; let i = index" value="{{i}}"> {{exchanger.symbol.name + ' ('+exchanger.exchanger.getBuyTax() +'/'+exchanger.exchanger.getSellTax()  +')'}}</option>
+                    <option *ngFor="let exchanger of exchangers; let i = index" value="{{i}}"> {{exchanger.symbol.name + ' ('+exchanger.exchanger.getBuyTax() +'/'+exchanger.exchanger.getSellTax()  +')'}}</option>
                   </select>
                 </div>
               </div>
@@ -48,10 +46,6 @@
               </label>
               </div>
 
-              <div class="col-sm-4">
-                <button class="btn btn-outline-light mt-3" (click)="sendVariables()">Add Transaction</button>
-              </div>
-
             </div>
 
           </div>
@@ -59,4 +53,4 @@
       </div>
     </div>
   </div>
-</div>
+</section>

@@ -1,10 +1,5 @@
-// export enum TypesOfTransaction{
-//   stop = 'stop',
-//   buy = 'buy'
-// }
-
-export enum TypesOfTransaction{
-  short = 'short',
-  long = 'long'
+export enum TypesOfTransaction {
+  short = -1,
+  long = 1
 }
 
