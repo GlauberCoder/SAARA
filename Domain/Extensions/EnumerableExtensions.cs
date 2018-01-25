@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions.Entitys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +11,12 @@ namespace Domain.Extensions
 		{
 			return candles.Select(c => c.Close).ToList().EMA(length);
 		}
+
 		public static decimal EMA(this IList<double> values, int length)
 		{
 			return values.Select(c => decimal.Parse(c.ToString())).ToList().EMA(length);
 		}
+
 		public static decimal EMA(this IList<decimal> values, int length)
 		{
 			var minNumberOfValues = length * 2;
@@ -32,8 +35,6 @@ namespace Domain.Extensions
 
 			return decimal.Round(ema, 2);
 		}
-
-
 	}
 }
 

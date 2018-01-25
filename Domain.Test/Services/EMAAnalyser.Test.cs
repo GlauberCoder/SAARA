@@ -4,9 +4,7 @@ using Domain.Entitys;
 using Domain.Entitys.AnalisysConfig;
 using Domain.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Domain.Test.Services
@@ -32,7 +30,7 @@ namespace Domain.Test.Services
 			return new CandleAnalyser { Previous = candles };
 		}
 
-		private EMAAnalyser generateCandleAnalyser(decimal[] closeValueCandle, int shortEMA, int longEMA)
+		private EMAAnalyser GenerateCandleAnalyser(decimal[] closeValueCandle, int shortEMA, int longEMA)
 		{
 			var config = GetConfig(shortEMA, longEMA);
 			var analyser = GetCandleAnalyser(closeValueCandle);
@@ -52,7 +50,6 @@ namespace Domain.Test.Services
 			Assert.Equal(expected, actual);
 		}
 
-
 		[
 			Theory(DisplayName = "The ShortEMA after Calculate method should be"),
 			InlineData(22.28, 20, 6, 10),
@@ -64,10 +61,9 @@ namespace Domain.Test.Services
 		]
 		public void The_ShortEMA_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA ).ShortEMA;
+			var actual = GenerateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA ).ShortEMA;
 			Assert.Equal(expected, actual);
 		}
-
 
 		[
 			Theory(DisplayName = "The LongEMA after Calculate method should be"),
@@ -79,7 +75,7 @@ namespace Domain.Test.Services
 		]
 		public void The_LongEMA_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).LongEMA;
+			var actual = GenerateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).LongEMA;
 			Assert.Equal(expected, actual);
 		}
 
@@ -94,9 +90,7 @@ namespace Domain.Test.Services
 			var closeValueCandle = GetCloseCandleValues(candleCount);
 			var analyser = GetCandleAnalyser(closeValueCandle);
 
-			Action actual = () => new EMAAnalyser(config, analyser);
-			Assert.Throws<ArgumentException>(actual);
+			Assert.Throws<ArgumentException>((Action)(() => new EMAAnalyser(config, analyser)));
 		}
-
 	}
 }

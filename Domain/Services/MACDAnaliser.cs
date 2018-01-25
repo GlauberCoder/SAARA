@@ -3,6 +3,7 @@ using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Services;
 using Domain.Extensions;
 using System.Linq;
+using Util.Extensions;
 
 namespace Domain.Services
 {

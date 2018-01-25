@@ -22,12 +22,12 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 			Vol = 5
 
 		}
-		private string symbolKey => "{{symbol}}";
-		private string timespanKey => "{{timespan}}";
-		private string endTimeKey => "{{endTime}}";
+		private string SymbolKey => "{{symbol}}";
+		private string TimespanKey => "{{timespan}}";
+		private string EndTimeKey => "{{endTime}}";
 		protected override string BaseURL => @"https://api.bitfinex.com/v2/";
 
-		protected override string QueryURL => $@"candles/trade:{timespanKey}:t{symbolKey}/hist?end={endTimeKey}&limit=1";
+		protected override string QueryURL => $@"candles/trade:{TimespanKey}:t{SymbolKey}/hist?end={EndTimeKey}&limit=1";
 		
 
 		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
@@ -43,10 +43,12 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
-			var dictionary = new Dictionary<string, string>();
-			dictionary.Add(symbolKey, symbol.Name);
-			dictionary.Add(timespanKey, GetTimespanValueFrom(timespan));
-			dictionary.Add(endTimeKey, GetTimeInMillisecondsFrom(date));
+			var dictionary = new Dictionary<string, string>
+			{
+				{ SymbolKey, symbol.Name },
+				{ TimespanKey, GetTimespanValueFrom(timespan) },
+				{ EndTimeKey, GetTimeInMillisecondsFrom(date) }
+			};
 
 			return dictionary;
 		}
@@ -87,16 +89,16 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 			return new Candle()
 			{
-				Date = getValue(values, ValuesPosition.Timespan).ToDouble().TimestampToDateTime(),
-				Open = getValue(values, ValuesPosition.Open).ToDecimal(),
-				Close = getValue(values, ValuesPosition.Close).ToDecimal(),
-				High = getValue(values, ValuesPosition.High).ToDecimal(),
-				Low = getValue(values, ValuesPosition.Low).ToDecimal(),
-				Vol = getValue(values, ValuesPosition.Vol).ToDecimal()
+				Date = GetValue(values, ValuesPosition.Timespan).ToDouble().TimestampToDateTime(),
+				Open = GetValue(values, ValuesPosition.Open).ToDecimal(),
+				Close = GetValue(values, ValuesPosition.Close).ToDecimal(),
+				High = GetValue(values, ValuesPosition.High).ToDecimal(),
+				Low = GetValue(values, ValuesPosition.Low).ToDecimal(),
+				Vol = GetValue(values, ValuesPosition.Vol).ToDecimal()
 			};
 		}
 
-		private string getValue(string[] values, ValuesPosition position)
+		private string GetValue(string[] values, ValuesPosition position)
 		{
 			return values[(int)position];
 		}

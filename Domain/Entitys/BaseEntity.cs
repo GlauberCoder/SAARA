@@ -1,4 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
+using System;
+using System.Collections.Generic;
 
 namespace Domain.Entitys
 {
@@ -24,8 +26,8 @@ namespace Domain.Entitys
 		}
 		public static bool operator ==(BaseEntity<T> x, BaseEntity<T> y)
 		{
-			if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
-				return Object.ReferenceEquals(x, null) && Object.ReferenceEquals(y, null);
+			if (x is null || y is null)
+				return x is null && y is null;
 			else
 			{
 				var equalTypes = x.GetType() == y.GetType() || x.GetType().Name.Replace("Proxy", String.Empty) == y.GetType().Name.Replace("Proxy", String.Empty);

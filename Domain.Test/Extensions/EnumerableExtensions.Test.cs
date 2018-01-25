@@ -1,9 +1,8 @@
 using Domain.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
-using Domain.Extensions;
-using Util.Extensions;
-using System.Collections.Generic;
 
 namespace Domain.Test
 {
@@ -31,8 +30,6 @@ namespace Domain.Test
 
 			Assert.Equal(expected, values.EMA(length));
 		}
-
-
 
 		[
 			Theory(DisplayName = "The EMA Should throw argument exception when the number of values are bellow the minimum"),

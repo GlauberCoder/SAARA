@@ -12,15 +12,15 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 {
 	public class BitcoinTradeDataReader : ExchangerDataReader, IBitcoinTradeDataReader
 	{
-		private string symbolKey => "{{symbol}}";
-		private string startTimeKey => "{{startTime}}";
-		private string endTimeKey => "{{endTime}}";
-		private string pageSizeKey => "{{pageSize}}";
-		private string currentPageKey => "{{currentPage}}";
+		private string SymbolKey => "{{symbol}}";
+		private string StartTimeKey => "{{startTime}}";
+		private string EndTimeKey => "{{endTime}}";
+		private string PageSizeKey => "{{pageSize}}";
+		private string CurrentPageKey => "{{currentPage}}";
 
 		protected override string BaseURL => @"https://api.bitcointrade.com.br/v1/";
 
-		protected override string QueryURL => $@"public/{symbolKey}/trades?start_time={startTimeKey}&end_time={endTimeKey}&page_size={pageSizeKey}&current_page={currentPageKey}";
+		protected override string QueryURL => $@"public/{SymbolKey}/trades?start_time={StartTimeKey}&end_time={EndTimeKey}&page_size={PageSizeKey}&current_page={CurrentPageKey}";
 
 		public override ICandle GetCandleFrom(string response)
 		{
@@ -44,9 +44,9 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
 			var dictionary = GetTimeValues(timespan, date);
-			dictionary.Add(symbolKey, symbol.Name);
-			dictionary.Add(pageSizeKey, "200");
-			dictionary.Add(currentPageKey, "1");
+			dictionary.Add(SymbolKey, symbol.Name);
+			dictionary.Add(PageSizeKey, "200");
+			dictionary.Add(CurrentPageKey, "1");
 
 			return dictionary;
 		}
@@ -92,10 +92,11 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 			var startTime = endDateTime.AddMinutes(-timeSpan).ToString(dateFormat);
 			var endTime = endDateTime.AddSeconds(-1).ToString(dateFormat);
 
-			var dictionary = new Dictionary<string, string>();
-
-			dictionary.Add(startTimeKey, startTime);
-			dictionary.Add(endTimeKey, endTime);
+			var dictionary = new Dictionary<string, string>
+			{
+				{ StartTimeKey, startTime },
+				{ EndTimeKey, endTime }
+			};
 
 			return dictionary;
 		}
