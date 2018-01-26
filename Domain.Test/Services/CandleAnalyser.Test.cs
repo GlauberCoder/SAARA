@@ -16,27 +16,12 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The EMA from Candle List should be"),
-			InlineData(22.22, 10, 10),
-			InlineData(22.21, 11, 10),
-			InlineData(22.24, 12, 10),
-			InlineData(22.27, 13, 10),
-			InlineData(22.33, 14, 10),
-			InlineData(22.52, 15, 10),
-			InlineData(22.80, 16, 10),
-			InlineData(22.97, 17, 10),
-			InlineData(23.13, 18, 10),
-			InlineData(23.28, 19, 10),
 			InlineData(23.34, 20, 10),
 			InlineData(23.43, 21, 10),
 			InlineData(23.51, 22, 10),
 			InlineData(23.53, 23, 10),
 			InlineData(23.47, 24, 10),
-			InlineData(23.39, 25, 10),
-			InlineData(23.37, 26, 10),
-			InlineData(23.23, 27, 10),
-			InlineData(23.20, 28, 10),
-			InlineData(23.05, 29, 10),
-			InlineData(22.90, 30, 10)
+
 		]
 		public void The_EMA_from_candle_list_should_be(decimal expected, int numberOfValues, int length)
 		{
@@ -44,6 +29,20 @@ namespace Domain.Test.Services
 			var actual = new CandleAnalyser { Previous = candles }.EMA(length);
 			Assert.Equal(expected, actual);
 		}
+
+		[
+			Theory(DisplayName = "The EMA from Candle List should raise exception"),
+			InlineData(  9, 10),
+			InlineData( 4, 10)
+			
+		]
+		public void The_EMA_from_candle_list_should_raise_exception(int numberOfValues, int length)
+		{
+			var candles = EMASequence1.Take(numberOfValues).Select(a => (ICandle)new Candle() { Close = decimal.Parse(a.ToString()) }).ToList();
+			var actual = new CandleAnalyser { Previous = candles };
+			Assert.Throws<ArgumentException>(() => actual.EMA(length));
+		}
+		
 
 	}
 }
