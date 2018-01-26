@@ -8,10 +8,11 @@ import { LeftBarComponent } from './left-bar/left-bar.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { CalculatorComponent } from './calculator/calculator.component';
 import { RouterModule, Routes } from '@angular/router';
-import { InputComponent } from './commons/input/input.component';
 import { CardComponent } from './commons/card/card.component';
 import { ExchangerService } from '../providers/exchanger.service';
 import { PlanningCalculatorService } from '../providers/planning-calculator.service';
+import { NumberInputComponent } from './commons/input/number-input/number-input.component';
+import { InputComponent } from './commons/input/text-input/text-input.component';
 
 const appRoutes: Routes = [
   {path: '', component: CalculatorComponent}
@@ -25,7 +26,8 @@ const appRoutes: Routes = [
     TopBarComponent,
     CalculatorComponent,
     InputComponent,
-    CardComponent
+    CardComponent,
+    NumberInputComponent
   ],
   imports: [
     BrowserModule,

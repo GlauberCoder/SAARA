@@ -25,33 +25,44 @@ export class CalculatorComponent implements OnInit {
 
   ngOnInit() {
   }
-
   private returnIfIsNumber(value): number {
     return !isNaN(value) ? value : null;
   }
 
   private calculateExitPL() {
-    this.calculator.exitPL = this.returnIfIsNumber(this.calculator.calculateExitPL());
+    try {
+      this.calculator.exitPL = this.returnIfIsNumber(this.calculator.calculateExitPL());
+    } catch (e) { }
   }
 
   private calculateEntryValue() {
-    this.calculator.entryValue = this.returnIfIsNumber(this.calculator.calculateEntryValue());
+    try {
+      this.calculator.entryValue = this.returnIfIsNumber(this.calculator.calculateEntryValue());
+    } catch (e) { }
   }
 
   private calculateExitValue() {
-    this.calculator.exitValue = this.returnIfIsNumber(this.calculator.calculateExitValue());
+    try {
+      this.calculator.exitValue = this.returnIfIsNumber(this.calculator.calculateExitValue());
+    } catch (e) { }
   }
 
   private calculateExitPLpercent() {
-    this.calculator.exitPLpercent = this.returnIfIsNumber(this.calculator.calculateExitPLPercentage());
+    try {
+      this.calculator.exitPLpercent = this.returnIfIsNumber(this.calculator.calculateExitPLPercentage());
+    } catch (e) { }
   }
 
   private calculateAmount() {
-    this.calculator.amount = this.returnIfIsNumber(this.calculator.calculateAmount());
+    try {
+      this.calculator.amount = this.returnIfIsNumber(this.calculator.calculateAmount());
+    } catch (e) { }
   }
 
   private calculateExitPrice(value) {
-    this.calculator.exitPrice = this.returnIfIsNumber(value);
+    try {
+      this.calculator.exitPrice = this.returnIfIsNumber(value);
+    } catch (e) { }
   }
 
   onSetAmount() {

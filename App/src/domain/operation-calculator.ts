@@ -1,5 +1,4 @@
 import { TypesOfTransaction } from '../enum/variables.enum';
-import { EventEmitter } from '@angular/core';
 import { ExchangerSymbol } from './exchanger-symbol';
 
 export class OperationCalculator {
@@ -23,14 +22,16 @@ export class OperationCalculator {
 
   calculateAmount() {
     return (this.entryValue.reducePorcent(this.exchangerSymbol.exchanger.getBuyTax()) / (this.entryPrice)).round(8);
+    // return this.entryValue.reducePorcent(this.exchangerSymbol.exchanger.getBuyTax());
+    // return this.entryValue * (1 - this.exchangerSymbol.exchanger.getBuyTax().toPercent());
   }
 
   public calculateExitPrice() {
     const exitProportion = this
                                 .exitValue
                                 .proportionOn(this.entryValue)
-                                .reducePercentage(this.exchangerSymbol.exchanger.getBuyTax())
-                                .increasePercentage(this.exchangerSymbol.exchanger.getSellTax());
+                                .reducePorcent(this.exchangerSymbol.exchanger.getBuyTax())
+                                .increasePorcent(this.exchangerSymbol.exchanger.getSellTax());
     return (exitProportion * this.entryPrice).round(2);
   }
 
@@ -39,17 +40,17 @@ export class OperationCalculator {
   }
 
   public calculateExitPL(): number {
-    return TypesOfTransaction.long * this.calculatePL(this.exitValue);
+    return this.type * this.calculatePL(this.exitValue);
   }
 
   calculatePL(value: number) {
     const buyValue = value.reducePorcent(this.exchangerSymbol.exchanger.getBuyTax());
-    const entryValue = this.entryValue .reducePorcent(this.exchangerSymbol.exchanger.getSellTax());
+    const entryValue = this.entryValue.reducePorcent(this.exchangerSymbol.exchanger.getSellTax());
     return (buyValue - entryValue).round(2);
   }
 
   public calculateExitPLPercentage() {
-    return TypesOfTransaction.long * this.calculatePLPercentage();
+    return this.type * this.calculatePLPercentage();
   }
 
   public calculatePLPercentage() {

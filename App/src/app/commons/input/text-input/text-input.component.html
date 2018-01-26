@@ -2,8 +2,9 @@
   <div class="text-left"><small>{{placeHolder}}{{addon ? '('+addon +')' : ''}}</small></div>
   <div class="input-group input-group-sm pb-2">
     <input
+      id="input"
+      type="text"
       [value]="value"
-      [type]="type"
       [name]="name"
       [placeholder]="placeHolder"
       [ngModel]="appModel"

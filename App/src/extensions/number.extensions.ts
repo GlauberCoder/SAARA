@@ -13,11 +13,11 @@ interface Number {
 }
 
 Number.prototype.reducePorcent = function (percentage: number, decimalPlaces?: number) {
-  return this.reducePercentage(this, percentage.toPercent(), decimalPlaces);
+  return this.reducePercentage(percentage.toPercent(), decimalPlaces);
 };
 
 Number.prototype.increasePorcent = function (percentage: number, decimalPlaces?: number) {
-  return this.increasePercentage(this, percentage.toPercent(), decimalPlaces);
+  return this.increasePercentage(percentage.toPercent(), decimalPlaces);
 };
 
 Number.prototype.reducePercentage = function (percentage: number, decimalPlaces?: number) {
