@@ -1,7 +1,7 @@
-import {TypesOfTransaction} from '../enum/variables.enum';
-import {Moviment} from './moviment';
-import {ExchangerSymbol} from './exchanger-symbol';
-import {OperationCalculator} from './operation-calculator';
+import { TypesOfTransaction } from '../enum/variables.enum';
+import { Moviment } from './moviment';
+import { ExchangerSymbol } from './exchanger-symbol';
+import { OperationCalculator } from './operation-calculator';
 
 export class Operation {
 

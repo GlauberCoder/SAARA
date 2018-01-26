@@ -1,5 +1,5 @@
 import { Symbol } from './symbol';
-import {Exchanger} from './exchanger';
+import { Exchanger } from './exchanger';
 
 export class ExchangerSymbol {
 

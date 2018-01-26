@@ -1,6 +1,6 @@
-import {TypesOfTransaction} from '../enum/variables.enum';
-import {EventEmitter} from '@angular/core';
-import {ExchangerSymbol} from './exchanger-symbol';
+import { TypesOfTransaction } from '../enum/variables.enum';
+import { EventEmitter } from '@angular/core';
+import { ExchangerSymbol } from './exchanger-symbol';
 
 export class OperationCalculator {
 
@@ -18,11 +18,11 @@ export class OperationCalculator {
   constructor() {}
 
   calculateEntryValue() {
-    return (this.amount * this.entryPrice * (1 + this.exchangerSymbol.exchanger.getBuyTax().toPercent()) ).round(2);
+    return (this.amount * this.entryPrice.increasePorcent(this.exchangerSymbol.exchanger.getBuyTax())).round(2);
   }
 
   calculateAmount() {
-    return (this.entryValue * (1 - this.exchangerSymbol.exchanger.getBuyTax().toPercent()) / (this.entryPrice)).round(8);
+    return (this.entryValue.reducePorcent(this.exchangerSymbol.exchanger.getBuyTax()) / (this.entryPrice)).round(8);
   }
 
   public calculateExitPrice() {
@@ -61,7 +61,7 @@ export class OperationCalculator {
   }
 
   public calculateExitPriceWithPLPercentage(): number {
-    return (this.entryPrice * ( 1 + this.exitPLpercent.toPercent())).round(2);
+    return (this.entryPrice.increasePorcent(this.exitPLpercent)).round(2);
   }
 
   public sendMoviment() {
