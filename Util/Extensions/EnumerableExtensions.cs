@@ -32,13 +32,22 @@ namespace Util.Extensions
 			return index > 0 ? values[index - 1] : default(T);
 		}
 
-		public static IList<T> TakeAllPrevious<T>(this IList<T> values, T value)
+		public static IList<T> TakeUntil<T>(this IList<T> values, T value)
 		{
 			var index = values.IndexOf(value);
 
 			if (index < 0) return new List<T>();
 
 			return values.Take(index + 1).ToList();
+		}
+
+		public static IList<T> TakeUntil<T>(this IList<T> values, T value, int length)
+		{
+			var index = values.IndexOf(value);
+
+			if (index < 0) return new List<T>();
+
+			return values.Take(index + 1).TakeLast(length).ToList();
 		}
 	}
 }

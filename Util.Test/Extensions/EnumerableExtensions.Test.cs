@@ -28,19 +28,32 @@ namespace Infra.Test
 
 
 		[
-			Theory(DisplayName = "The sequence of all previous itens should be"),
+			Theory(DisplayName = "The sequence of all itens until value should be"),
 			InlineData(new long[] { 1 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 1),
 			InlineData(new long[] { 1, 2, 3, 4 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 4),
 			InlineData(new long[] { 1, 2, 3, 4, 5, 6 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 6),
 			InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 8),
 			InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 9)
+		]
+		public void The_sequence_of_all_itens_until_value_should_be(long[] expected, long[] values, long value)
+		{
+			Assert.True(expected.SequenceEqual(values.ToList().TakeUntil(value)));
+		}
+
+
+		[
+			Theory(DisplayName = "The sequence of n itens until value should be"),
+			InlineData(new long[] { 1 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 1, 1),
+			InlineData(new long[] { 3, 4 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 4, 2),
+			InlineData(new long[] { 4, 5, 6 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 6, 3),
+			InlineData(new long[] { 5, 6, 7, 8 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 8, 4),
+			InlineData(new long[] { 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 9, 5)
 
 
 		]
-		public void The_sequence_of_all_previous_itens_should_be(long[] expected, long[] values, long value)
+		public void The_sequence_of_itens_until_value_should_be(long[] expected, long[] values, long value, int length)
 		{
-
-			Assert.True(expected.SequenceEqual(values.ToList().TakeAllPrevious(value)));
+			Assert.True(expected.SequenceEqual(values.ToList().TakeUntil(value, length)));
 		}
 	}
 }

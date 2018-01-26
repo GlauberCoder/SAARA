@@ -38,7 +38,7 @@ namespace Domain.Services
 
 			calculateSignal(config, analysis, candle);
 
-			Histogram = MACD - Signal;
+			calculateHistogram();
 
 			return this;
 		}
@@ -54,23 +54,21 @@ namespace Domain.Services
 
 		private IMACDAnalyser calculateSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
-			var MACDsList = new List<decimal>();
-
 			var candles = analysis.Previous;
-
 			var length = candles.Count - config.LongEMA;
-			var previous = candles.TakePrevious(candle, length);
-			previous.Add(candle);
+			var previous = candles.TakeUntil(candle, length);
 
+			Signal = previous
+							.Select( c => new MACDAnalyser().calculateMACD( config, new CandleAnalyser{ Previous = candles.TakeUntil(c) } ).MACD )
+							.ToList()
+							.EMA(config.SignalEMA);
 
-			foreach (ICandle c in previous)
-			{
-				var candleAnalyser = new CandleAnalyser { Previous = candles.TakeAllPrevious(c) };
-				MACDsList.Add( new MACDAnalyser().calculateMACD(config, candleAnalyser).MACD );
-			}
+			return this;
+		}
 
-			Signal = MACDsList.EMA(config.SignalEMA);
-
+		private IMACDAnalyser calculateHistogram()
+		{
+			Histogram = MACD - Signal;
 			return this;
 		}
 
