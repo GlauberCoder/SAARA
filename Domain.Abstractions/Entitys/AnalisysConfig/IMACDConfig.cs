@@ -10,5 +10,7 @@ namespace Domain.Abstractions.Entitys.AnalisysConfig
 		int ShortEMA { get; }
 		int LongEMA { get; }
 		int SignalEMA { get; set; }
+		decimal CrossoverTolerance { get; set; }
+		decimal CrossunderTolerance { get; set; }
 	}
 }

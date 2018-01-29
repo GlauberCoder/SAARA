@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Entitys.AnalisysConfig;
+using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Extensions;
 using System.Collections.Generic;
@@ -71,6 +72,37 @@ namespace Domain.Services
 			Histogram = MACD - Signal;
 			return this;
 		}
+
+		public virtual Trend CalculateTrend(decimal macdLine, decimal signalLine)
+		{
+			return (macdLine > signalLine) ? Trend.Up : Trend.Down;
+		}
+
+		public virtual TradeSignal CalculateDCrossSignal(IMACDConfig config, decimal macdLine, decimal signalLine, Trend trend)
+		{
+			var variation = trend == Trend.Up ? signalLine.PercentageOfChange(macdLine) : macdLine.PercentageOfChange(signalLine);
+			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
+
+			if (trend == Trend.Up && variation <= tolerance)
+				return macdLine > 0 ? TradeSignal.StrongLong : TradeSignal.WeakLong;
+
+			if (trend == Trend.Down && variation <= tolerance)
+				return signalLine < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
+
+			return TradeSignal.Hold;
+		}
+
+		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, decimal macdLine, Trend trend)
+		{
+			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
+
+			if (trend != Trend.Neutral && macdLine <= tolerance)
+				return trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
+
+			return TradeSignal.Hold;
+		}
+
+		
 
 	}
 }
