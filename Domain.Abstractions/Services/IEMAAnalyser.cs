@@ -8,8 +8,8 @@ namespace Domain.Abstractions.Services
 {
     public interface IEMAAnalyser 
 	{
-		decimal ShortEMA { get; set; }
-		decimal LongEMA { get; set; }
+		decimal ShortEMA { get; }
+		decimal LongEMA { get; }
 		IEMAAnalyser Calculate(IEMAConfig config, ICandleAnalyser analysis);
 	}
 }

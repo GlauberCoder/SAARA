@@ -8,16 +8,17 @@ using System.Text;
 using Util.Extensions;
 using System.Linq;
 
+
 namespace Domain.Services
 {
 	public class EMAAnalyser : IEMAAnalyser
 	{
-		public virtual decimal ShortEMA { get; set; }
-		public virtual decimal LongEMA { get; set; }
-		public virtual TradeSignal Signal => ShortEMA > LongEMA ? TradeSignal.Long : TradeSignal.Short;
-		public virtual Trend PriceTrend => ShortEMA > LongEMA ? Trend.High : Trend.Down;
-		public virtual TradeSignal EMACrossover { get; set; }
-		public virtual TradeSignal PriceCrossover { get; set; }
+		public virtual decimal ShortEMA { get; private set; }
+		public virtual decimal LongEMA { get; private set; }
+		public virtual Trend Trend { get; private set; }
+		public virtual TradeSignal Signal { get; private set; }
+		public virtual TradeSignal CrossSignal { get; private set; }
+		public virtual TradeSignal AverageDistanceSignal { get; private set; }
 
 		public EMAAnalyser()
 		{
@@ -29,49 +30,61 @@ namespace Domain.Services
 			Calculate(config, analysis);
 		}
 
-
 		public virtual IEMAAnalyser Calculate(IEMAConfig config, ICandleAnalyser analysis)
 		{
 			ShortEMA = analysis.EMA(config.ShortEMA);
 			LongEMA = analysis.EMA(config.LongEMA);
 
+			Trend = CalculateTrend(ShortEMA, LongEMA);
+			CrossSignal = CalculateCrossSignal(config, ShortEMA, LongEMA, Trend);
+			AverageDistanceSignal = CalculateAverageDistanceSignal(config, ShortEMA, LongEMA, Trend);
+			Signal = CalculateSignal(CrossSignal, AverageDistanceSignal);
+
 			return this;
 		}
 
-		public virtual TradeSignal CalculateEMACrossover(ICandleAnalyser analyser, IEMAConfig config)
+		public virtual Trend CalculateTrend(decimal shortEMA, decimal longEMA)
 		{
-			if (Crossover(ShortEMA, LongEMA, Reference(analyser)))
-			{
-				var previous = analyser.Previous;
-				var candle = previous.TakePrevious(previous.Last(), 3).Select(c => c.Close);
-				//TODO: forma de reconhecer bullish e bearish crossover 
-			}
+			return (shortEMA > longEMA) ? Trend.High : Trend.Down;
+		}
+
+		public virtual TradeSignal CalculateCrossSignal(IEMAConfig config, decimal shortEMA, decimal longEMA, Trend trend)
+		{
+			var emaVariation = shortEMA.PercentageOfChange(longEMA).Abs();
+			var tolerance = trend == Trend.High ? config.CrossoverTolerance : config.CrossunderTolerance;
+
+			if (trend != Trend.Neutral && emaVariation <= tolerance)
+				return trend == Trend.High ? TradeSignal.Long : TradeSignal.Short;
 
 			return TradeSignal.Hold;
 		}
 
-		public virtual TradeSignal CalculatePriceCrossover(ICandleAnalyser analyser, IEMAConfig config)
+		public virtual TradeSignal CalculateAverageDistanceSignal(IEMAConfig config, decimal price, decimal shortEMA, Trend trend)
 		{
-			var candle = analyser.Previous.Last();
-			var average = Math.Abs(candle.Open + candle.Close) / 2;
+			var variation = shortEMA > price ? price.PercentageOfChange(shortEMA).Abs() : price.PercentageOfChange(shortEMA).Abs();
 
-			if (Crossover(ShortEMA, average, Reference(analyser)))
-			{
-				//TODO: forma de reconhecer bullish e bearish crossover 
-			}
+			if (trend != Trend.Neutral && variation <= config.AverageDistanceTolerance)
+				return trend == Trend.High ? TradeSignal.Long : TradeSignal.Short;
+
 			return TradeSignal.Hold;
 		}
 
-		public virtual bool Crossover(decimal value1, decimal value2, decimal reference)
+		public virtual TradeSignal CalculateSignal(TradeSignal crossSignal, TradeSignal averageDistanceSignal)
 		{
-			var tolerance = 0.01m;
-			return (Math.Abs((value1 - value2) / reference) < tolerance) ? true : false;
-		}
+			if (crossSignal == TradeSignal.Long)
+				return averageDistanceSignal == TradeSignal.Long ? TradeSignal.StrongLong : TradeSignal.Long;
 
-		public virtual decimal Reference(ICandleAnalyser analyser)
-		{
-			var candle = analyser.Previous.Last();
-			return (Math.Abs(candle.Open + candle.Close) / 2);
+			if (crossSignal == TradeSignal.Short)
+				return averageDistanceSignal == TradeSignal.Short ? TradeSignal.StrongShort : TradeSignal.Short;
+
+			if (crossSignal == TradeSignal.Hold)
+			{
+				if (averageDistanceSignal == TradeSignal.Short)
+					return TradeSignal.WeakShort;
+				if (averageDistanceSignal == TradeSignal.Long)
+					return TradeSignal.WeakLong;
+			}
+			return TradeSignal.Hold;
 		}
 	}
 }

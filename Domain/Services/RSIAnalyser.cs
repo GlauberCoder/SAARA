@@ -52,7 +52,7 @@ namespace Domain.Services
 			var downtrendHigherLimit = 40;
 			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.High;
 			if (rsi >= downtrendLowerLimit && rsi <= downtrendHigherLimit) return Trend.Down;
-			return Trend.Netural;
+			return Trend.Neutral;
 		}
 
 		private decimal CalculateRSI(IRSIConfig config, IList<ICandle> previousCandles)
@@ -83,8 +83,6 @@ namespace Domain.Services
 
 			return differences;
 		}
-
-
 
 		private decimal CalculateAVG(IList<decimal> values, Func<decimal, bool> filter, int length)
 		{
