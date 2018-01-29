@@ -21,9 +21,8 @@ namespace Domain.Test
 			InlineData(23.33, 26, 13),
 			InlineData(23.21, 28, 14),
 			InlineData(22.97, 30, 15)
-
 		]
-		public void The_EMA_Should_be_correct(decimal expected, int numberOfValues,  int length)
+		public void The_EMA_Should_be_correct(decimal expected, int numberOfValues, int length)
 		{
 			var values = EMASequence1.Take(numberOfValues).Select(v => decimal.Parse(v.ToString())).ToList();
 
@@ -31,15 +30,67 @@ namespace Domain.Test
 		}
 
 
-
 		[
 			Theory(DisplayName = "The EMA Should throw argument exception when the number of values are bellow the minimum"),
 			InlineData(4, 10),
-			InlineData(9, 10),
+			InlineData(9, 10)
 		]
 		public void The_EMA_Should_Throw_Argument_Exception_When_The_Number_Of_Values_Are_Bellow_The_Minimum(int numberOfValues, int length)
 		{
 			Assert.Throws<ArgumentException>(() => EMASequence1.Take(numberOfValues).ToList().EMA(length));
+		}
+
+
+		[
+			Theory(DisplayName = "The EMA based on number should be correct"),
+			InlineData(22.27, 22.38, 22.24, 10),
+			InlineData(22.33, 22.61, 22.27, 10),
+			InlineData(23.13, 23.83, 22.97, 10)
+		]
+		public void EMA_based_on_number_should_be_correct(decimal expected, decimal value, decimal previousEMA, int length)
+		{
+			var actual = decimal.Round(value.EMA(previousEMA, length), 2);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "there are crosses between the lists"),
+			InlineData(false, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 }),
+			InlineData(true, new double[] { 8, 2, 3, 9 }, new double[] { 2, 3, 4, 8 }),
+			InlineData(true, new double[] { 3, 3, 4, 7 }, new double[] { 2, 3, 4, 8 }),
+			InlineData(false, new double[] { 8, 4, 4, 9 }, new double[] { 2, 3, 4, 8 })
+		]
+		public void There_are_crosses_between_lists(bool expected, double[] values, double[] otherValues)
+		{
+			var actual = values.HasCross(otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "there should be returned the correct "),
+			InlineData(false, new double[] { 0, 0, 0, 0 }),
+			InlineData(false, new double[] { 1, 0, -1, -1 }),
+			InlineData(true, new double[] { 0, 0, -1, 1 }),
+			InlineData(true, new double[] { -1, 0, 0, 1 }),
+			InlineData(false, new double[] { 0, 0, 0, 1 })
+		]
+		public void There_are_crosses_(bool expected, double[] values)
+		{
+			var actual = values.HasCross();
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The difference of lists should be correct"),
+			InlineData(new double[] { -1, -1, -1, -4 }, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 })
+		]
+		public void The_difference_of_lists_should_be_correct(double [] expected, double[] values, double [] otherValues)
+		{
+			var actual = values.Difference(otherValues);
+			Assert.Equal(expected, actual);
 		}
 	}
 }
