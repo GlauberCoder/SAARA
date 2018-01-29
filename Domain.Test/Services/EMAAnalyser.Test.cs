@@ -20,9 +20,20 @@ namespace Domain.Test.Services
 			return CloseCandleValues.Take(length).ToArray();
 		}
 
-		private EMAConfig GetConfig(int shortEMA, int longEMA)
+		private EMAConfig GetConfig(int shortEMA = 0, int longEMA = 0)
 		{
 			return new EMAConfig { EMA1 = shortEMA, EMA2 = longEMA };
+		}
+
+		private EMAConfig GetConfig( decimal crossoverTolerance = 0, decimal crossunderTolerance = 0)
+		{
+			return new EMAConfig { CrossunderTolerance = crossunderTolerance, CrossoverTolerance = crossunderTolerance };
+		}
+
+
+		private EMAConfig GetConfig(int shortEMA = 0, int longEMA = 0, decimal crossoverTolerance = 0, decimal crossunderTolerance = 0)
+		{
+			return new EMAConfig { EMA1 = shortEMA, EMA2 = longEMA, CrossunderTolerance = crossunderTolerance, CrossoverTolerance = crossunderTolerance };
 		}
 
 		private CandleAnalyser GetCandleAnalyser(decimal[] closeValueCandle)
@@ -38,18 +49,6 @@ namespace Domain.Test.Services
 			var analyser = GetCandleAnalyser(closeValueCandle);
 
 			return new EMAAnalyser(config, analyser);
-		}
-
-		[
-			Theory(DisplayName = "The EMA Trade Signal should be"),
-			InlineData(TradeSignal.Short, 10.0, 30.0),
-			InlineData(TradeSignal.Short, 4, 4),
-			InlineData(TradeSignal.Long, 30.0, 10.11)
-		]
-		public void The_EMA_Trade_Signal_should_be(TradeSignal expected, decimal value1, decimal value2)
-		{
-			var actual = new EMAAnalyser {ShortEMA = value1, LongEMA = value2 }.Signal;
-			Assert.Equal(expected, actual);
 		}
 
 
@@ -89,12 +88,13 @@ namespace Domain.Test.Services
 			Assert.Equal(expected, actual);
 		}
 
+
 		[
-			Theory(DisplayName = "The_EMAAnalyser_should_raise_exception when candle count is not double of longEMA"),
+			Theory(DisplayName = "The_EMAAnalyser_should_raise_exception when candle count is not greater than longEMA"),
 			InlineData(5, 6, 10),
 			InlineData(9, 6, 10)
 		]
-		public void The_EMAAnalyser_should_raise_exception_when_candlecount_is_not_double_of_longEMA(int candleCount, int shortEMA, int longEMA)
+		public void The_EMAAnalyser_should_raise_exception_when_candlecount_is_not_greater_than_longEMA(int candleCount, int shortEMA, int longEMA)
 		{
 			var config = GetConfig(shortEMA, longEMA);
 			var closeValueCandle = GetCloseCandleValues(candleCount);
@@ -102,6 +102,79 @@ namespace Domain.Test.Services
 
 			Action actual = () => new EMAAnalyser(config, analyser);
 			Assert.Throws<ArgumentException>(actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The EMA trend should be"),
+			InlineData(Trend.Down, 10.0, 30.0),
+			InlineData(Trend.Down, 4, 4),
+			InlineData(Trend.Up, 30.0, 10.11),
+			InlineData(Trend.Up, 30, 10)
+		]
+		public void The_EMA_trend_should_be(Trend expected, decimal shortEMA, decimal longEMA)
+		{
+			var actual = new EMAAnalyser().CalculateTrend(shortEMA, longEMA);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The EMA cross signal should be"),
+			InlineData(TradeSignal.Hold, 0, 0, 0, Trend.Neutral),
+			InlineData(TradeSignal.Long, 30, 29.8, 1, Trend.Up),
+			InlineData(TradeSignal.Hold, 30, 28, 1, Trend.Up),
+			InlineData(TradeSignal.Long, 11110, 11101, 1, Trend.Up),
+			InlineData(TradeSignal.Hold, 11111, 10000, 1, Trend.Up),
+			InlineData(TradeSignal.Short, 29.8, 30, 1, Trend.Down),
+			InlineData(TradeSignal.Hold, 28, 30, 1, Trend.Down),
+			InlineData(TradeSignal.Short, 11101, 11110, 1, Trend.Down),
+			InlineData(TradeSignal.Hold, 10000, 11111, 1, Trend.Down)
+		]
+		public void The_EMA_cross_signal_should_be(TradeSignal expected, decimal shortEMA, decimal longEMA, decimal tolerance, Trend trend)
+		{
+			var config = GetConfig(tolerance, tolerance);
+			var actual = new EMAAnalyser().CalculateCrossSignal(config, shortEMA, longEMA, trend);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The EMA average distance signal should be"),
+			InlineData(TradeSignal.Hold, 0, 0, 0, Trend.Neutral),
+			InlineData(TradeSignal.Long, 30, 29.8, 1, Trend.Up),
+			InlineData(TradeSignal.Hold, 30, 28, 1, Trend.Up),
+			InlineData(TradeSignal.Long, 11110, 11101, 1, Trend.Up),
+			InlineData(TradeSignal.Hold, 11111, 10000, 1, Trend.Up),
+			InlineData(TradeSignal.Short, 29.8, 30, 1, Trend.Down),
+			InlineData(TradeSignal.Hold, 28, 30, 1, Trend.Down),
+			InlineData(TradeSignal.Short, 11101, 11110, 1, Trend.Down),
+			InlineData(TradeSignal.Hold, 10000, 11111, 1, Trend.Down)
+		]
+		public void The_EMA_average_distance_signal_should_be(TradeSignal expected, decimal price, decimal shortEMA, decimal tolerance, Trend trend)
+		{
+			var config = new EMAConfig { AverageDistanceTolerance = tolerance};
+			var actual = new EMAAnalyser().CalculateAverageDistanceSignal(config, price, shortEMA, trend);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The EMA Trade Signal should be"),
+			InlineData(TradeSignal.Hold, TradeSignal.Hold, TradeSignal.Short),
+			InlineData(TradeSignal.Hold, TradeSignal.Hold, TradeSignal.Long),
+			InlineData(TradeSignal.Hold, TradeSignal.Hold, TradeSignal.Hold),
+			InlineData(TradeSignal.StrongShort, TradeSignal.Short, TradeSignal.Short),
+			InlineData(TradeSignal.WeakShort, TradeSignal.Short, TradeSignal.Long),
+			InlineData(TradeSignal.WeakShort, TradeSignal.Short, TradeSignal.Hold),
+			InlineData(TradeSignal.StrongLong, TradeSignal.Long, TradeSignal.Long),
+			InlineData(TradeSignal.WeakLong, TradeSignal.Long, TradeSignal.Short),
+			InlineData(TradeSignal.WeakLong, TradeSignal.Long, TradeSignal.Hold)
+		]
+		public void The_EMA_Trade_Signal_should_be(TradeSignal expected, TradeSignal crossSignal, TradeSignal averageDistanceSignal)
+		{
+			var actual = new EMAAnalyser().CalculateSignal(crossSignal, averageDistanceSignal);
+			Assert.Equal(expected, actual);
 		}
 
 	}

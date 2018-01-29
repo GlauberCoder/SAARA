@@ -8,6 +8,6 @@ namespace Domain.Abstractions.Enums
 	{
 		Down = -1,
 		Neutral = 0,
-		High = 1
+		Up = 1
 	}
 }

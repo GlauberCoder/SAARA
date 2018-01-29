@@ -45,26 +45,26 @@ namespace Domain.Services
 
 		public virtual Trend CalculateTrend(decimal shortEMA, decimal longEMA)
 		{
-			return (shortEMA > longEMA) ? Trend.High : Trend.Down;
+			return (shortEMA > longEMA) ? Trend.Up : Trend.Down;
 		}
 
 		public virtual TradeSignal CalculateCrossSignal(IEMAConfig config, decimal shortEMA, decimal longEMA, Trend trend)
 		{
-			var emaVariation = shortEMA.PercentageOfChange(longEMA).Abs();
-			var tolerance = trend == Trend.High ? config.CrossoverTolerance : config.CrossunderTolerance;
+			var emaVariation = trend == Trend.Up ? longEMA.PercentageOfChange(shortEMA) : shortEMA.PercentageOfChange(longEMA);
+			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
 
 			if (trend != Trend.Neutral && emaVariation <= tolerance)
-				return trend == Trend.High ? TradeSignal.Long : TradeSignal.Short;
+				return trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 
 			return TradeSignal.Hold;
 		}
 
 		public virtual TradeSignal CalculateAverageDistanceSignal(IEMAConfig config, decimal price, decimal shortEMA, Trend trend)
 		{
-			var variation = shortEMA > price ? price.PercentageOfChange(shortEMA).Abs() : price.PercentageOfChange(shortEMA).Abs();
+			var variation = shortEMA > price ? price.PercentageOfChange(shortEMA) : shortEMA.PercentageOfChange(price);
 
 			if (trend != Trend.Neutral && variation <= config.AverageDistanceTolerance)
-				return trend == Trend.High ? TradeSignal.Long : TradeSignal.Short;
+				return trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 
 			return TradeSignal.Hold;
 		}
@@ -72,18 +72,11 @@ namespace Domain.Services
 		public virtual TradeSignal CalculateSignal(TradeSignal crossSignal, TradeSignal averageDistanceSignal)
 		{
 			if (crossSignal == TradeSignal.Long)
-				return averageDistanceSignal == TradeSignal.Long ? TradeSignal.StrongLong : TradeSignal.Long;
+				return averageDistanceSignal == TradeSignal.Long ? TradeSignal.StrongLong : TradeSignal.WeakLong;
 
 			if (crossSignal == TradeSignal.Short)
-				return averageDistanceSignal == TradeSignal.Short ? TradeSignal.StrongShort : TradeSignal.Short;
+				return averageDistanceSignal == TradeSignal.Short ? TradeSignal.StrongShort : TradeSignal.WeakShort;
 
-			if (crossSignal == TradeSignal.Hold)
-			{
-				if (averageDistanceSignal == TradeSignal.Short)
-					return TradeSignal.WeakShort;
-				if (averageDistanceSignal == TradeSignal.Long)
-					return TradeSignal.WeakLong;
-			}
 			return TradeSignal.Hold;
 		}
 	}

@@ -50,7 +50,7 @@ namespace Domain.Services
 			var uptrendHigherLimit = 90;
 			var downtrendLowerLimit = 10;
 			var downtrendHigherLimit = 40;
-			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.High;
+			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.Up;
 			if (rsi >= downtrendLowerLimit && rsi <= downtrendHigherLimit) return Trend.Down;
 			return Trend.Neutral;
 		}
