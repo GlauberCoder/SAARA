@@ -48,8 +48,6 @@ namespace Infra.Test
 			InlineData(new long[] { 4, 5, 6 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 6, 3),
 			InlineData(new long[] { 5, 6, 7, 8 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 8, 4),
 			InlineData(new long[] { 5, 6, 7, 8, 9 }, new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 9, 5)
-
-
 		]
 		public void The_sequence_of_itens_until_value_should_be(long[] expected, long[] values, long value, int length)
 		{
