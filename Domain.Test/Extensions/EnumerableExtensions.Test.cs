@@ -4,6 +4,7 @@ using Xunit;
 using Domain.Extensions;
 using Util.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Domain.Test
 {
@@ -85,11 +86,51 @@ namespace Domain.Test
 
 		[
 			Theory(DisplayName = "The difference of lists should be correct"),
-			InlineData(new double[] { -1, -1, -1, -4 }, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 })
+			InlineData(new double[] { -1, -1, -1, -4 }, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 }),
+			InlineData(new double[] { -3, -6, 3, 4 }, new double[] { 4, 1, 5, 5 }, new double[] { 7, 7, 2, 1 }),
+			InlineData(new double[] { 1, -1, -7, 12 }, new double[] { -1, 2, -3, 4 }, new double[] { -2, 3, 4, -8 })
 		]
 		public void The_difference_of_lists_should_be_correct(double [] expected, double[] values, double [] otherValues)
 		{
 			var actual = values.Difference(otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The sum of lists should be correct"),
+			InlineData(new double[] { 3, 5, 7, 12 }, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 }),
+			InlineData(new double[] { 11, 8, 7, 6 }, new double[] { 4, 1, 5, 5 }, new double[] { 7, 7, 2, 1 }),
+			InlineData(new double[] { -3, 5, 1, -4 }, new double[] { -1, 2, -3, 4 }, new double[] { -2, 3, 4, -8 })
+		]
+		public void The_sum_of_lists_should_be_correct(double[] expected, double[] values, double[] otherValues)
+		{
+			var actual = values.Sum(otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The list should be correct"),
+			InlineData(new double[] {-0.36, 1.54 }, new double[] { 1.3, 3.5, 4.2, 5.0, 7.0, 8.8, 10.1, 12.5, 13.0, 15.6 })
+		]
+		public void The_list_should_be(double [] expected, double[] x)
+		{
+			var coefficients = x.ToDecimalList().LinearLeastSquare();
+			var a = coefficients[0];
+			var b = coefficients[1];
+			var actual = new double []{(double)decimal.Round(a,2), (double)decimal.Round(b, 2) };
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The value of Function given the coefficients and variables should be"),
+			InlineData(49, new double[] { 1, 2, 3, 4 }, 2),
+			InlineData(15, new double[] { 4, 1, 5, 5 }, 1),
+			InlineData(10, new double[] { -8, -5, -1, 4 }, 2),
+			InlineData(5, new double[] { 1, 2 }, 2)
+		]
+		public void The_value_of_Function_given_the_coefficients_and_variables_should_be(double expected, double[] coefficients, double x)
+		{
+			var actual = (double) coefficients.ToDecimalList().Function((decimal) x);
 			Assert.Equal(expected, actual);
 		}
 	}
