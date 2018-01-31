@@ -19,6 +19,25 @@ namespace Domain.Extensions
 			return (fraction == 0) || (number % fraction == 0) ? number : number - (number % fraction);
 		}
 
+		public static string stringFormat(this CandleTimespan timespan)
+		{
+			switch (timespan)
+			{
+				case CandleTimespan.OneMinute:
+					return "1m";
+				case CandleTimespan.FiveMinutes:
+					return "5m";
+				case CandleTimespan.FifteenMinutes:
+					return "15m";
+				case CandleTimespan.ThirtyMinutes:
+					return "30m";
+				case CandleTimespan.OneHour:
+					return "1h";
+				default:
+					return null;
+			}
+		}
+
 
 	}
 }

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Domain.Extensions;
 using Util.Extensions;
 
 namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
@@ -33,40 +34,10 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 		{
 			var dictionary = new Dictionary<string, string>();
 			dictionary.Add(symbolKey, symbol.Name);
-			dictionary.Add(timespanKey, GetTimespanValueFrom(timespan));
-			dictionary.Add(endTimeKey, GetTimeInMillisecondsFrom(date));
+			dictionary.Add(timespanKey, timespan.stringFormat());
+			dictionary.Add(endTimeKey, date.ToUniversalTime().MillisecondsSince1970().ToString());
 
 			return dictionary;
-		}
-
-		private string GetTimeInMillisecondsFrom(DateTime date)
-		{
-			return (
-						 date
-						.ToUniversalTime()
-						.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
-						.TotalMilliseconds
-					)
-					.ToString();
-		}
-
-		private string GetTimespanValueFrom(CandleTimespan timespan)
-		{
-			switch (timespan)
-			{
-				case CandleTimespan.OneMinute:
-					return "1m";
-				case CandleTimespan.FiveMinutes:
-					return "5m"; 
-				case CandleTimespan.FifteenMinutes:
-					return "15m";
-				case CandleTimespan.ThirtyMinutes:
-					return "30m";
-				case CandleTimespan.OneHour:
-					return "1h";
-				default:
-					throw new InvalidCastException("Timespan not recognized");
-			}
 		}
 
 		public override ICandle GetCandleFrom(string response)

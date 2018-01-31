@@ -29,6 +29,13 @@ namespace Domain.Extensions
 			return (long)(date - new DateTime(1970, 1, 1)).TotalSeconds;
 		}
 
+		public static long MillisecondsSince1970(this DateTime date)
+		{
+			return (long)(date - new DateTime(1970, 1, 1)).TotalMilliseconds;
+		}
+
+
+
 		public static DateTime StartFor(this DateTime date, CandleTimespan timespan)
 		{
 			var minute = timespan.FirstMinute(date.Minute);
