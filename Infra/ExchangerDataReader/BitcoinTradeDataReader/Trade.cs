@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 {
-	class Trades
+	class Trade
 	{
 		public virtual string Type { get; set; }
 		public virtual decimal Amount { get; set; }
