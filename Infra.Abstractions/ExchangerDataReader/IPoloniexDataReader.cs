@@ -1,6 +1,6 @@
 ﻿namespace Infra.Abstractions.ExchangerDataReader
 {
-    public interface IPoloniexDataReader
+    public interface IPoloniexDataReader : IExchangerDataReader
     {
     }
 }

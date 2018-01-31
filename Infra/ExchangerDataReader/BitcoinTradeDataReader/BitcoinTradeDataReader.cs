@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using Domain.Extensions;
 
 namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 {
@@ -53,36 +54,7 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 		public IDictionary<string, string> GetTimeValues(CandleTimespan timespan, DateTime date)
 		{
-			return GetISOFormatDates( GetNearExactTime(timespan, date), (int)timespan);
-		}
-
-		public DateTime GetNearExactTime(CandleTimespan timespan, DateTime date)
-		{
-			var minute = date.Minute;
-			switch (timespan)
-			{
-				case CandleTimespan.OneMinute:
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, 0);
-
-				case CandleTimespan.FiveMinutes:
-				case CandleTimespan.FifteenMinutes:
-				case CandleTimespan.ThirtyMinutes:
-					minute = GetNearExactNumber(minute, (int) timespan);
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0);
-
-				case CandleTimespan.OneHour:
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, 0, 0);
-
-				default:
-					throw new InvalidCastException("Timespan not recognized");
-			}
-		}
-
-		public int GetNearExactNumber(int number, int fraction) 
-		{
-			if (fraction == 0)
-				return 0;
-			return (number % fraction == 0) ? (number) : (number - number % fraction);
+			return GetISOFormatDates(date.StartFor(timespan), (int)timespan);
 		}
 
 		private IDictionary<string, string> GetISOFormatDates(DateTime endDateTime, int timeSpan)

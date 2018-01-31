@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Util.Extensions;
 using Newtonsoft.Json;
+using Domain.Extensions;
 
 namespace Infra.ExchangerDataReader.PoloniexDataReader
 {
@@ -37,70 +38,16 @@ namespace Infra.ExchangerDataReader.PoloniexDataReader
 			};
 		}
 
-		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
-		{
-			var url = TemplateURL;
-
-			foreach (var item in GetParameters(symbol, timespan, date))
-				url = url.Replace(item.Key, item.Value);
-			return url;
-		}
-
 		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
 			var dictionary = new Dictionary<string, string>();
-			var afterTime = date.AddMilliseconds(transformTimespanToMilliseconds(timespan));
+			var afterTime = date.Add(timespan);
 			dictionary.Add(commandKey, "returnTradeHistory");
 			dictionary.Add(currencyPairKey, symbol.Name);
-			dictionary.Add(startTimeKey, formatDateToMilliseconds(GetNearExactTime(timespan, date)));
-			dictionary.Add(endTimeKey, formatDateToMilliseconds(GetNearExactTime(timespan, afterTime)));
+			dictionary.Add(startTimeKey, date.StartFor(timespan).ToUniversalTime().SecondsSince1970().ToString() );
+			dictionary.Add(endTimeKey, date.FinishFor(timespan).ToUniversalTime().SecondsSince1970().ToString() );
 
 			return dictionary;
-		}
-
-		public DateTime GetNearExactTime(CandleTimespan timespan, DateTime date)
-		{
-			var minute = date.Minute;
-			switch (timespan)
-			{
-				case CandleTimespan.OneMinute:
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, 0).ToUniversalTime();
-		
-				case CandleTimespan.FiveMinutes:
-				case CandleTimespan.FifteenMinutes:
-				case CandleTimespan.ThirtyMinutes:
-					minute = GetNearExactNumber(minute, (int)timespan);
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, minute, 0).ToUniversalTime();
-
-				case CandleTimespan.OneHour:
-					return new DateTime(date.Year, date.Month, date.Day, date.Hour, 0, 0).ToUniversalTime();
-
-				default:
-					throw new InvalidCastException("Timespan not recognized");
-			}
-		}
-
-		public int GetNearExactNumber(int number, int fraction)
-		{
-			if (fraction == 0)
-				return 0;
-			return (number % fraction == 0) ? (number) : (number - number % fraction);
-		}
-
-		private string formatTimespan(CandleTimespan timespan)
-		{
-			return (((int)timespan * 60)).ToString();
-		}
-
-		private long transformTimespanToMilliseconds(CandleTimespan timespan)
-		{
-			return (long)(timespan) * 60000;
-		}
-
-		private string formatDateToMilliseconds(DateTime date)
-		{
-			return $"{(long)(date - new DateTime(1970, 1, 1)).TotalMilliseconds / 1000}";
-
 		}
 
 	}

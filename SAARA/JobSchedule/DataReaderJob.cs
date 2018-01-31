@@ -47,7 +47,7 @@ namespace SAARA.JobSchedule
 			var symbolName = "USDT_BTC";
 			//var candle = new PoloniexDataReader().GetUrlFrom(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute, DateTime.Now);
 			var candle = new PoloniexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute, DateTime.Now);
-			Console.Write("\nPoloniex : ");
+			Console.Write($"\nPoloniex :");
 			PrintCandle(candle);
 		}
 
