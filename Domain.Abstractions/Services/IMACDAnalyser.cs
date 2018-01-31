@@ -3,11 +3,7 @@ using Domain.Abstractions.Entitys.AnalisysConfig;
 
 namespace Domain.Abstractions.Services
 {
-<<<<<<< HEAD:Domain.Abstractions/Services/IMACDAnaliser.cs
-	public interface IMACDAnaliser
-=======
-    public interface IMACDAnalyser
->>>>>>> SAARA-3:Domain.Abstractions/Services/IMACDAnalyser.cs
+	public interface IMACDAnalyser
 	{
 		decimal LongEMA { get; set; }
 		decimal ShortEMA { get; set; }
