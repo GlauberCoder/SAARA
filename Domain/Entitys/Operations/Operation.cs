@@ -6,7 +6,7 @@ using Domain.Abstractions.Entitys.Operations;
 
 namespace Domain.Entitys.Operations
 {
-	public abstract class Operation: BaseEntity, IOperation 
+	public abstract class Operation: BaseEntity<Operation>, IOperation 
 	{
 		public virtual IList<IMovement> Movements { get; set; }
 		public virtual IExchangerSymbol ExchangerSymbol { get; set; }

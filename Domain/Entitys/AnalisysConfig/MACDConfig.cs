@@ -11,7 +11,7 @@ namespace Domain.Entitys.AnalisysConfig
 		public virtual int ShortEMA { get { return EMA1 > EMA2 ? EMA2 : EMA1; } }
 		public virtual int LongEMA { get { return EMA1 > EMA2 ? EMA1 : EMA2; } }
 		public virtual int SignalEMA { get; set; }
-		public decimal CrossoverTolerance { get; set; }
-		public decimal CrossunderTolerance { get; set; }
+		public virtual decimal CrossoverTolerance { get; set; }
+		public virtual decimal CrossunderTolerance { get; set; }
 	}
 }

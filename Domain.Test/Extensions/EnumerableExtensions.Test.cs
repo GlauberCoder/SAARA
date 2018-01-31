@@ -1,10 +1,9 @@
 using Domain.Extensions;
 using System.Linq;
 using Xunit;
-using Domain.Extensions;
 using Util.Extensions;
 using System.Collections.Generic;
-using System.Linq;
+using System;
 
 namespace Domain.Test
 {
@@ -64,7 +63,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_between_lists(bool expected, double[] values, double[] otherValues)
 		{
-			var actual = values.HasCross(otherValues);
+			var actual = values.CastAs<decimal>().HasCross(otherValues.CastAs<decimal>());
 			Assert.Equal(expected, actual);
 		}
 
@@ -79,7 +78,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_(bool expected, double[] values)
 		{
-			var actual = values.HasCross();
+			var actual = values.CastAs<decimal>().HasCross();
 			Assert.Equal(expected, actual);
 		}
 
@@ -92,8 +91,8 @@ namespace Domain.Test
 		]
 		public void The_difference_of_lists_should_be_correct(double [] expected, double[] values, double [] otherValues)
 		{
-			var actual = values.Difference(otherValues);
-			Assert.Equal(expected, actual);
+			var actual = values.CastAs<decimal>().Difference(otherValues.CastAs<decimal>());
+			Assert.Equal(expected.CastAs<decimal>(), actual);
 		}
 
 		[
@@ -104,34 +103,9 @@ namespace Domain.Test
 		]
 		public void The_sum_of_lists_should_be_correct(double[] expected, double[] values, double[] otherValues)
 		{
-			var actual = values.Sum(otherValues);
-			Assert.Equal(expected, actual);
+			var actual = values.CastAs<decimal>().Sum(otherValues.CastAs<decimal>());
+			Assert.Equal(expected.CastAs<decimal>(), actual);
 		}
-
-		[
-			Theory(DisplayName = "The list should be correct"),
-			InlineData(new double[] {-0.36, 1.54 }, new double[] { 1.3, 3.5, 4.2, 5.0, 7.0, 8.8, 10.1, 12.5, 13.0, 15.6 })
-		]
-		public void The_list_should_be(double [] expected, double[] x)
-		{
-			var coefficients = x.ToDecimalList().LinearLeastSquare();
-			var a = coefficients[0];
-			var b = coefficients[1];
-			var actual = new double []{(double)decimal.Round(a,2), (double)decimal.Round(b, 2) };
-			Assert.Equal(expected, actual);
-		}
-
-		[
-			Theory(DisplayName = "The value of Function given the coefficients and variables should be"),
-			InlineData(49, new double[] { 1, 2, 3, 4 }, 2),
-			InlineData(15, new double[] { 4, 1, 5, 5 }, 1),
-			InlineData(10, new double[] { -8, -5, -1, 4 }, 2),
-			InlineData(5, new double[] { 1, 2 }, 2)
-		]
-		public void The_value_of_Function_given_the_coefficients_and_variables_should_be(double expected, double[] coefficients, double x)
-		{
-			var actual = (double) coefficients.ToDecimalList().Function((decimal) x);
-			Assert.Equal(expected, actual);
-		}
+		
 	}
 }

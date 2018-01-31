@@ -56,15 +56,9 @@ namespace Infra.Test
 		}
 
 		[
-<<<<<<< HEAD:Infra.Test/ExchangerDataReader/BitfinexDataReader/BitfinexDataReader.Test.cs
 			Theory(DisplayName = "The Bitfinex High Value To Response Shoul Be"),
 			InlineData(13759, "[[1515696720000,13758,13753,13759,13753,3.26320671]]"),
-			InlineData(13759.69, "[[1515696720000,13758.52,13753.69,13759.69,13753,3.26320671]]"),
-=======
-			Theory(DisplayName = "The Bitfinex Up Value To Response Shoul Be"),
-			InlineData(13759, "[1515696720000,13758,13753,13759,13753,3.26320671]"),
-			InlineData(13759.69, "[1515696720000,13758.52,13753.69,13759.69,13753,3.26320671]"),
->>>>>>> SAARA-3:Infra.Test/ExchangerDataReader/BitfinexDataReader.Test.cs
+			InlineData(13759.69, "[[1515696720000,13758.52,13753.69,13759.69,13753,3.26320671]]")
 		]
 		public void The_Bitfinex_High_Value_To_Response_Should_Be(decimal expected, string response)
 		{

@@ -1,4 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
+using System;
+using System.Collections.Generic;
 
 namespace Domain.Entitys
 {

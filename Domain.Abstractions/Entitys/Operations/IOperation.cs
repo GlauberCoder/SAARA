@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Domain.Abstractions.Entitys.Operations
 {
-	public interface IOperation : IBaseEntity
+	public interface IOperation : IBaseEntity<IOperation>
 	{
 		IList<IMovement> Movements { get; set; }
 		IExchangerSymbol ExchangerSymbol { get; set; }

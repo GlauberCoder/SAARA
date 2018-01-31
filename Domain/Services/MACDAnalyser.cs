@@ -3,13 +3,9 @@ using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Extensions;
-<<<<<<< HEAD:Domain/Services/MACDAnaliser.cs
-using System.Linq;
-=======
 using System.Collections.Generic;
 using System.Linq;
 using Util.Extensions;
->>>>>>> SAARA-3:Domain/Services/MACDAnalyser.cs
 
 namespace Domain.Services
 {
@@ -21,29 +17,6 @@ namespace Domain.Services
 		public virtual decimal Signal { get; set; }
 		public virtual decimal Histogram { get; set; }
 
-<<<<<<< HEAD:Domain/Services/MACDAnaliser.cs
-		public MACDAnaliser()
-		{
-
-		}
-
-		public MACDAnaliser(IMACDConfig config, ICandleAnalyser analysis) : this()
-		{
-			Calculate(config, analysis);
-		}
-
-		public MACDAnaliser(IMACDConfig config, ICandleAnalyser analysis, ICandle candle) : this()
-		{
-			Calculate(config, analysis, candle);
-		}
-
-		public virtual IMACDAnaliser Calculate(IMACDConfig config, ICandleAnalyser analysis)
-		{
-			return Calculate(config, analysis, analysis.Main);
-		}
-
-		public virtual IMACDAnaliser Calculate(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
-=======
 		public MACDAnalyser()
 		{
 
@@ -70,9 +43,7 @@ namespace Domain.Services
 
 			return this;
 		}
-
 		private IMACDAnalyser calculateMACD(IMACDConfig config, ICandleAnalyser analysis)
->>>>>>> SAARA-3:Domain/Services/MACDAnalyser.cs
 		{
 			LongEMA = analysis.EMA(config.LongEMA);
 			ShortEMA = analysis.EMA(config.ShortEMA);
@@ -80,7 +51,6 @@ namespace Domain.Services
 
 			return this;
 		}
-
 		private IMACDAnalyser calculateSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
 			var candles = analysis.Previous;
@@ -88,24 +58,21 @@ namespace Domain.Services
 			var previous = candles.TakeUntil(candle, length);
 
 			Signal = previous
-							.Select( c => new MACDAnalyser().calculateMACD( config, new CandleAnalyser{ Previous = candles.TakeUntil(c) } ).MACD )
+							.Select(c => new MACDAnalyser().calculateMACD(config, new CandleAnalyser { Previous = candles.TakeUntil(c) }).MACD)
 							.ToList()
 							.EMA(config.SignalEMA);
 
 			return this;
 		}
-
 		private IMACDAnalyser calculateHistogram()
 		{
 			Histogram = MACD - Signal;
 			return this;
 		}
-
 		public virtual Trend CalculateTrend(decimal macdLine, decimal signalLine)
 		{
 			return (macdLine > signalLine) ? Trend.Up : Trend.Down;
 		}
-
 		public virtual TradeSignal CalculateDCrossSignal(IMACDConfig config, decimal macdLine, decimal signalLine, Trend trend)
 		{
 			var variation = trend == Trend.Up ? signalLine.PercentageOfChange(macdLine) : macdLine.PercentageOfChange(signalLine);
@@ -119,7 +86,6 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
-
 		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, decimal macdLine, Trend trend)
 		{
 			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
@@ -130,7 +96,7 @@ namespace Domain.Services
 			return TradeSignal.Hold;
 		}
 
-		
+
 
 	}
 }

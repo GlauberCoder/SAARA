@@ -12,7 +12,7 @@ namespace Domain.Extensions
 		{
 			return candles.Select(c => c.Close).ToList().EMA(length);
 		}
-		public static decimal EMA(this IList<decimal> values, int length)
+		public static decimal EMA(this IList<decimal> values, int length, int precision = 2)
 		{
 			var minNumberOfValues = length;
 
@@ -25,7 +25,7 @@ namespace Domain.Extensions
 			foreach (var value in matureValues)
 				ema = value.EMA(ema, length);
 
-			return decimal.Round(ema, 2);
+			return decimal.Round(ema, precision);
 		}
 		public static decimal EMA(this decimal value, decimal previousEMA, int length)
 		{
