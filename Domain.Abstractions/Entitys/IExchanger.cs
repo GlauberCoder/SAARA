@@ -2,7 +2,7 @@
 
 namespace Domain.Abstractions.Entitys
 {
-	public interface IExchanger : IBaseEntity
+	public interface IExchanger : IBaseEntity<IExchanger>
 	{
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Domain.Abstractions.Entitys
 {
-	public interface IAccount : IBaseEntity
+	public interface IAccount : IBaseEntity<IAccount>
 	{
 	}
 }

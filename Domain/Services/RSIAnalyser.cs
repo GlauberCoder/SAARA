@@ -8,16 +8,18 @@ using System.Linq;
 
 namespace Domain.Services
 {
-	public class RSIAnaliser : IRSIAnaliser
+	public class RSIAnalyser : IRSIAnalyser
 	{
 		public virtual decimal RSI { get; private set; }
+		public virtual TradeSignal Signal { get; private set; }
 		public virtual PriceSignal PriceSignal { get; private set; }
 		public virtual Trend Range { get; private set; }
 		public virtual Trend Divergence => throw new NotImplementedException();
 		public virtual Trend FailSwing => throw new NotImplementedException();
 		public virtual Trend PositiveNegativeReversal => throw new NotImplementedException();
+		public virtual IList<Trend> Trends { get => new List<Trend> { Range, Divergence, FailSwing, PositiveNegativeReversal }; }
 
-		public virtual IRSIAnaliser Calculate(IRSIConfig config, ICandleAnalyser analysis)
+		public virtual IRSIAnalyser Calculate(IRSIConfig config, ICandleAnalyser analysis)
 		{
 			RSI = CalculateRSI(config, analysis.Previous);
 			PriceSignal = CalculatePriceSignal(RSI);
@@ -25,6 +27,7 @@ namespace Domain.Services
 			//TODO: Calcular Divergence
 			//TODO: Calcular FailSwing
 			//TODO: Calcular PositiveNegativeReversal
+			
 
 			return this;
 		}
@@ -44,9 +47,9 @@ namespace Domain.Services
 			var uptrendHigherLimit = 90;
 			var downtrendLowerLimit = 10;
 			var downtrendHigherLimit = 40;
-			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.High;
+			if (rsi >= uptrendLowerLimit && rsi <= uptrendHigherLimit) return Trend.Up;
 			if (rsi >= downtrendLowerLimit && rsi <= downtrendHigherLimit) return Trend.Down;
-			return Trend.Netural;
+			return Trend.Neutral;
 		}
 
 		private decimal CalculateRSI(IRSIConfig config, IList<ICandle> previousCandles)
