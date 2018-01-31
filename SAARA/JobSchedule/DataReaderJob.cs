@@ -6,6 +6,8 @@ using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
 using Domain.Entitys;
 using Infra.ExchangerDataReader;
+using Infra.ExchangerDataReader.BinanceDataReader;
+using Infra.ExchangerDataReader.PoloniexDataReader;
 using Infra.ExchangerDataReader.BitcoinTradeDataReader;
 using Quartz;
 
@@ -18,6 +20,8 @@ namespace SAARA.JobSchedule
 		{
 			await Task.Run((Action) ReadBitfinex);
 			await Task.Run((Action) ReadBitcoinTrade);
+			await Task.Run((Action) ReadPoloniex);
+			await Task.Run((Action) ReadBinance);
 
 			Console.WriteLine("\n");
 
@@ -27,7 +31,7 @@ namespace SAARA.JobSchedule
 		private void ReadBitfinex()
 		{
 			var symbolName = "BTCUSD";
-			var candle = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneMinute, DateTime.Now);
+			var candle = new BitfinexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour, DateTime.Now);
 			Console.Write("\nBitfinex : ");
 			PrintCandle(candle);
 		}
@@ -37,6 +41,22 @@ namespace SAARA.JobSchedule
 			var symbolName = "BTC";
 			var candle = new BitcoinTradeDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour,DateTime.Now);
 			Console.Write("\nBitcoinTrade : ");
+			PrintCandle(candle);
+		}
+
+		private void ReadPoloniex()
+		{
+			var symbolName = "USDT_BTC";
+			var candle = new PoloniexDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour, DateTime.Now);
+			Console.Write($"\nPoloniex : ");
+			PrintCandle(candle);
+		}
+
+		private void ReadBinance()
+		{
+			var symbolName = "BTCUSDT";
+			var candle = new BinanceDataReader().Read(new Symbol() { Name = symbolName }, CandleTimespan.OneHour, DateTime.Now);
+			Console.Write($"\nBinance : ");
 			PrintCandle(candle);
 		}
 

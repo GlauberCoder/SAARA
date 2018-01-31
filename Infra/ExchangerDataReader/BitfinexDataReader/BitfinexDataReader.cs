@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Domain.Extensions;
 using Util.Extensions;
 
 namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
@@ -29,56 +30,14 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 		protected override string QueryURL => $@"candles/trade:{timespanKey}:t{symbolKey}/hist?end={endTimeKey}&limit=1";
 		
-
-		public override string GetUrlFrom(ISymbol symbol, CandleTimespan timespan, DateTime date)
-		{
-			var url = TemplateURL;
-
-			foreach (var item in GetParameters(symbol, timespan, date))
-				url = url.Replace(item.Key, item.Value);
-
-			return url;
-		}
-
-
 		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
 			var dictionary = new Dictionary<string, string>();
 			dictionary.Add(symbolKey, symbol.Name);
-			dictionary.Add(timespanKey, GetTimespanValueFrom(timespan));
-			dictionary.Add(endTimeKey, GetTimeInMillisecondsFrom(date));
+			dictionary.Add(timespanKey, timespan.stringFormat());
+			dictionary.Add(endTimeKey, date.ToUniversalTime().MillisecondsSince1970().ToString());
 
 			return dictionary;
-		}
-
-		private string GetTimeInMillisecondsFrom(DateTime date)
-		{
-			return (
-						 date
-						.ToUniversalTime()
-						.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
-						.TotalMilliseconds
-					)
-					.ToString();
-		}
-
-		private string GetTimespanValueFrom(CandleTimespan timespan)
-		{
-			switch (timespan)
-			{
-				case CandleTimespan.OneMinute:
-					return "1m";
-				case CandleTimespan.FiveMinutes:
-					return "5m"; 
-				case CandleTimespan.FifteenMinutes:
-					return "15m";
-				case CandleTimespan.ThirtyMinutes:
-					return "30m";
-				case CandleTimespan.OneHour:
-					return "1h";
-				default:
-					throw new InvalidCastException("Timespan not recognized");
-			}
 		}
 
 		public override ICandle GetCandleFrom(string response)
