@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Infra.Test
 {
-	public class BitfinexDataReaderTest
+	public class DoubleExtensionsTest
 	{
 
 		[

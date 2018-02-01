@@ -1,10 +1,10 @@
 <div class="input">
-  <div class="label">{{placeHolder}}{{addon ? '('+addon +')' : ''}}</div>
+  <div class="text-left"><small>{{placeHolder}}{{addon ? '('+addon +')' : ''}}</small></div>
   <div class="input-group input-group-sm pb-2">
-    <!--<div class="input-group-addon text-center" *ngIf="addon">{{addon}}</div>-->
     <input
+      id="input"
+      type="text"
       [value]="value"
-      [type]="type"
       [name]="name"
       [placeholder]="placeHolder"
       [ngModel]="appModel"

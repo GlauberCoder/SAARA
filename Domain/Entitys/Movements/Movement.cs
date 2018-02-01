@@ -3,7 +3,7 @@ using Domain.Abstractions.Enums;
 
 namespace Domain.Entitys.Movements
 {
-	public abstract class Movement : BaseEntity, IMovement
+	public abstract class Movement : BaseEntity<Movement>, IMovement
 	{
 		public virtual decimal Investment { get; set; }
 		public virtual decimal Tax { get; set; }

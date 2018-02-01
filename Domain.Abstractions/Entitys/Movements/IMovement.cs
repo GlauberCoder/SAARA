@@ -2,7 +2,7 @@
 
 namespace Domain.Abstractions.Entitys.Movements
 {
-	public interface IMovement
+	public interface IMovement : IBaseEntity<IMovement>
 	{
 		decimal Investment { get; set; }
 		decimal Tax { get; set; }

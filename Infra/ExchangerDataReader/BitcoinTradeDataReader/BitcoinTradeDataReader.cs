@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using Domain.Extensions;
+using Util.Extensions;
 
 namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 {
@@ -28,6 +29,8 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 			var json = JsonConvert.DeserializeObject<BitcoinTradeData>(response);
 			var trades = json.Data.Trades;
 
+			if (trades.Empty()) return null;
+
 			var priceSortedTrades = trades.OrderBy(x => x.Unit_Price);
 			var dateSortedTrades = trades.OrderBy(x => x.Date);
 
@@ -44,32 +47,19 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 
 		protected override IDictionary<string, string> GetParameters(ISymbol symbol, CandleTimespan timespan, DateTime date)
 		{
-			var dictionary = GetTimeValues(timespan, date);
+			var dictionary = new Dictionary<string, string>();
+			var dateFormat = "yyyy-MM-ddTHH:mm:ss-03:00";
+
+
+			dictionary.Add(startTimeKey, date.FloorToMinute().StartFor(timespan).ToString(dateFormat));
+			dictionary.Add(endTimeKey, date.FloorToMinute().FinishFor(timespan).ToString(dateFormat));
 			dictionary.Add(symbolKey, symbol.Name);
 			dictionary.Add(pageSizeKey, "200");
 			dictionary.Add(currentPageKey, "1");
 
 			return dictionary;
 		}
-
-		public IDictionary<string, string> GetTimeValues(CandleTimespan timespan, DateTime date)
-		{
-			return GetISOFormatDates(date.StartFor(timespan), (int)timespan);
-		}
-
-		private IDictionary<string, string> GetISOFormatDates(DateTime endDateTime, int timeSpan)
-		{
-			var dateFormat = "yyyy-MM-ddTHH:mm:ss-03:00";
-
-			var startTime = endDateTime.AddMinutes(-timeSpan).ToString(dateFormat);
-			var endTime = endDateTime.AddSeconds(-1).ToString(dateFormat);
-
-			var dictionary = new Dictionary<string, string>();
-
-			dictionary.Add(startTimeKey, startTime);
-			dictionary.Add(endTimeKey, endTime);
-
-			return dictionary;
-		}
+		
+		
 	}
 }

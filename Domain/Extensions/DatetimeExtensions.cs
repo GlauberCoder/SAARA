@@ -54,6 +54,7 @@ namespace Domain.Extensions
 					throw new InvalidCastException("Timespan not recognized");
 			}
 		}
+		
 
 	}
 }

@@ -3,7 +3,7 @@ using System;
 
 namespace Domain.Abstractions.Entitys
 {
-	public interface ICandle : IBaseEntity
+	public interface ICandle : IBaseEntity<ICandle>
 	{
 		IExchangerSymbol Symbol { get; set; }
 		decimal Open { get; set; }

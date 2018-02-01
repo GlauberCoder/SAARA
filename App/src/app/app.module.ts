@@ -7,16 +7,15 @@ import { AppComponent } from './app.component';
 import { LeftBarComponent } from './left-bar/left-bar.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
 import { CalculatorComponent } from './calculator/calculator.component';
-import { PlanningComponent } from './planning/planning.component';
-import {RouterModule, Routes} from '@angular/router';
-import { InputComponent } from './commons/input/input.component';
-import {PlanningCalculatorService} from "../providers/planning-calculator.service";
+import { RouterModule, Routes } from '@angular/router';
 import { CardComponent } from './commons/card/card.component';
 import { ExchangerService } from '../providers/exchanger.service';
+import { PlanningCalculatorService } from '../providers/planning-calculator.service';
+import { NumberInputComponent } from './commons/input/number-input/number-input.component';
+import { InputComponent } from './commons/input/text-input/text-input.component';
 
 const appRoutes: Routes = [
-  {path: '', component: PlanningComponent},
-  {path: 'planning', component: PlanningComponent},
+  {path: '', component: CalculatorComponent}
 ];
 
 
@@ -26,9 +25,9 @@ const appRoutes: Routes = [
     LeftBarComponent,
     TopBarComponent,
     CalculatorComponent,
-    PlanningComponent,
     InputComponent,
-    CardComponent
+    CardComponent,
+    NumberInputComponent
   ],
   imports: [
     BrowserModule,
@@ -36,8 +35,8 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
-    PlanningCalculatorService,
-    ExchangerService
+    ExchangerService,
+    PlanningCalculatorService
   ],
   bootstrap: [AppComponent]
 })

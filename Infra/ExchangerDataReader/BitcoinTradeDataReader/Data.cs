@@ -8,6 +8,6 @@ namespace Infra.ExchangerDataReader.BitcoinTradeDataReader
 	class Data
 	{
 		public virtual Pagination Pagination { get; set; }
-		public virtual List<Trades> Trades { get; set; }
+		public virtual List<Trade> Trades { get; set; }
 	}
 }

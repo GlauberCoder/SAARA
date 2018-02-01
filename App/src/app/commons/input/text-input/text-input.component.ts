@@ -1,9 +1,9 @@
 import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.scss']
+  selector: 'app-text-input',
+  templateUrl: './text-input.component.html',
+  styleUrls: ['./text-input.component.scss']
 })
 export class InputComponent implements OnInit {
 
@@ -11,18 +11,20 @@ export class InputComponent implements OnInit {
   @Input() addon: string;
   @Input() type: string;
   @Input() name: string;
-  @Input() value: any;
+  @Input() value: string;
   @Input() appModel: string;
   @Output() appModelChange: EventEmitter<any> = new EventEmitter();
 
-  change(newValue){
+  change(newValue) {
     this.appModel = newValue;
     this.appModelChange.emit(this.appModel);
   }
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
+
   }
 
 }

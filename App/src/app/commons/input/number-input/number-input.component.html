@@ -1,0 +1,15 @@
+<div class="input">
+  <div class="text-left"><small>{{placeHolder}}{{addon ? '('+addon +')' : ''}}</small></div>
+  <div class="input-group input-group-sm pb-2">
+    <input
+      id="input"
+      type="number"
+      [value]="value"
+      [name]="name"
+      [placeholder]="placeHolder"
+      [ngModel]="appModel"
+      (ngModelChange)="change($event)"
+      class="form-control"
+      aria-describedby="sizing-addon">
+  </div>
+</div>
