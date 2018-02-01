@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions.Entitys;
+using Domain.Abstractions.Enums;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +62,33 @@ namespace Domain.Extensions
 				result.Add(values[i] + otherValues[i]);
 
 			return result;
+		}
+		public static IList<Position> PositionsFrom(this IList<decimal> values, decimal variation)
+		{
+			var positions = new List<Position>();
+			var reference = values.First();
+
+			foreach (var value in values)
+			{
+				var position = value.PositionFrom(reference, variation);
+				positions.Add(position);
+				if(value.PositionFrom(reference, variation) != Position.Neutral)
+					reference = value;
+			}
+			return positions;
+		}
+		public static Position PositionFrom(this decimal value, decimal reference, decimal variation)
+		{
+			var highReference = (1 + variation) * reference;
+			var lowReference = (1 - variation) * reference;
+
+			if (value >= highReference)
+				return Position.High;
+
+			if (value <= lowReference)
+				return Position.Low;
+
+			return Position.Neutral;
 		}
 		public static IList<T> CastAs<T>(this IList<double> values)
 		{

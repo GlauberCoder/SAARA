@@ -4,6 +4,7 @@ using Xunit;
 using Util.Extensions;
 using System.Collections.Generic;
 using System;
+using Domain.Abstractions.Enums;
 
 namespace Domain.Test
 {
@@ -106,6 +107,36 @@ namespace Domain.Test
 			var actual = values.CastAs<decimal>().Sum(otherValues.CastAs<decimal>());
 			Assert.Equal(expected.CastAs<decimal>(), actual);
 		}
-		
+
+
+		[
+			Theory(DisplayName = "The position from reference and variation should be"),
+			InlineData(Position.Neutral, 91, 100, 0.10),
+			InlineData(Position.Low, 90, 100, 0.10),
+			InlineData(Position.Low, 89, 100, 0.10),
+			InlineData(Position.Neutral, 109, 100, 0.10),
+			InlineData(Position.High, 110, 100, 0.10),
+			InlineData(Position.High, 111, 100, 0.10)
+		]
+		public void The_position_from_reference_and_variation_should_be(Position expected, decimal value, decimal refence, decimal variation)
+		{
+			var actual = value.PositionFrom(refence, variation);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The positions from values and variation should be"),
+			InlineData(new Position [] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Low, Position.High}, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 0.10),
+			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Low, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 0.05),
+
+		]
+		public void The_positions_from_values_and_variation_should_be(Position [] expected, double [] values, decimal reference)
+		{
+			var actual = values.CastAs<decimal>().PositionsFrom(reference);
+			Assert.Equal(expected, actual);
+		}
+
+
+
 	}
 }
