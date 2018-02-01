@@ -72,7 +72,7 @@ namespace Domain.Extensions
 			{
 				var position = value.PositionFrom(reference, variation);
 				positions.Add(position);
-				if(value.PositionFrom(reference, variation) != Position.Neutral)
+				if(position != Position.Neutral)
 					reference = value;
 			}
 			return positions;
