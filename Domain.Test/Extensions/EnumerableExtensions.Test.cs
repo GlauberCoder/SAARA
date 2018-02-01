@@ -32,7 +32,7 @@ namespace Domain.Test
 
 
 		[
-			Theory(DisplayName = "The EMA Should throw argument exception when the number of values are bellow the minimum"),
+			Theory(DisplayName = "The EMA should throw argument exception when the number of values are bellow the minimum"),
 			InlineData(4, 10),
 			InlineData(9, 10)
 		]
@@ -56,7 +56,7 @@ namespace Domain.Test
 
 
 		[
-			Theory(DisplayName = "there are crosses between the lists"),
+			Theory(DisplayName = "There are crosses between the lists"),
 			InlineData(false, new double[] { 1, 2, 3, 4 }, new double[] { 2, 3, 4, 8 }),
 			InlineData(true, new double[] { 8, 2, 3, 9 }, new double[] { 2, 3, 4, 8 }),
 			InlineData(true, new double[] { 3, 3, 4, 7 }, new double[] { 2, 3, 4, 8 }),
@@ -70,14 +70,14 @@ namespace Domain.Test
 
 
 		[
-			Theory(DisplayName = "there should be returned the correct "),
+			Theory(DisplayName = "There are crosses on the lists "),
 			InlineData(false, new double[] { 0, 0, 0, 0 }),
 			InlineData(false, new double[] { 1, 0, -1, -1 }),
 			InlineData(true, new double[] { 0, 0, -1, 1 }),
 			InlineData(true, new double[] { -1, 0, 0, 1 }),
 			InlineData(false, new double[] { 0, 0, 0, 1 })
 		]
-		public void There_are_crosses_(bool expected, double[] values)
+		public void There_are_crosses_on_the_list(bool expected, double[] values)
 		{
 			var actual = values.CastAs<decimal>().HasCross();
 			Assert.Equal(expected, actual);
@@ -95,6 +95,7 @@ namespace Domain.Test
 			var actual = values.CastAs<decimal>().Difference(otherValues.CastAs<decimal>());
 			Assert.Equal(expected.CastAs<decimal>(), actual);
 		}
+
 
 		[
 			Theory(DisplayName = "The sum of lists should be correct"),
@@ -124,6 +125,7 @@ namespace Domain.Test
 			Assert.Equal(expected, actual);
 		}
 
+
 		[
 			Theory(DisplayName = "The positions from values and variation should be"),
 			InlineData(new Position [] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Low, Position.High}, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 0.10),
@@ -133,6 +135,36 @@ namespace Domain.Test
 		public void The_positions_from_values_and_variation_should_be(Position [] expected, double [] values, decimal reference)
 		{
 			var actual = values.CastAs<decimal>().PositionsFrom(reference);
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The positions from values should be"),
+			InlineData(new Position[] { Position.Neutral }, new double[] { 100 }),
+			InlineData(new Position[] { Position.Neutral, Position.Neutral }, new double[] { 100, 200 }),
+			InlineData(new Position[] { Position.Low, Position.Neutral, Position.High }, new double[] { 100, 200, 300 }),
+			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral }, new double[] { 100, 100, 100, 100, 100 }),
+			InlineData(new Position[] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral }, new double[] { 100, 110, 100, 105, 90, 80, 103 }),
+			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 })
+
+		]
+		public void The_positions_from_values_should_be(Position[] expected, double[] values)
+		{
+			var actual = values.CastAs<decimal>().Positions();
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The positions from values and period should be"),
+			InlineData(new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 3),
+			InlineData(new Position[] { Position.Low, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral, Position.Low, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 5)
+
+		]
+		public void The_positions_from_values_and_period_should_be(Position[] expected, double[] values, int period)
+		{
+			var actual = values.CastAs<decimal>().PositionsFrom(period);
 			Assert.Equal(expected, actual);
 		}
 

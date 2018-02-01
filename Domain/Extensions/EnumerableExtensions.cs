@@ -90,6 +90,34 @@ namespace Domain.Extensions
 
 			return Position.Neutral;
 		}
+		public static IList<Position> PositionsFrom(this IList<decimal> values, int period)
+		{
+			var positions = new List<Position>();
+			for (int i = 0; i < values.Count; i += period)
+			{
+				var partialPositions = values.Skip(i).Take(period).ToList().Positions();
+				positions.AddRange(partialPositions);
+			}
+	
+			return positions;
+		}
+		public static IList<Position> Positions(this IList<decimal> values)
+		{
+			var positions = values.Select(c => Position.Neutral).ToList<Position>();
+			if (positions.Count <= 2)
+				return positions;
+
+			var indexMax = values.IndexOf(values.Max());
+			var indexMin = values.IndexOf(values.Min());
+
+			if (indexMax == indexMin)
+				return positions;
+
+			positions[indexMin] = Position.Low;
+			positions[indexMax] = Position.High;
+
+			return positions;
+		}
 		public static IList<T> CastAs<T>(this IList<double> values)
 		{
 			return values.Select(v => (T)Convert.ChangeType(v, typeof(T))).ToList();
