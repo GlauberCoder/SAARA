@@ -81,6 +81,14 @@ namespace Domain.Services
 			}
 			return results;
 		}
+		public int RelativeIndexFrom(IList<decimal> values, Altitude altitude)
+		{
+			var reference = values.First();
+			foreach (var value in values.Skip(1))
+				if ((altitude == Altitude.Top && value > reference) || (altitude == Altitude.Bottom && value < reference))
+					return values.IndexOf(value);
+			return 0;
+		}
 
 	}
 }
