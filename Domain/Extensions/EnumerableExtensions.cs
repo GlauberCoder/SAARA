@@ -118,6 +118,35 @@ namespace Domain.Extensions
 
 			return positions;
 		}
+		public static IList<Position> PositionsCongruence(this IList<Position> values, IList<Position> otherValues)
+		{
+			var positionCongruence = new List<Position>();
+
+			PrependToEqualizeLength(ref values, ref otherValues, Position.Neutral);
+			
+			for (int i = 0; i < values.Count; i++)
+				positionCongruence.Add((values[i] == otherValues[i]) ? values[i] : Position.Neutral);
+			
+			return positionCongruence;
+		}
+		public static void PrependToEqualizeLength(ref IList<Position> values, ref IList<Position> otherValues, Position position)
+		{
+			var difference = Math.Abs(values.Count - otherValues.Count);
+
+			if (values.Count > otherValues.Count)
+				otherValues = otherValues.PrependPositions(position, difference);
+			if (values.Count < otherValues.Count)
+				values = values.PrependPositions(position, difference);
+		}
+		public static IList<Position> PrependPositions(this IList<Position> values, Position position, int count)
+		{
+			var positions = values.ToList<Position>();
+
+			for (int i = 0; i < count; i++)
+				positions.Insert(0, position);
+
+			return positions;
+		}
 		public static IList<T> CastAs<T>(this IList<double> values)
 		{
 			return values.Select(v => (T)Convert.ChangeType(v, typeof(T))).ToList();

@@ -90,7 +90,7 @@ namespace Domain.Test
 			InlineData(new double[] { -3, -6, 3, 4 }, new double[] { 4, 1, 5, 5 }, new double[] { 7, 7, 2, 1 }),
 			InlineData(new double[] { 1, -1, -7, 12 }, new double[] { -1, 2, -3, 4 }, new double[] { -2, 3, 4, -8 })
 		]
-		public void The_difference_of_lists_should_be_correct(double [] expected, double[] values, double [] otherValues)
+		public void The_difference_of_lists_should_be_correct(double[] expected, double[] values, double[] otherValues)
 		{
 			var actual = values.CastAs<decimal>().Difference(otherValues.CastAs<decimal>());
 			Assert.Equal(expected.CastAs<decimal>(), actual);
@@ -128,11 +128,11 @@ namespace Domain.Test
 
 		[
 			Theory(DisplayName = "The positions from values and variation should be"),
-			InlineData(new Position [] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Low, Position.High}, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 0.10),
+			InlineData(new Position[] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Low, Position.High }, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 0.10),
 			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Low, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 0.05),
 
 		]
-		public void The_positions_from_values_and_variation_should_be(Position [] expected, double [] values, decimal reference)
+		public void The_positions_from_values_and_variation_should_be(Position[] expected, double[] values, decimal reference)
 		{
 			var actual = values.CastAs<decimal>().PositionsFrom(reference);
 			Assert.Equal(expected, actual);
@@ -160,13 +160,48 @@ namespace Domain.Test
 			Theory(DisplayName = "The positions from values and period should be"),
 			InlineData(new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 3),
 			InlineData(new Position[] { Position.Low, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral, Position.Low, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 5)
-
 		]
 		public void The_positions_from_values_and_period_should_be(Position[] expected, double[] values, int period)
 		{
 			var actual = values.CastAs<decimal>().PositionsFrom(period);
 			Assert.Equal(expected, actual);
 		}
+
+
+		[
+			Theory(DisplayName = "The position congruence should be"),
+			InlineData
+			(
+				new Position[] { Position.Low, Position.High, Position.Neutral },
+				new Position[] { Position.Low, Position.High, Position.Neutral },
+				new Position[] { Position.Low, Position.High, Position.Neutral }
+			),
+			InlineData
+			(
+				new Position[] { Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral },
+				new Position[] { Position.Low, Position.Neutral, Position.High, Position.High, Position.Neutral },
+				new Position[] { Position.High, Position.Low, Position.High }
+			)
+		]
+		public void The_position_congruence_should_be(Position[] expected, Position[] values, Position[] otherValues)
+		{
+			var actual = values.PositionsCongruence(otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName ="The prepended list should be"),
+			InlineData(new Position[] { Position.Neutral }, new Position[] { }, Position.Neutral, 1),
+			InlineData(new Position[] { Position.Neutral, Position.Neutral }, new Position[] { }, Position.Neutral, 2),
+			InlineData(new Position[] { Position.Neutral, Position.High }, new Position[] { Position.High }, Position.Neutral, 1),
+			InlineData(new Position[] { Position.High }, new Position[] { }, Position.High, 1),
+		]
+		public void The_prepended_list_should_be(Position [] expected, Position [] values, Position position, int count)
+		{
+			var actual = values.PrependPositions(position, count);
+			Assert.Equal(expected, actual);
+		}
+
 
 
 
