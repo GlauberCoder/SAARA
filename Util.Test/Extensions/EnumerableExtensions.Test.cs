@@ -53,5 +53,25 @@ namespace Infra.Test
 		{
 			Assert.True(expected.SequenceEqual(values.ToList().TakeUntil(value, length)));
 		}
+
+		[
+			Theory(DisplayName = "The sequence of itens from index of count size should be"),
+			InlineData(new long[] { }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0, 0),
+			InlineData(new long[] { }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 1, 0),
+			InlineData(new long[] { }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 11, 4),
+			InlineData(new long[] { 0 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 0, 1),
+			InlineData(new long[] { 1 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 1, 1),
+			InlineData(new long[] { 4, 5 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 4, 2),
+			InlineData(new long[] { 6, 7, 8 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 6, 3),
+			InlineData(new long[] { 7, 8, 9, 10 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 7, 4),
+			InlineData(new long[] { 9, 10 }, new long[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 9, 4),
+			
+
+		]
+		public void The_sequence_of_itens_from_index_of_count_size_should_be(long[] expected, long[] values, int index, int length)
+		{
+			var actual = values.ToList().TakeFrom(index, length);
+			Assert.True(expected.SequenceEqual(actual));
+		}
 	}
 }

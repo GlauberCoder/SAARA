@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Util.Extensions;
 
 namespace Domain.Services
 {
@@ -41,43 +42,30 @@ namespace Domain.Services
 		private IList<Altitude> IdentifyByLength(IList<decimal> values, int minTopLength, int minBottomLength)
 		{
 			var results = values.Select(v => Altitude.Neutral).ToList();
-
 			var altitude = Altitude.Top;
 			var minLength = minTopLength;
 
-			for (int i = 0; i < values.Count;)
+			for (var i = 0; i < values.Count - minLength; )
 			{
 				results[i] = altitude;
-				var actualValue = values[i];
 
-				for (int j = i + 1; j < i + minLength; j++)
+				minLength = (altitude == Altitude.Top) ? minTopLength : minBottomLength;
+				var index = i + RelativeIndexFrom( values.TakeFrom(i, minLength + 1), altitude );
+
+				if (index == i)
 				{
-					var value = values[j];
-					if ((altitude == Altitude.Top && actualValue < value) || (altitude == Altitude.Bottom && actualValue > value))
+					altitude = (altitude == Altitude.Top) ? Altitude.Bottom : Altitude.Top;
+					i++;
+				}
+				else
+				{
+					while (i < index)
 					{
-						results[j] = altitude;
 						results[i] = Altitude.Neutral;
-						i = j;
-						break;
-					}
-					else
-					{
-						if (j + 1 == i + minLength)
-						{
-							if (altitude == Altitude.Top)
-							{
-								altitude = Altitude.Bottom;
-								minLength = minBottomLength;
-							}
-							else
-							{
-								altitude = Altitude.Top;
-								minLength = minTopLength;
-							}
-							i++;
-						}
+						i++;
 					}
 				}
+					
 			}
 			return results;
 		}
@@ -89,6 +77,5 @@ namespace Domain.Services
 					return values.IndexOf(value);
 			return 0;
 		}
-
 	}
 }
