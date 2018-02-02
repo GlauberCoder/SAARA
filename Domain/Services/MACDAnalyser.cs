@@ -109,7 +109,7 @@ namespace Domain.Services
 			var variation = 0.05m;
 			var pricePositions = price.PositionsFrom(variation);
 			var macdPositions = macd.PositionsFrom(variation);
-			var position = Position.High;
+			var position = Altitude.Top;
 
 			var indexes = pricePositions.PositionsCongruence(macdPositions).IndexesFrom(position);
 

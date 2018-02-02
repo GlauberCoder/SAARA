@@ -63,36 +63,36 @@ namespace Domain.Extensions
 
 			return result;
 		}
-		public static IList<Position> PositionsFrom(this IList<decimal> values, decimal variation)
+		public static IList<Altitude> PositionsFrom(this IList<decimal> values, decimal variation)
 		{
-			var positions = new List<Position>();
+			var positions = new List<Altitude>();
 			var reference = values.First();
 
 			foreach (var value in values)
 			{
 				var position = value.PositionFrom(reference, variation);
 				positions.Add(position);
-				if(position != Position.Neutral)
+				if(position != Altitude.Neutral)
 					reference = value;
 			}
 			return positions;
 		}
-		public static Position PositionFrom(this decimal value, decimal reference, decimal variation)
+		public static Altitude PositionFrom(this decimal value, decimal reference, decimal variation)
 		{
 			var highReference = (1 + variation) * reference;
 			var lowReference = (1 - variation) * reference;
 
 			if (value >= highReference)
-				return Position.High;
+				return Altitude.Top;
 
 			if (value <= lowReference)
-				return Position.Low;
+				return Altitude.Bottom;
 
-			return Position.Neutral;
+			return Altitude.Neutral;
 		}
-		public static IList<Position> PositionsFrom(this IList<decimal> values, int period)
+		public static IList<Altitude> PositionsFrom(this IList<decimal> values, int period)
 		{
-			var positions = new List<Position>();
+			var positions = new List<Altitude>();
 			for (int i = 0; i < values.Count; i += period)
 			{
 				var partialPositions = values.Skip(i).Take(period).ToList().Positions();
@@ -101,9 +101,9 @@ namespace Domain.Extensions
 	
 			return positions;
 		}
-		public static IList<Position> Positions(this IList<decimal> values)
+		public static IList<Altitude> Positions(this IList<decimal> values)
 		{
-			var positions = values.Select(c => Position.Neutral).ToList<Position>();
+			var positions = values.Select(c => Altitude.Neutral).ToList<Altitude>();
 			if (positions.Count <= 2)
 				return positions;
 
@@ -113,23 +113,31 @@ namespace Domain.Extensions
 			if (indexMax == indexMin)
 				return positions;
 
-			positions[indexMin] = Position.Low;
-			positions[indexMax] = Position.High;
+			positions[indexMin] = Altitude.Bottom;
+			positions[indexMax] = Altitude.Top;
 
 			return positions;
 		}
-		public static IList<Position> PositionsCongruence(this IList<Position> values, IList<Position> otherValues)
+		public static int RelativeIndexFrom(this IList<decimal> values, Altitude altitude)
 		{
-			var positionCongruence = new List<Position>();
+			var reference = values.First();
+			foreach (var value in values.Skip(1))
+				if ((altitude == Altitude.Top && value < reference) || (altitude == Altitude.Bottom && value > reference))
+					return values.IndexOf(value);
+			return 0;
+		}
+		public static IList<Altitude> PositionsCongruence(this IList<Altitude> values, IList<Altitude> otherValues)
+		{
+			var positionCongruence = new List<Altitude>();
 
-			PrependToEqualizeLength(ref values, ref otherValues, Position.Neutral);
+			PrependToEqualizeLength(ref values, ref otherValues, Altitude.Neutral);
 			
 			for (int i = 0; i < values.Count; i++)
-				positionCongruence.Add((values[i] == otherValues[i]) ? values[i] : Position.Neutral);
+				positionCongruence.Add((values[i] == otherValues[i]) ? values[i] : Altitude.Neutral);
 			
 			return positionCongruence;
 		}
-		public static void PrependToEqualizeLength(ref IList<Position> values, ref IList<Position> otherValues, Position position)
+		public static void PrependToEqualizeLength(ref IList<Altitude> values, ref IList<Altitude> otherValues, Altitude position)
 		{
 			var difference = Math.Abs(values.Count - otherValues.Count);
 
@@ -138,7 +146,7 @@ namespace Domain.Extensions
 			if (values.Count < otherValues.Count)
 				values = values.PrependPositions(position, difference);
 		}
-		public static IList<int> IndexesFrom(this IList<Position> values, Position position)
+		public static IList<int> IndexesFrom(this IList<Altitude> values, Altitude position)
 		{
 			var indexes = new List<int>();
 			for (int i = 0; i < values.Count; i++)
@@ -147,9 +155,9 @@ namespace Domain.Extensions
 
 			return indexes;
 		}
-		public static IList<Position> PrependPositions(this IList<Position> values, Position position, int count)
+		public static IList<Altitude> PrependPositions(this IList<Altitude> values, Altitude position, int count)
 		{
-			var positions = values.ToList<Position>();
+			var positions = values.ToList<Altitude>();
 
 			for (int i = 0; i < count; i++)
 				positions.Insert(0, position);

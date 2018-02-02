@@ -1,9 +1,9 @@
 ﻿namespace Domain.Abstractions.Enums
 {
-	public enum Position
+	public enum Altitude
 	{
-		High = 1,
+		Top = 1,
 		Neutral = 0,
-		Low = -1
+		Bottom = -1
 	}
 }
