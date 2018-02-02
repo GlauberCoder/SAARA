@@ -64,7 +64,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_between_lists(bool expected, double[] values, double[] otherValues)
 		{
-			var actual = values.CastAs<decimal>().HasCross(otherValues.CastAs<decimal>());
+			var actual = values.CastAs<decimal>().LastValueIsCrossing(otherValues.CastAs<decimal>());
 			Assert.Equal(expected, actual);
 		}
 
@@ -79,7 +79,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_on_the_list(bool expected, double[] values)
 		{
-			var actual = values.CastAs<decimal>().HasCross();
+			var actual = values.CastAs<decimal>().LastValueIsCrossing();
 			Assert.Equal(expected, actual);
 		}
 
@@ -194,11 +194,27 @@ namespace Domain.Test
 			InlineData(new Position[] { Position.Neutral }, new Position[] { }, Position.Neutral, 1),
 			InlineData(new Position[] { Position.Neutral, Position.Neutral }, new Position[] { }, Position.Neutral, 2),
 			InlineData(new Position[] { Position.Neutral, Position.High }, new Position[] { Position.High }, Position.Neutral, 1),
-			InlineData(new Position[] { Position.High }, new Position[] { }, Position.High, 1),
+			InlineData(new Position[] { Position.High }, new Position[] { }, Position.High, 1)
 		]
 		public void The_prepended_list_should_be(Position [] expected, Position [] values, Position position, int count)
 		{
 			var actual = values.PrependPositions(position, count);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The indexes should be"),
+			InlineData(new int[] { }, new Position[] { Position.Neutral }, Position.High),
+			InlineData(new int[] { 0 }, new Position[] { Position.Neutral }, Position.Neutral),
+			InlineData(new int[] { 1 }, new Position[] { Position.Neutral, Position.High }, Position.High),
+			InlineData(new int[] { 0 }, new Position[] { Position.Neutral, Position.High }, Position.Neutral),
+			InlineData(new int[] { 2, 4, 6 }, new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, Position.Neutral),
+			InlineData(new int[] { 1, 3 }, new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, Position.High),
+			InlineData(new int[] { 0, 5 }, new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, Position.Low)
+		]
+		public void The_indexes_should_be(int[] expected, Position[] values, Position position)
+		{
+			var actual = values.IndexesFrom(position);
 			Assert.Equal(expected, actual);
 		}
 

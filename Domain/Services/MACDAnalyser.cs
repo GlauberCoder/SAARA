@@ -16,6 +16,10 @@ namespace Domain.Services
 		public virtual decimal MACD { get; set; }
 		public virtual decimal Signal { get; set; }
 		public virtual decimal Histogram { get; set; }
+		public virtual Trend Trend { get; set; }
+		public virtual TradeSignal CrossSignal { get; set; }
+		public virtual TradeSignal CenteCrossSignal { get; set; }
+		public virtual TradeSignal DivergenceSignal { get; set; }
 
 		public MACDAnalyser()
 		{
@@ -73,7 +77,7 @@ namespace Domain.Services
 		{
 			return (macdLine > signalLine) ? Trend.Up : Trend.Down;
 		}
-		public virtual TradeSignal CalculateDCrossSignal(IMACDConfig config, decimal macdLine, decimal signalLine, Trend trend)
+		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, decimal macdLine, decimal signalLine, Trend trend)
 		{
 			var variation = trend == Trend.Up ? signalLine.PercentageOfChange(macdLine) : macdLine.PercentageOfChange(signalLine);
 			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
@@ -95,6 +99,40 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
+		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
+		{
+
+			return TradeSignal.Hold;
+		}
+		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd)
+		{
+			var variation = 0.05m;
+			var pricePositions = price.PositionsFrom(variation);
+			var macdPositions = macd.PositionsFrom(variation);
+			var position = Position.High;
+
+			var indexes = pricePositions.PositionsCongruence(macdPositions).IndexesFrom(position);
+
+			foreach (var previous in indexes)
+				foreach (var actual in indexes.Where(c => c > previous))
+				{
+					if (BearishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.WeakShort;
+					if (BullishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.WeakLong;
+				}
+
+			return TradeSignal.Hold;
+		}
+		private bool BearishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
+		{
+			return previousPrice < actualPrice && previousMACD > actualMACD;
+		}
+		private bool BullishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
+		{
+			return previousPrice > actualPrice && previousMACD < actualMACD;
+		}
+
 
 
 

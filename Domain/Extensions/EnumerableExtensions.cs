@@ -33,13 +33,13 @@ namespace Domain.Extensions
 			decimal k = 2m / (length + 1);
 			return k * (value - previousEMA) + previousEMA;
 		}
-		public static bool HasCross(this IList<decimal> values, IList<decimal> otherValues)
+		public static bool LastValueIsCrossing(this IList<decimal> values, IList<decimal> otherValues)
 		{
 			if (values.Count == otherValues.Count)
-				return values.Difference(otherValues).HasCross();
+				return values.Difference(otherValues).LastValueIsCrossing();
 			return false;
 		}
-		public static bool HasCross(this IList<decimal> values)
+		public static bool LastValueIsCrossing(this IList<decimal> values)
 		{
 			foreach(var value in values.Take(values.Count-1).Reverse())
 				if (value * values.Last() != 0)
@@ -137,6 +137,15 @@ namespace Domain.Extensions
 				otherValues = otherValues.PrependPositions(position, difference);
 			if (values.Count < otherValues.Count)
 				values = values.PrependPositions(position, difference);
+		}
+		public static IList<int> IndexesFrom(this IList<Position> values, Position position)
+		{
+			var indexes = new List<int>();
+			for (int i = 0; i < values.Count; i++)
+				if (values[i] == position)
+					indexes.Add(i);
+
+			return indexes;
 		}
 		public static IList<Position> PrependPositions(this IList<Position> values, Position position, int count)
 		{
