@@ -101,27 +101,6 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
-
-			return TradeSignal.Hold;
-		}
-		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd)
-		{
-			var variation = 0.05m;
-			var pricePositions = price.PositionsFrom(variation);
-			var macdPositions = macd.PositionsFrom(variation);
-			var position = Altitude.Top;
-
-			var indexes = pricePositions.PositionsCongruence(macdPositions).IndexesFrom(position);
-
-			foreach (var previous in indexes)
-				foreach (var actual in indexes.Where(c => c > previous))
-				{
-					if (BearishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
-						return TradeSignal.WeakShort;
-					if (BullishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
-						return TradeSignal.WeakLong;
-				}
-
 			return TradeSignal.Hold;
 		}
 		private bool BearishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
@@ -132,9 +111,5 @@ namespace Domain.Services
 		{
 			return previousPrice > actualPrice && previousMACD < actualMACD;
 		}
-
-
-
-
 	}
 }

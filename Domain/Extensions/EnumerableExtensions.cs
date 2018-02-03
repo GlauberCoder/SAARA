@@ -63,69 +63,7 @@ namespace Domain.Extensions
 
 			return result;
 		}
-		public static IList<Altitude> PositionsFrom(this IList<decimal> values, decimal variation)
-		{
-			var positions = new List<Altitude>();
-			var reference = values.First();
 
-			foreach (var value in values)
-			{
-				var position = value.PositionFrom(reference, variation);
-				positions.Add(position);
-				if(position != Altitude.Neutral)
-					reference = value;
-			}
-			return positions;
-		}
-		public static Altitude PositionFrom(this decimal value, decimal reference, decimal variation)
-		{
-			var highReference = (1 + variation) * reference;
-			var lowReference = (1 - variation) * reference;
-
-			if (value >= highReference)
-				return Altitude.Top;
-
-			if (value <= lowReference)
-				return Altitude.Bottom;
-
-			return Altitude.Neutral;
-		}
-		public static IList<Altitude> PositionsFrom(this IList<decimal> values, int period)
-		{
-			var positions = new List<Altitude>();
-			for (int i = 0; i < values.Count; i += period)
-			{
-				var partialPositions = values.Skip(i).Take(period).ToList().Positions();
-				positions.AddRange(partialPositions);
-			}
-	
-			return positions;
-		}
-		public static IList<Altitude> Positions(this IList<decimal> values)
-		{
-			var positions = values.Select(c => Altitude.Neutral).ToList<Altitude>();
-			if (positions.Count <= 2)
-				return positions;
-
-			var indexMax = values.IndexOf(values.Max());
-			var indexMin = values.IndexOf(values.Min());
-
-			if (indexMax == indexMin)
-				return positions;
-
-			positions[indexMin] = Altitude.Bottom;
-			positions[indexMax] = Altitude.Top;
-
-			return positions;
-		}
-		public static int RelativeIndexFrom(this IList<decimal> values, Altitude altitude)
-		{
-			var reference = values.First();
-			foreach (var value in values.Skip(1))
-				if ((altitude == Altitude.Top && value < reference) || (altitude == Altitude.Bottom && value > reference))
-					return values.IndexOf(value);
-			return 0;
-		}
 		public static IList<Altitude> PositionsCongruence(this IList<Altitude> values, IList<Altitude> otherValues)
 		{
 			var positionCongruence = new List<Altitude>();

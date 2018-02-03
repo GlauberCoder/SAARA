@@ -22,11 +22,11 @@ namespace Domain.Services
 
 			return this;
 		}
-		public virtual IAltitudeAnalyser ByVariation(decimal topMinVariation, decimal bottomMinVariation)
+		public virtual IAltitudeAnalyser ByVariation(decimal minTopVariation, decimal minBottomVariation)
 		{
 			byVariation = true;
-			minTopIdentifier = topMinVariation;
-			minBottomIdentifier = bottomMinVariation;
+			minTopIdentifier = minTopVariation;
+			minBottomIdentifier = minBottomVariation;
 
 			return this;
 		}
@@ -34,38 +34,57 @@ namespace Domain.Services
 		{
 			return byVariation ? IdentifyByVariation(values, minTopIdentifier, minBottomIdentifier) : IdentifyByLength(values, (int)minTopIdentifier, (int)minBottomIdentifier);
 		}
-		private IList<Altitude> IdentifyByVariation(IList<decimal> values, decimal topMinVariation, decimal bottomMinVariation)
-		{
-			throw new NotImplementedException();
-		}
-
-		private IList<Altitude> IdentifyByLength(IList<decimal> values, int minTopLength, int minBottomLength)
+		private IList<Altitude> IdentifyByVariation(IList<decimal> values, decimal minTopVariation, decimal minBottomVariation)
 		{
 			var results = values.Select(v => Altitude.Neutral).ToList();
-			var altitude = Altitude.Top;
-			var minLength = minTopLength;
+			var reference = values.First();
+			var (altitude, minVariation) = (Altitude.Top, minTopVariation);
+			var previousAltitude = Altitude.Neutral;
 
-			for (var i = 0; i < values.Count - minLength; )
+			for (var i = 1; i < values.Count; i++)
 			{
-				results[i] = altitude;
-
-				minLength = (altitude == Altitude.Top) ? minTopLength : minBottomLength;
-				var index = i + RelativeIndexFrom( values.TakeFrom(i, minLength + 1), altitude );
-
-				if (index == i)
+				altitude = AltitudeFrom(values[i], reference, minTopVariation, minBottomVariation);
+				if(altitude != previousAltitude)
 				{
-					altitude = (altitude == Altitude.Top) ? Altitude.Bottom : Altitude.Top;
-					i++;
+					results[i-1] = previousAltitude;
 				}
 				else
 				{
-					while (i < index)
-					{
-						results[i] = Altitude.Neutral;
-						i++;
-					}
+					results[i-1] = Altitude.Neutral;
 				}
-					
+				previousAltitude = altitude;
+			}
+			return results;
+		}
+		public Altitude AltitudeFrom(decimal value, decimal reference, decimal minTopVariation, decimal minBottomVariation)
+		{
+			var topReference = (1 + minTopVariation) * reference;
+			var bottomReference = (1 - minBottomVariation) * reference;
+
+			if (value >= topReference)
+				return Altitude.Top;
+
+			if (value <= bottomReference)
+				return Altitude.Bottom;
+
+			return Altitude.Neutral;
+		}
+		private IList<Altitude> IdentifyByLength(IList<decimal> values, int minTopLength, int minBottomLength)
+		{
+			var results = values.Select(v => Altitude.Neutral).ToList();
+			var (altitude, minLength) = (Altitude.Top, minTopLength);
+
+			for (var i = 0; i < values.Count - minLength; )
+			{
+				var index = i + RelativeIndexFrom( values.TakeFrom(i, minLength + 1), altitude );
+				if (index == i)
+				{
+					results[i] = altitude;
+					(altitude, minLength) = SwitchAltitude(altitude, minTopLength, minBottomLength);
+					i++;
+				}
+				else
+					i = index;
 			}
 			return results;
 		}
@@ -76,6 +95,12 @@ namespace Domain.Services
 				if ((altitude == Altitude.Top && value > reference) || (altitude == Altitude.Bottom && value < reference))
 					return values.IndexOf(value);
 			return 0;
+		}
+		public (Altitude altitude, T minLength) SwitchAltitude<T>(Altitude altitude, T minTopLength, T minBottomLength)
+		{
+			if (altitude != Altitude.Neutral)
+				return (altitude == Altitude.Top) ? (altitude: Altitude.Bottom, minLength: minBottomLength) : (altitude: Altitude.Top, minLength: minTopLength);
+			return (altitude : Altitude.Neutral, minLength : default(T));
 		}
 	}
 }
