@@ -20,10 +20,11 @@ namespace Domain.Services
 		public virtual TradeSignal CrossSignal { get; set; }
 		public virtual TradeSignal CenteCrossSignal { get; set; }
 		public virtual TradeSignal DivergenceSignal { get; set; }
+		public virtual AltitudeAnalyser AltitudeAnalyser { get; set; }
 
 		public MACDAnalyser()
 		{
-
+			AltitudeAnalyser = new AltitudeAnalyser();
 		}
 		public MACDAnalyser(IMACDConfig config, ICandleAnalyser analysis) : this()
 		{
@@ -103,9 +104,49 @@ namespace Domain.Services
 		{
 			return TradeSignal.Hold;
 		}
+		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd, int minTopLength, int minBottomLength)
+		{
+			var length = 3;
+			var analyser = AltitudeAnalyser.ByLength(length, length);
+
+			var priceAltitude = analyser.Identify(price);
+			var macdAltitude = analyser.Identify(macd);
+
+			var congruentValues = AltitudeAnalyser.Congruence(priceAltitude, macdAltitude);
+
+			var bearishSignal = BearishDivergenceSignal(price, macd, congruentValues);
+			var bullishSignal = BullishDivergenceSignal(price, macd, congruentValues);
+
+			if (bearishSignal == TradeSignal.Short && bullishSignal == TradeSignal.Hold)
+				return TradeSignal.Short;
+			if (bullishSignal == TradeSignal.Long && bearishSignal == TradeSignal.Hold)
+				return TradeSignal.Long;
+
+			return TradeSignal.Hold;
+		}
+		public virtual TradeSignal BearishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
+		{
+			var indexes = AltitudeAnalyser.IndexesFrom(congruentValues, Altitude.Top);
+
+			foreach (var previous in indexes)
+				foreach (var actual in indexes.Where(c => c > previous))
+					if (BearishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.Short;
+			return TradeSignal.Hold;
+		}
 		private bool BearishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
 		{
 			return previousPrice < actualPrice && previousMACD > actualMACD;
+		}
+		public virtual TradeSignal BullishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
+		{
+			var indexes = AltitudeAnalyser.IndexesFrom(congruentValues, Altitude.Bottom);
+
+			foreach (var previous in indexes)
+				foreach (var actual in indexes.Where(c => c > previous))
+					if (BullishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.Long;
+			return TradeSignal.Hold;
 		}
 		private bool BullishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
 		{

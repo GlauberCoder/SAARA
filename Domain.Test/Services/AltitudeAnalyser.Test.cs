@@ -32,7 +32,7 @@ namespace Domain.Test.Services
 		}
 
 		[
-			Theory(DisplayName = "The position from reference and variation should be"),
+			Theory(DisplayName = "The altitude from reference and variation should be"),
 			InlineData(Altitude.Neutral, 91, 100, 0.10, 0.10),
 			InlineData(Altitude.Bottom, 90, 100, 0.10, 0.10),
 			InlineData(Altitude.Bottom, 89, 100, 0.10, 0.10),
@@ -40,7 +40,7 @@ namespace Domain.Test.Services
 			InlineData(Altitude.Top, 110, 100, 0.10, 0.10),
 			InlineData(Altitude.Top, 111, 100, 0.10, 0.10)
 		]
-		public void The_position_from_reference_and_variation_should_be(Altitude expected, decimal value, decimal reference, decimal topMinVariation, decimal bottomMinVariation)
+		public void The_altitude_from_reference_and_variation_should_be(Altitude expected, decimal value, decimal reference, decimal topMinVariation, decimal bottomMinVariation)
 		{
 			var actual = new AltitudeAnalyser().AltitudeFrom(value, reference, topMinVariation, bottomMinVariation);
 			Assert.Equal(expected, actual);
@@ -77,6 +77,56 @@ namespace Domain.Test.Services
 		public void The_relative_index_used_on_analysing_by_length_should_be_correct(int expected, double[] values, Altitude altitude)
 		{
 			var actual = new AltitudeAnalyser().RelativeIndexFrom(values.CastAs<decimal>(), altitude);
+			Assert.Equal(expected, actual);
+		}
+		
+		[
+			Theory(DisplayName = "The altitude congruence should be"),
+			InlineData
+			(
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral }
+			),
+			InlineData
+			(
+				new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Top, Altitude.Bottom, Altitude.Top }
+			)
+		]
+		public void The_altitude_congruence_should_be(Altitude[] expected, Altitude[] values, Altitude[] otherValues)
+		{
+			var actual = new AltitudeAnalyser().Congruence(values, otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The prepended list should be"),
+			InlineData(new Altitude[] { Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 2),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Top }, new Altitude[] { Altitude.Top }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Top }, new Altitude[] { }, Altitude.Top, 1)
+		]
+		public void The_prepended_list_should_be(Altitude[] expected, Altitude[] values, Altitude altitude, int count)
+		{
+			var actual = new AltitudeAnalyser().PrependAltitudeValues(values, altitude, count);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The indexes should be"),
+			InlineData(new int[] { }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Neutral),
+			InlineData(new int[] { 2, 4, 6 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1, 3 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0, 5 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Bottom)
+		]
+		public void The_indexes_should_be(int[] expected, Altitude[] values, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().IndexesFrom(values, altitude);
 			Assert.Equal(expected, actual);
 		}
 	}
