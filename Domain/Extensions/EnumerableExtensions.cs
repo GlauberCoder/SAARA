@@ -33,13 +33,13 @@ namespace Domain.Extensions
 			decimal k = 2m / (length + 1);
 			return k * (value - previousEMA) + previousEMA;
 		}
-		public static bool HasCross(this IList<decimal> values, IList<decimal> otherValues)
+		public static bool LastValueIsCrossing(this IList<decimal> values, IList<decimal> otherValues)
 		{
 			if (values.Count == otherValues.Count)
-				return values.Difference(otherValues).HasCross();
+				return values.Difference(otherValues).LastValueIsCrossing();
 			return false;
 		}
-		public static bool HasCross(this IList<decimal> values)
+		public static bool LastValueIsCrossing(this IList<decimal> values)
 		{
 			foreach(var value in values.Take(values.Count-1).Reverse())
 				if (value * values.Last() != 0)
@@ -63,58 +63,42 @@ namespace Domain.Extensions
 
 			return result;
 		}
-		public static IList<Position> PositionsFrom(this IList<decimal> values, decimal variation)
-		{
-			var positions = new List<Position>();
-			var reference = values.First();
 
-			foreach (var value in values)
-			{
-				var position = value.PositionFrom(reference, variation);
-				positions.Add(position);
-				if(position != Position.Neutral)
-					reference = value;
-			}
-			return positions;
+		public static IList<Altitude> PositionsCongruence(this IList<Altitude> values, IList<Altitude> otherValues)
+		{
+			var positionCongruence = new List<Altitude>();
+
+			PrependToEqualizeLength(ref values, ref otherValues, Altitude.Neutral);
+			
+			for (int i = 0; i < values.Count; i++)
+				positionCongruence.Add((values[i] == otherValues[i]) ? values[i] : Altitude.Neutral);
+			
+			return positionCongruence;
 		}
-		public static Position PositionFrom(this decimal value, decimal reference, decimal variation)
+		public static void PrependToEqualizeLength(ref IList<Altitude> values, ref IList<Altitude> otherValues, Altitude position)
 		{
-			var highReference = (1 + variation) * reference;
-			var lowReference = (1 - variation) * reference;
+			var difference = Math.Abs(values.Count - otherValues.Count);
 
-			if (value >= highReference)
-				return Position.High;
-
-			if (value <= lowReference)
-				return Position.Low;
-
-			return Position.Neutral;
+			if (values.Count > otherValues.Count)
+				otherValues = otherValues.PrependPositions(position, difference);
+			if (values.Count < otherValues.Count)
+				values = values.PrependPositions(position, difference);
 		}
-		public static IList<Position> PositionsFrom(this IList<decimal> values, int period)
+		public static IList<int> IndexesFrom(this IList<Altitude> values, Altitude position)
 		{
-			var positions = new List<Position>();
-			for (int i = 0; i < values.Count; i += period)
-			{
-				var partialPositions = values.Skip(i).Take(period).ToList().Positions();
-				positions.AddRange(partialPositions);
-			}
-	
-			return positions;
+			var indexes = new List<int>();
+			for (int i = 0; i < values.Count; i++)
+				if (values[i] == position)
+					indexes.Add(i);
+
+			return indexes;
 		}
-		public static IList<Position> Positions(this IList<decimal> values)
+		public static IList<Altitude> PrependPositions(this IList<Altitude> values, Altitude position, int count)
 		{
-			var positions = values.Select(c => Position.Neutral).ToList<Position>();
-			if (positions.Count <= 2)
-				return positions;
+			var positions = values.ToList<Altitude>();
 
-			var indexMax = values.IndexOf(values.Max());
-			var indexMin = values.IndexOf(values.Min());
-
-			if (indexMax == indexMin)
-				return positions;
-
-			positions[indexMin] = Position.Low;
-			positions[indexMax] = Position.High;
+			for (int i = 0; i < count; i++)
+				positions.Insert(0, position);
 
 			return positions;
 		}

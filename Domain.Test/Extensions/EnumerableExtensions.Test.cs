@@ -64,7 +64,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_between_lists(bool expected, double[] values, double[] otherValues)
 		{
-			var actual = values.CastAs<decimal>().HasCross(otherValues.CastAs<decimal>());
+			var actual = values.CastAs<decimal>().LastValueIsCrossing(otherValues.CastAs<decimal>());
 			Assert.Equal(expected, actual);
 		}
 
@@ -79,7 +79,7 @@ namespace Domain.Test
 		]
 		public void There_are_crosses_on_the_list(bool expected, double[] values)
 		{
-			var actual = values.CastAs<decimal>().HasCross();
+			var actual = values.CastAs<decimal>().LastValueIsCrossing();
 			Assert.Equal(expected, actual);
 		}
 
@@ -90,7 +90,7 @@ namespace Domain.Test
 			InlineData(new double[] { -3, -6, 3, 4 }, new double[] { 4, 1, 5, 5 }, new double[] { 7, 7, 2, 1 }),
 			InlineData(new double[] { 1, -1, -7, 12 }, new double[] { -1, 2, -3, 4 }, new double[] { -2, 3, 4, -8 })
 		]
-		public void The_difference_of_lists_should_be_correct(double [] expected, double[] values, double [] otherValues)
+		public void The_difference_of_lists_should_be_correct(double[] expected, double[] values, double[] otherValues)
 		{
 			var actual = values.CastAs<decimal>().Difference(otherValues.CastAs<decimal>());
 			Assert.Equal(expected.CastAs<decimal>(), actual);
@@ -109,64 +109,56 @@ namespace Domain.Test
 			Assert.Equal(expected.CastAs<decimal>(), actual);
 		}
 
-
 		[
-			Theory(DisplayName = "The position from reference and variation should be"),
-			InlineData(Position.Neutral, 91, 100, 0.10),
-			InlineData(Position.Low, 90, 100, 0.10),
-			InlineData(Position.Low, 89, 100, 0.10),
-			InlineData(Position.Neutral, 109, 100, 0.10),
-			InlineData(Position.High, 110, 100, 0.10),
-			InlineData(Position.High, 111, 100, 0.10)
+			Theory(DisplayName = "The position congruence should be"),
+			InlineData
+			(
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral }
+			),
+			InlineData
+			(
+				new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Top, Altitude.Bottom, Altitude.Top }
+			)
 		]
-		public void The_position_from_reference_and_variation_should_be(Position expected, decimal value, decimal refence, decimal variation)
+		public void The_position_congruence_should_be(Altitude[] expected, Altitude[] values, Altitude[] otherValues)
 		{
-			var actual = value.PositionFrom(refence, variation);
+			var actual = values.PositionsCongruence(otherValues);
 			Assert.Equal(expected, actual);
 		}
 
-
 		[
-			Theory(DisplayName = "The positions from values and variation should be"),
-			InlineData(new Position [] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Low, Position.High}, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 0.10),
-			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Low, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 0.05),
-
+			Theory(DisplayName ="The prepended list should be"),
+			InlineData(new Altitude[] { Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 2),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Top }, new Altitude[] { Altitude.Top }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Top }, new Altitude[] { }, Altitude.Top, 1)
 		]
-		public void The_positions_from_values_and_variation_should_be(Position [] expected, double [] values, decimal reference)
+		public void The_prepended_list_should_be(Altitude [] expected, Altitude [] values, Altitude position, int count)
 		{
-			var actual = values.CastAs<decimal>().PositionsFrom(reference);
+			var actual = values.PrependPositions(position, count);
 			Assert.Equal(expected, actual);
 		}
 
-
 		[
-			Theory(DisplayName = "The positions from values should be"),
-			InlineData(new Position[] { Position.Neutral }, new double[] { 100 }),
-			InlineData(new Position[] { Position.Neutral, Position.Neutral }, new double[] { 100, 200 }),
-			InlineData(new Position[] { Position.Low, Position.Neutral, Position.High }, new double[] { 100, 200, 300 }),
-			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral }, new double[] { 100, 100, 100, 100, 100 }),
-			InlineData(new Position[] { Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral }, new double[] { 100, 110, 100, 105, 90, 80, 103 }),
-			InlineData(new Position[] { Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral, Position.Neutral, Position.Neutral, Position.Neutral }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 })
-
+			Theory(DisplayName = "The indexes should be"),
+			InlineData(new int[] { }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Neutral),
+			InlineData(new int[] { 2, 4, 6 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1, 3 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0, 5 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Bottom)
 		]
-		public void The_positions_from_values_should_be(Position[] expected, double[] values)
+		public void The_indexes_should_be(int[] expected, Altitude[] values, Altitude position)
 		{
-			var actual = values.CastAs<decimal>().Positions();
+			var actual = values.IndexesFrom(position);
 			Assert.Equal(expected, actual);
 		}
 
-
-		[
-			Theory(DisplayName = "The positions from values and period should be"),
-			InlineData(new Position[] { Position.Low, Position.High, Position.Neutral, Position.High, Position.Neutral, Position.Low, Position.Neutral }, new double[] { 100, 110, 100, 105, 90, 80, 105 }, 3),
-			InlineData(new Position[] { Position.Low, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.High, Position.Neutral, Position.Neutral, Position.Low, Position.Neutral, Position.Low, Position.Neutral, Position.High }, new double[] { 100, 101, 103, 101, 102, 105, 90, 92, 89, 90, 100, 101, 105 }, 5)
-
-		]
-		public void The_positions_from_values_and_period_should_be(Position[] expected, double[] values, int period)
-		{
-			var actual = values.CastAs<decimal>().PositionsFrom(period);
-			Assert.Equal(expected, actual);
-		}
 
 
 
