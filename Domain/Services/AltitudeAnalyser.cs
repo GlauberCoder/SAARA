@@ -37,17 +37,49 @@ namespace Domain.Services
 		private IList<Altitude> IdentifyByVariation(IList<decimal> values, decimal minTopVariation, decimal minBottomVariation)
 		{
 			var results = values.Select(v => Altitude.Neutral).ToList();
-			var reference = values.First();
-			var (altitude, minVariation) = (Altitude.Top, minTopVariation);
-			var previousAltitude = Altitude.Neutral;
+			var index = 0;
+			var indexCandidate = 0;
+			var altitude = Altitude.Top;
 
 			for (var i = 1; i < values.Count; i++)
 			{
-				altitude = AltitudeFrom(values[i], reference, minTopVariation, minBottomVariation);
-				results[i - 1] = altitude != previousAltitude ? previousAltitude : Altitude.Neutral;
-				previousAltitude = altitude;
+				var j = i;
+				while(FitsAltitude(values[i], values[i-1], altitude) && i < values.Count)
+					i++;
+				indexCandidate = i - 1;
+				results[i - 1] = altitude;
+
+				while(i < values.Count - 1)
+				{
+					if (FitsAltitude(values[i], values[indexCandidate], altitude))
+					{
+						results[indexCandidate] = Altitude.Neutral;
+						i--;
+						break;
+					}
+					else if(AltitudeFrom(values[i], values[index], minTopVariation, minBottomVariation) == OppositeOf(altitude))
+					{
+						altitude = OppositeOf(altitude);
+						index = i;
+						i--;
+						break;
+					}
+					i++;
+				}
 			}
 			return results;
+		}
+		public Altitude OppositeOf(Altitude altitude)
+		{
+			switch (altitude)	
+			{
+				case Altitude.Top:
+					return Altitude.Bottom;
+				case Altitude.Bottom:
+					return Altitude.Top;
+				default:
+					return Altitude.Neutral;
+			}
 		}
 		public Altitude AltitudeFrom(decimal value, decimal reference, decimal minTopVariation, decimal minBottomVariation)
 		{
@@ -87,9 +119,13 @@ namespace Domain.Services
 			var nextValues = values.SkipAndTake(index + 1, length);
 			var reference = values[index];
 			foreach (var value in nextValues)
-				if ((altitude == Altitude.Top && value > reference) || (altitude == Altitude.Bottom && value < reference))
+				if (FitsAltitude(value, reference, altitude))
 					return (index + nextValues.IndexOf(value) + 1);
 			return index;
+		}
+		public bool FitsAltitude(decimal value, decimal reference, Altitude altitude )
+		{
+			return (altitude == Altitude.Top && value > reference) || (altitude == Altitude.Bottom && value < reference);
 		}
 		public (Altitude altitude, T minLength) SwitchAltitude<T>(Altitude altitude, T lastMinLength, T minTopLength, T minBottomLength)
 		{
