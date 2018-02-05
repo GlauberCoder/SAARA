@@ -65,15 +65,16 @@ namespace Domain.Services
 		private IList<Altitude> IdentifyByLength(IList<decimal> values, int minTopLength, int minBottomLength)
 		{
 			var results = values.Select(v => Altitude.Neutral).ToList();
-			var (altitude, minLength) = (Altitude.Top, minTopLength);
+			var altitude = Altitude.Top;
+			var minLength = minTopLength;
 
 			for (var i = 0; i < values.Count - minLength; )
 			{
-				var index = i + RelativeIndexFrom( values.TakeFrom(i, minLength + 1), altitude );
+				var index = RelativeIndexFrom(values, altitude, i, minLength);
 				if (index == i)
 				{
 					results[i] = altitude;
-					(altitude, minLength) = SwitchAltitude(altitude, minTopLength, minBottomLength);
+					(altitude, minLength) = SwitchAltitude(altitude, minLength, minTopLength, minBottomLength);
 					i++;
 				}
 				else
@@ -81,19 +82,20 @@ namespace Domain.Services
 			}
 			return results;
 		}
-		public int RelativeIndexFrom(IList<decimal> values, Altitude altitude)
+		public int RelativeIndexFrom(IList<decimal> values, Altitude altitude, int index, int length)
 		{
-			var reference = values.First();
-			foreach (var value in values.Skip(1))
+			var nextValues = values.SkipAndTake(index + 1, length);
+			var reference = values[index];
+			foreach (var value in nextValues)
 				if ((altitude == Altitude.Top && value > reference) || (altitude == Altitude.Bottom && value < reference))
-					return values.IndexOf(value);
-			return 0;
+					return (index + nextValues.IndexOf(value) + 1);
+			return index;
 		}
-		public (Altitude altitude, T minLength) SwitchAltitude<T>(Altitude altitude, T minTopLength, T minBottomLength)
+		public (Altitude altitude, T minLength) SwitchAltitude<T>(Altitude altitude, T lastMinLength, T minTopLength, T minBottomLength)
 		{
 			if (altitude != Altitude.Neutral)
 				return (altitude == Altitude.Top) ? (altitude: Altitude.Bottom, minLength: minBottomLength) : (altitude: Altitude.Top, minLength: minTopLength);
-			return (altitude : Altitude.Neutral, minLength : default(T));
+			return (altitude : Altitude.Neutral, minLength : lastMinLength);
 		}
 		public IList<Altitude> Congruence(IList<Altitude> values, IList<Altitude> otherValues)
 		{

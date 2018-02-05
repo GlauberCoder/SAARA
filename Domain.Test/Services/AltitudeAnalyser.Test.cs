@@ -68,15 +68,20 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The relative index used on analysing by length should be correct"),
-			InlineData(1, new double[] { 1, 1.2, 2, 1.3 }, Altitude.Top),
-			InlineData(1, new double[] { 1.2, 2, 1.3, 1.2 }, Altitude.Top),
-			InlineData(0, new double[] { 2, 1.3, 1.4, 1.2 }, Altitude.Top),
-			InlineData(2, new double[] { 1.3, 1.4, 1.2, 1.5 }, Altitude.Bottom),
-			InlineData(0, new double[] { 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom)
+			InlineData(1, new double[] { 1, 1.2, 2, 1.3 }, Altitude.Top, 0, 3),
+			InlineData(1, new double[] { 1.2, 2, 1.3, 1.2 }, Altitude.Top, 0, 3),
+			InlineData(0, new double[] { 2, 1.3, 1.4, 1.2 }, Altitude.Top, 0, 3),
+			InlineData(2, new double[] { 1.3, 1.4, 1.2, 1.5 }, Altitude.Bottom, 0, 3),
+			InlineData(0, new double[] { 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 0, 3),
+			InlineData(1, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 0, 3),
+			InlineData(2, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 1, 3),
+			InlineData(2, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 2, 3),
+			InlineData(5, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 3, 3),
+			InlineData(5, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 5, 3)
 		]
-		public void The_relative_index_used_on_analysing_by_length_should_be_correct(int expected, double[] values, Altitude altitude)
+		public void The_relative_index_used_on_analysing_by_length_should_be_correct(int expected, double[] values, Altitude altitude, int index, int length)
 		{
-			var actual = new AltitudeAnalyser().RelativeIndexFrom(values.CastAs<decimal>(), altitude);
+			var actual = new AltitudeAnalyser().RelativeIndexFrom(values.CastAs<decimal>(), altitude, index, length);
 			Assert.Equal(expected, actual);
 		}
 		

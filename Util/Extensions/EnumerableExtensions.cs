@@ -49,9 +49,9 @@ namespace Util.Extensions
 
 			return values.Take(index + 1).TakeLast(length).ToList();
 		}
-		public static IList<T> TakeFrom<T>(this IList<T> values, int index, int length)
+		public static IList<T> SkipAndTake<T>(this IList<T> values, int skip, int take)
 		{
-			return values.Skip(index).Take(length).ToList();
+			return values.Skip(skip).Take(take).ToList();
 		}
 	}
 }
