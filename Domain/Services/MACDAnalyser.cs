@@ -91,6 +91,22 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
+		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, IList<decimal> macdLine, IList<decimal> signalLine)
+		{
+			if (! macdLine.LastValueIsCrossing(signalLine))
+				return TradeSignal.Hold;
+
+			var macd = macdLine.Last();
+			var signal = signalLine.Last();
+
+			if (macd > signal)
+				return macd > 0 ? TradeSignal.StrongLong : TradeSignal.WeakLong;
+
+			if (macd < signal)
+				return signal < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
+
+			return TradeSignal.Hold;
+		}
 		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, decimal macdLine, Trend trend)
 		{
 			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
@@ -98,6 +114,12 @@ namespace Domain.Services
 			if (trend != Trend.Neutral && macdLine <= tolerance)
 				return trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 
+			return TradeSignal.Hold;
+		}
+		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, IList<decimal> macdLine)
+		{
+			if (macdLine.LastValueIsCrossing())
+				return macdLine.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
 			return TradeSignal.Hold;
 		}
 		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
