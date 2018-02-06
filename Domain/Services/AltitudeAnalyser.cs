@@ -12,11 +12,11 @@ namespace Domain.Services
 	{
 		decimal minTopIdentifier { get; set; }
 		decimal minBottomIdentifier { get; set; }
-		bool byVariation { get; set; }
+		AltitudeAnalyserTechnic Technic { get; set; }
 		
 		public virtual IAltitudeAnalyser ByLength(int minTopLength, int minBottomLength)
 		{
-			byVariation = false;
+			Technic = AltitudeAnalyserTechnic.Length;
 			minTopIdentifier = minTopLength;
 			minBottomIdentifier = minBottomLength;
 
@@ -24,7 +24,7 @@ namespace Domain.Services
 		}
 		public virtual IAltitudeAnalyser ByVariation(decimal minTopVariation, decimal minBottomVariation)
 		{
-			byVariation = true;
+			Technic = AltitudeAnalyserTechnic.Variation;
 			minTopIdentifier = minTopVariation;
 			minBottomIdentifier = minBottomVariation;
 
@@ -32,7 +32,7 @@ namespace Domain.Services
 		}
 		public virtual IList<Altitude> Identify(IList<decimal> values)
 		{
-			return byVariation ? IdentifyByVariation(values, minTopIdentifier, minBottomIdentifier) : IdentifyByLength(values, (int)minTopIdentifier, (int)minBottomIdentifier);
+			return Technic == AltitudeAnalyserTechnic.Variation ? IdentifyByVariation(values, minTopIdentifier, minBottomIdentifier) : IdentifyByLength(values, (int)minTopIdentifier, (int)minBottomIdentifier);
 		}
 		private IList<Altitude> IdentifyByVariation(IList<decimal> values, decimal minTopVariation, decimal minBottomVariation)
 		{
