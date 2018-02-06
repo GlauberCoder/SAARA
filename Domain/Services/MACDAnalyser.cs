@@ -3,6 +3,7 @@ using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Util.Extensions;
@@ -20,11 +21,10 @@ namespace Domain.Services
 		public virtual TradeSignal CrossSignal { get; set; }
 		public virtual TradeSignal CenteCrossSignal { get; set; }
 		public virtual TradeSignal DivergenceSignal { get; set; }
-		public virtual AltitudeAnalyser AltitudeAnalyser { get; set; }
+		
 
 		public MACDAnalyser()
 		{
-			AltitudeAnalyser = new AltitudeAnalyser();
 		}
 		public MACDAnalyser(IMACDConfig config, ICandleAnalyser analysis) : this()
 		{
@@ -107,12 +107,12 @@ namespace Domain.Services
 		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd, int minTopLength, int minBottomLength)
 		{
 			var length = 3;
-			var analyser = AltitudeAnalyser.ByLength(length, length);
+			var analyser = new AltitudeAnalyser().ByLength(length, length);
 
 			var priceAltitude = analyser.Identify(price);
 			var macdAltitude = analyser.Identify(macd);
 
-			var congruentValues = AltitudeAnalyser.Congruence(priceAltitude, macdAltitude);
+			var congruentValues = Congruence(priceAltitude, macdAltitude);
 
 			var bearishSignal = BearishDivergenceSignal(price, macd, congruentValues);
 			var bullishSignal = BullishDivergenceSignal(price, macd, congruentValues);
@@ -126,7 +126,7 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal BearishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
 		{
-			var indexes = AltitudeAnalyser.IndexesFrom(congruentValues, Altitude.Top);
+			var indexes = IndexesFrom(congruentValues, Altitude.Top);
 
 			foreach (var previous in indexes)
 				foreach (var actual in indexes.Where(c => c > previous))
@@ -140,7 +140,7 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal BullishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
 		{
-			var indexes = AltitudeAnalyser.IndexesFrom(congruentValues, Altitude.Bottom);
+			var indexes = IndexesFrom(congruentValues, Altitude.Bottom);
 
 			foreach (var previous in indexes)
 				foreach (var actual in indexes.Where(c => c > previous))
@@ -151,6 +151,41 @@ namespace Domain.Services
 		private bool BullishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
 		{
 			return previousPrice > actualPrice && previousMACD < actualMACD;
+		}
+
+		public IList<Altitude> Congruence(IList<Altitude> values, IList<Altitude> otherValues)
+		{
+			var altitudeCongruence = new List<Altitude>();
+			PrependToEqualizeLength(ref values, ref otherValues, Altitude.Neutral);
+
+			for (int i = 0; i < values.Count; i++)
+				altitudeCongruence.Add((values[i] == otherValues[i]) ? values[i] : Altitude.Neutral);
+
+			return altitudeCongruence;
+		}
+		public void PrependToEqualizeLength(ref IList<Altitude> values, ref IList<Altitude> otherValues, Altitude altitude)
+		{
+			var difference = Math.Abs(values.Count - otherValues.Count);
+
+			if (values.Count > otherValues.Count)
+				otherValues = PrependAltitudeValues(otherValues, altitude, difference);
+			if (values.Count < otherValues.Count)
+				values = PrependAltitudeValues(values, altitude, difference);
+		}
+		public IList<Altitude> PrependAltitudeValues(IList<Altitude> values, Altitude altitude, int count)
+		{
+			var altitudes = values.ToList<Altitude>();
+			for (int i = 0; i < count; i++)
+				altitudes.Insert(0, altitude);
+			return altitudes;
+		}
+		public IList<int> IndexesFrom(IList<Altitude> congruentValues, Altitude altitude)
+		{
+			var indexes = new List<int>();
+			for (int i = 0; i < congruentValues.Count; i++)
+				if (congruentValues[i] == altitude)
+					indexes.Add(i);
+			return indexes;
 		}
 	}
 }
