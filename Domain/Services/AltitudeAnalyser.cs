@@ -133,5 +133,13 @@ namespace Domain.Services
 				return (altitude == Altitude.Top) ? (altitude: Altitude.Bottom, minLength: minBottomLength) : (altitude: Altitude.Top, minLength: minTopLength);
 			return (altitude : Altitude.Neutral, minLength : lastMinLength);
 		}
+		public IList<int> IndexesFrom(IList<Altitude> values, Altitude altitude)
+		{
+			var indexes = new List<int>();
+			for (int i = 0; i < values.Count; i++)
+				if (values[i] == altitude)
+					indexes.Add(i);
+			return indexes;
+		}
 	}
 }

@@ -107,5 +107,23 @@ namespace Domain.Test.Services
 		}
 
 
+
+		[
+			Theory(DisplayName = "The indexes should be"),
+			InlineData(new int[] { }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Neutral),
+			InlineData(new int[] { 2, 4, 6 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Neutral),
+			InlineData(new int[] { 1, 3 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Top),
+			InlineData(new int[] { 0, 5 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Bottom)
+		]
+		public void The_indexes_should_be(int[] expected, Altitude[] values, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().IndexesFrom(values, altitude);
+			Assert.Equal(expected, actual);
+		}
+
+
 	}
 }

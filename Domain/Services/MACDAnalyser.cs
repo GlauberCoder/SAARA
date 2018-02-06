@@ -148,7 +148,7 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal BearishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
 		{
-			var indexes = IndexesFrom(congruentValues, Altitude.Top);
+			var indexes = new AltitudeAnalyser().IndexesFrom(congruentValues, Altitude.Top);
 
 			foreach (var previous in indexes)
 				foreach (var actual in indexes.Where(c => c > previous))
@@ -162,7 +162,7 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal BullishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
 		{
-			var indexes = IndexesFrom(congruentValues, Altitude.Bottom);
+			var indexes = new AltitudeAnalyser().IndexesFrom(congruentValues, Altitude.Bottom);
 
 			foreach (var previous in indexes)
 				foreach (var actual in indexes.Where(c => c > previous))
@@ -201,13 +201,6 @@ namespace Domain.Services
 				altitudes.Insert(0, altitude);
 			return altitudes;
 		}
-		public IList<int> IndexesFrom(IList<Altitude> congruentValues, Altitude altitude)
-		{
-			var indexes = new List<int>();
-			for (int i = 0; i < congruentValues.Count; i++)
-				if (congruentValues[i] == altitude)
-					indexes.Add(i);
-			return indexes;
-		}
+		
 	}
 }

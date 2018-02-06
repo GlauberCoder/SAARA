@@ -32,6 +32,14 @@ namespace Domain.Abstractions.Services
 		/// Identify trend
 		/// </summary>
 		/// <param name="values">Base to identify trend</param>
+		/// <param name="altitudeAnalyser">Configuration of analyser</param>
+		/// <returns>The trend</returns>
+		Trend Identify(IList<decimal> values, IAltitudeAnalyser altitudeAnalyser);
+
+		/// <summary>
+		/// Identify trend
+		/// </summary>
+		/// <param name="values">Base to identify trend</param>
 		/// <returns>The trend</returns>
 		Trend Identify(IList<decimal> values);
 	}
