@@ -24,12 +24,10 @@ namespace Domain.Services
 		{
 
 		}
-
 		public EMAAnalyser(IEMAConfig config, ICandleAnalyser analysis) : this()
 		{
 			Calculate(config, analysis);
 		}
-
 		public virtual IEMAAnalyser Calculate(IEMAConfig config, ICandleAnalyser analysis)
 		{
 			ShortEMA = analysis.EMA(config.ShortEMA);
@@ -42,12 +40,10 @@ namespace Domain.Services
 
 			return this;
 		}
-
 		public virtual Trend CalculateTrend(decimal shortEMA, decimal longEMA)
 		{
 			return (shortEMA > longEMA) ? Trend.Up : Trend.Down;
 		}
-
 		public virtual TradeSignal CalculateCrossSignal(IEMAConfig config, decimal shortEMA, decimal longEMA, Trend trend)
 		{
 			var emaVariation = trend == Trend.Up ? longEMA.PercentageOfChange(shortEMA) : shortEMA.PercentageOfChange(longEMA);
@@ -58,7 +54,12 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
-
+		public virtual TradeSignal CalculateCrossSignal(IEMAConfig config, IList<decimal> shortEMA, IList<decimal> longEMA)
+		{
+			if (shortEMA.LastValueIsCrossing(longEMA))
+				return shortEMA.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
+			return TradeSignal.Hold;
+		}
 		public virtual TradeSignal CalculateAverageDistanceSignal(IEMAConfig config, decimal price, decimal shortEMA, Trend trend)
 		{
 			var variation = shortEMA > price ? price.PercentageOfChange(shortEMA) : shortEMA.PercentageOfChange(price);
@@ -68,7 +69,6 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
-
 		public virtual TradeSignal CalculateSignal(TradeSignal crossSignal, TradeSignal averageDistanceSignal)
 		{
 			if (crossSignal == TradeSignal.Long)
