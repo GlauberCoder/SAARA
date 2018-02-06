@@ -37,14 +37,14 @@ namespace Domain.Services
 		private IList<Altitude> IdentifyByVariation(IList<decimal> values, decimal minTopVariation, decimal minBottomVariation)
 		{
 			var results = values.Select(v => Altitude.Neutral).ToList();
-			var index = 0;
+			var indexReference = 0;
 			var indexCandidate = 0;
 			var altitude = Altitude.Top;
 
 			for (var i = 1; i < values.Count; i++)
 			{
 				var j = i;
-				while(FitsAltitude(values[i], values[i-1], altitude) && i < values.Count)
+				while (FitsAltitude(values[i], values[i - 1], altitude) && i < values.Count)
 					i++;
 				indexCandidate = i - 1;
 				results[i - 1] = altitude;
@@ -57,10 +57,10 @@ namespace Domain.Services
 						i--;
 						break;
 					}
-					else if(AltitudeFrom(values[i], values[index], minTopVariation, minBottomVariation) == OppositeOf(altitude))
+					else if(AltitudeFrom(values[i], values[indexReference], minTopVariation, minBottomVariation) == OppositeOf(altitude))
 					{
 						altitude = OppositeOf(altitude);
-						index = i;
+						indexReference = i;
 						i--;
 						break;
 					}
