@@ -3,6 +3,7 @@ using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Util.Extensions;
@@ -20,10 +21,10 @@ namespace Domain.Services
 		public virtual TradeSignal CrossSignal { get; set; }
 		public virtual TradeSignal CenteCrossSignal { get; set; }
 		public virtual TradeSignal DivergenceSignal { get; set; }
+		
 
 		public MACDAnalyser()
 		{
-
 		}
 		public MACDAnalyser(IMACDConfig config, ICandleAnalyser analysis) : this()
 		{
@@ -90,6 +91,22 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
+		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, IList<decimal> macdLine, IList<decimal> signalLine)
+		{
+			if (! macdLine.LastValueIsCrossing(signalLine))
+				return TradeSignal.Hold;
+
+			var macd = macdLine.Last();
+			var signal = signalLine.Last();
+
+			if (macd > signal)
+				return macd > 0 ? TradeSignal.StrongLong : TradeSignal.WeakLong;
+
+			if (macd < signal)
+				return signal < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
+
+			return TradeSignal.Hold;
+		}
 		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, decimal macdLine, Trend trend)
 		{
 			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
@@ -99,17 +116,91 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
+		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, IList<decimal> macdLine)
+		{
+			if (macdLine.LastValueIsCrossing())
+				return macdLine.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
+			return TradeSignal.Hold;
+		}
 		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
+			return TradeSignal.Hold;
+		}
+		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd, int minTopLength, int minBottomLength)
+		{
+			var length = 3;
+			var analyser = new AltitudeAnalyser().ByLength(length, length);
+
+			var priceAltitude = analyser.Identify(price);
+			var macdAltitude = analyser.Identify(macd);
+
+			var congruentValues = Congruence(priceAltitude, macdAltitude);
+
+			var bearishSignal = BearishDivergenceSignal(price, macd, congruentValues);
+			var bullishSignal = BullishDivergenceSignal(price, macd, congruentValues);
+
+			if (bearishSignal == TradeSignal.Short && bullishSignal == TradeSignal.Hold)
+				return TradeSignal.Short;
+			if (bullishSignal == TradeSignal.Long && bearishSignal == TradeSignal.Hold)
+				return TradeSignal.Long;
+
+			return TradeSignal.Hold;
+		}
+		public virtual TradeSignal BearishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
+		{
+			var indexes = new AltitudeAnalyser().IndexesFrom(congruentValues, Altitude.Top);
+
+			foreach (var previous in indexes)
+				foreach (var actual in indexes.Where(c => c > previous))
+					if (BearishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.Short;
 			return TradeSignal.Hold;
 		}
 		private bool BearishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
 		{
 			return previousPrice < actualPrice && previousMACD > actualMACD;
 		}
+		public virtual TradeSignal BullishDivergenceSignal(IList<decimal> price, IList<decimal> macd, IList<Altitude> congruentValues)
+		{
+			var indexes = new AltitudeAnalyser().IndexesFrom(congruentValues, Altitude.Bottom);
+
+			foreach (var previous in indexes)
+				foreach (var actual in indexes.Where(c => c > previous))
+					if (BullishDivergence(price[previous], price[actual], macd[previous], macd[actual]))
+						return TradeSignal.Long;
+			return TradeSignal.Hold;
+		}
 		private bool BullishDivergence(decimal previousPrice, decimal actualPrice, decimal previousMACD, decimal actualMACD)
 		{
 			return previousPrice > actualPrice && previousMACD < actualMACD;
 		}
+
+		public IList<Altitude> Congruence(IList<Altitude> values, IList<Altitude> otherValues)
+		{
+			var altitudeCongruence = new List<Altitude>();
+			PrependToEqualizeLength(ref values, ref otherValues, Altitude.Neutral);
+
+			for (int i = 0; i < values.Count; i++)
+				altitudeCongruence.Add((values[i] == otherValues[i]) ? values[i] : Altitude.Neutral);
+
+			return altitudeCongruence;
+		}
+		public void PrependToEqualizeLength(ref IList<Altitude> values, ref IList<Altitude> otherValues, Altitude altitude)
+		{
+			var difference = Math.Abs(values.Count - otherValues.Count);
+
+			if (values.Count > otherValues.Count)
+				otherValues = PrependAltitudeValues(otherValues, altitude, difference);
+			if (values.Count < otherValues.Count)
+				values = PrependAltitudeValues(values, altitude, difference);
+		}
+		public IList<Altitude> PrependAltitudeValues(IList<Altitude> values, Altitude altitude, int count)
+		{
+			var altitudes = values.ToList<Altitude>();
+			for (int i = 0; i < count; i++)
+				altitudes.Insert(0, altitude);
+			return altitudes;
+		}
+		
 	}
 }

@@ -70,7 +70,7 @@ namespace Infra.Test
 		]
 		public void The_sequence_of_itens_from_index_of_count_size_should_be(long[] expected, long[] values, int index, int length)
 		{
-			var actual = values.ToList().TakeFrom(index, length);
+			var actual = values.ToList().SkipAndTake(index, length);
 			Assert.True(expected.SequenceEqual(actual));
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions.Entitys;
+using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Entitys;
 using Domain.Entitys.AnalisysConfig;
@@ -149,6 +150,41 @@ namespace Domain.Test.Services
 		public void The_Histogram_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
 			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle).Histogram;
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The altitude congruence should be"),
+			InlineData
+			(
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral }
+			),
+			InlineData
+			(
+				new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Neutral },
+				new Altitude[] { Altitude.Bottom, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Neutral },
+				new Altitude[] { Altitude.Top, Altitude.Bottom, Altitude.Top }
+			)
+		]
+		public void The_altitude_congruence_should_be(Altitude[] expected, Altitude[] values, Altitude[] otherValues)
+		{
+			var actual = new MACDAnalyser().Congruence(values, otherValues);
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The prepended list should be"),
+			InlineData(new Altitude[] { Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Neutral }, new Altitude[] { }, Altitude.Neutral, 2),
+			InlineData(new Altitude[] { Altitude.Neutral, Altitude.Top }, new Altitude[] { Altitude.Top }, Altitude.Neutral, 1),
+			InlineData(new Altitude[] { Altitude.Top }, new Altitude[] { }, Altitude.Top, 1)
+		]
+		public void The_prepended_list_should_be(Altitude[] expected, Altitude[] values, Altitude altitude, int count)
+		{
+			var actual = new MACDAnalyser().PrependAltitudeValues(values, altitude, count);
 			Assert.Equal(expected, actual);
 		}
 

@@ -63,45 +63,6 @@ namespace Domain.Extensions
 
 			return result;
 		}
-
-		public static IList<Altitude> PositionsCongruence(this IList<Altitude> values, IList<Altitude> otherValues)
-		{
-			var positionCongruence = new List<Altitude>();
-
-			PrependToEqualizeLength(ref values, ref otherValues, Altitude.Neutral);
-			
-			for (int i = 0; i < values.Count; i++)
-				positionCongruence.Add((values[i] == otherValues[i]) ? values[i] : Altitude.Neutral);
-			
-			return positionCongruence;
-		}
-		public static void PrependToEqualizeLength(ref IList<Altitude> values, ref IList<Altitude> otherValues, Altitude position)
-		{
-			var difference = Math.Abs(values.Count - otherValues.Count);
-
-			if (values.Count > otherValues.Count)
-				otherValues = otherValues.PrependPositions(position, difference);
-			if (values.Count < otherValues.Count)
-				values = values.PrependPositions(position, difference);
-		}
-		public static IList<int> IndexesFrom(this IList<Altitude> values, Altitude position)
-		{
-			var indexes = new List<int>();
-			for (int i = 0; i < values.Count; i++)
-				if (values[i] == position)
-					indexes.Add(i);
-
-			return indexes;
-		}
-		public static IList<Altitude> PrependPositions(this IList<Altitude> values, Altitude position, int count)
-		{
-			var positions = values.ToList<Altitude>();
-
-			for (int i = 0; i < count; i++)
-				positions.Insert(0, position);
-
-			return positions;
-		}
 		public static IList<T> CastAs<T>(this IList<double> values)
 		{
 			return values.Select(v => (T)Convert.ChangeType(v, typeof(T))).ToList();
