@@ -13,16 +13,16 @@ namespace Domain.Services
 		TrendAnalyserTechnic Technic { get; set; }
 		IAltitudeAnalyser DefaultAltitudeAnalyser { get => new AltitudeAnalyser().ByLength(3, 3); }
 
-		public virtual ITrendAnalyser ByFirstVsLast(Altitude altitude)
+		public virtual ITrendAnalyser ByFirstAndLast(Altitude altitude)
 		{
-			Technic = TrendAnalyserTechnic.FirstVsLast;
+			Technic = TrendAnalyserTechnic.FirstAndLast;
 			Altitude = altitude;
 
 			return this;
 		}
-		public virtual ITrendAnalyser ByHigherHighLowerLow(Altitude altitude)
+		public virtual ITrendAnalyser ByHighestAndLowest(Altitude altitude)
 		{
-			Technic = TrendAnalyserTechnic.HigherHighLowerLow;
+			Technic = TrendAnalyserTechnic.HighestAndLowest;
 			Altitude = altitude;
 
 			return this;
@@ -43,26 +43,26 @@ namespace Domain.Services
 			var altitudes = altitudeAnalyser.Identify(values);
 			switch (Technic)
 			{
-				case TrendAnalyserTechnic.FirstVsLast:
-					return IdentifyByFirstVsLast(values, altitudes);
+				case TrendAnalyserTechnic.FirstAndLast:
+					return IdentifyByFirstAndLast(values, altitudes);
 				case TrendAnalyserTechnic.MostRecents:
 					return IdentifyByMostRecents(values, altitudes);
-				case TrendAnalyserTechnic.HigherHighLowerLow:
-					return IdentifyByHigherHighLowerLow(values, altitudes);
+				case TrendAnalyserTechnic.HighestAndLowest:
+					return IdentifyByHighestAndLowest(values, altitudes);
 				default:
 					throw new Exception("The technic should be defined ");
 			};
 		}
-		private Trend IdentifyByFirstVsLast(IList<decimal> values, IList<Altitude> altitudes)
+		private Trend IdentifyByFirstAndLast(IList<decimal> values, IList<Altitude> altitudes)
 		{
 			var first = new AltitudeAnalyser().GetFirst(values, altitudes, Altitude);
 			var last = new AltitudeAnalyser().GetLast(values, altitudes, Altitude);
 			return GetTrend(last, first);
 		}
-		private Trend IdentifyByHigherHighLowerLow(IList<decimal> values, IList<Altitude> altitudes)
+		private Trend IdentifyByHighestAndLowest(IList<decimal> values, IList<Altitude> altitudes)
 		{
-			var higherIndex = new AltitudeAnalyser().GetHigherIndex(values, altitudes, Altitude);
-			var lowerIndex = new AltitudeAnalyser().GetLowerIndex(values, altitudes, Altitude);
+			var higherIndex = new AltitudeAnalyser().GetIndexOfHighest(values, altitudes, Altitude);
+			var lowerIndex = new AltitudeAnalyser().GetIndexOfLowest(values, altitudes, Altitude);
 			return GetTrend(values, higherIndex, lowerIndex);
 			
 		}

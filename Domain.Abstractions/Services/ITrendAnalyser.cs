@@ -12,7 +12,7 @@ namespace Domain.Abstractions.Services
 		/// </summary>
 		/// <param name="altitude">Altitude used, it can be top or bottom</param>
 		/// <returns>This analyser</returns>
-		ITrendAnalyser ByFirstVsLast(Altitude altitude);
+		ITrendAnalyser ByFirstAndLast(Altitude altitude);
 
 		/// <summary>
 		/// Sets the analyser to identify trend by most recents tops (or bottoms)
@@ -26,7 +26,7 @@ namespace Domain.Abstractions.Services
 		/// </summary>
 		/// <param name="altitude">Altitude used, it can be top or bottom</param>
 		/// <returns>This analyser</returns>
-		ITrendAnalyser ByHigherHighLowerLow(Altitude altitude);
+		ITrendAnalyser ByHighestAndLowest(Altitude altitude);
 
 		/// <summary>
 		/// Identify trend

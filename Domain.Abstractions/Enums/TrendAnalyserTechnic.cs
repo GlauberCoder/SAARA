@@ -2,8 +2,8 @@
 {
 	public enum TrendAnalyserTechnic
 	{
-		FirstVsLast,
+		FirstAndLast,
 		MostRecents,
-		HigherHighLowerLow
+		HighestAndLowest
 	}
 }

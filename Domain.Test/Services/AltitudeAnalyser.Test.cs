@@ -171,7 +171,7 @@ namespace Domain.Test.Services
 		]
 		public void The_altitude_analyser_should_return_the_highest_element_index_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
 		{
-			var actual = new AltitudeAnalyser().GetHigherIndex(values.CastAs<decimal>(), altitudes, altitude);
+			var actual = new AltitudeAnalyser().GetIndexOfHighest(values.CastAs<decimal>(), altitudes, altitude);
 			Assert.Equal((decimal?)expected, actual);
 		}
 
@@ -191,7 +191,7 @@ namespace Domain.Test.Services
 		]
 		public void The_altitude_analyser_should_return_the_lowest_element_index_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
 		{
-			var actual = new AltitudeAnalyser().GetLowerIndex(values.CastAs<decimal>(), altitudes, altitude);
+			var actual = new AltitudeAnalyser().GetIndexOfLowest(values.CastAs<decimal>(), altitudes, altitude);
 			Assert.Equal((decimal?)expected, actual);
 		}
 

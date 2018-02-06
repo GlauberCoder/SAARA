@@ -159,7 +159,7 @@ namespace Domain.Services
 					return values[i];
 			return null;
 		}
-		public int? GetHigherIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		public int? GetIndexOfHighest(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
 		{
 			var indexes = IndexesFrom(altitudes, altitude);
 
@@ -172,7 +172,7 @@ namespace Domain.Services
 					higherIndex = i;
 			return higherIndex;
 		}
-		public int? GetLowerIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		public int? GetIndexOfLowest(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
 		{
 			var indexes = IndexesFrom(altitudes, altitude);
 
