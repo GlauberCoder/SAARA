@@ -141,5 +141,49 @@ namespace Domain.Services
 					indexes.Add(i);
 			return indexes;
 		}
+		public decimal? GetLast(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		{
+			if (values.Count != altitudes.Count)
+				return null;
+			for (int i = altitudes.Count - 1; i >= 0; i--)
+				if (altitudes[i] == altitude)
+					return values[i];
+			return null;
+		}
+		public decimal? GetFirst(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		{
+			if (values.Count != altitudes.Count)
+				return null;
+			for (int i = 0; i < altitudes.Count; i++)
+				if (altitudes[i] == altitude)
+					return values[i];
+			return null;
+		}
+		public int? GetHigherIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		{
+			var indexes = IndexesFrom(altitudes, altitude);
+
+			if (values.Count != altitudes.Count || indexes.Count == 0)
+				return null;
+
+			var higherIndex = indexes.First();
+			foreach (var i in indexes)
+				if (values[i] > values[higherIndex])
+					higherIndex = i;
+			return higherIndex;
+		}
+		public int? GetLowerIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
+		{
+			var indexes = IndexesFrom(altitudes, altitude);
+
+			if (values.Count != altitudes.Count || indexes.Count == 0)
+				return null;
+
+			var lowerIndex = indexes.First();
+			foreach(var i in indexes)
+				if (values[i] < values[lowerIndex])
+					lowerIndex = i;
+			return lowerIndex;
+		}
 	}
 }

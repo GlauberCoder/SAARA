@@ -109,7 +109,7 @@ namespace Domain.Test.Services
 
 
 		[
-			Theory(DisplayName = "The indexes should be"),
+			Theory(DisplayName = "The altitude analyser should return the correct indexes given altitudes"),
 			InlineData(new int[] { }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
 			InlineData(new int[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Neutral),
 			InlineData(new int[] { 1 }, new Altitude[] { Altitude.Neutral, Altitude.Top }, Altitude.Top),
@@ -118,10 +118,81 @@ namespace Domain.Test.Services
 			InlineData(new int[] { 1, 3 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Top),
 			InlineData(new int[] { 0, 5 }, new Altitude[] { Altitude.Bottom, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Bottom, Altitude.Neutral }, Altitude.Bottom)
 		]
-		public void The_indexes_should_be(int[] expected, Altitude[] values, Altitude altitude)
+		public void The_altitude_analyser_should_return_the_correct_indexes_given_altitudes(int[] expected, Altitude[] values, Altitude altitude)
 		{
 			var actual = new AltitudeAnalyser().IndexesFrom(values, altitude);
 			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The altitude analyser should return the last element given altitudes"),
+			InlineData(null, new double[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(null, new double[] { 0, 0 }, new Altitude[] { Altitude.Bottom }, Altitude.Bottom),
+			InlineData(6, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Top, Altitude.Neutral, Altitude.Neutral }, Altitude.Top),
+			InlineData(4, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Neutral }, Altitude.Top),
+			InlineData(2, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Top }, Altitude.Top),
+
+		]
+		public void The_altitude_analyser_should_return_the_last_element_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().GetLast(values.CastAs<decimal>(), altitudes, altitude);
+			Assert.Equal((decimal ?)expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The altitude analyser should return the first element given altitudes"),
+			InlineData(null, new double[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(null, new double[] { 0, 0 }, new Altitude[] { Altitude.Bottom }, Altitude.Bottom),
+			InlineData(2, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(4, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Top, Altitude.Top }, Altitude.Top),
+			InlineData(6, new double[] { 6, 4, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Top }, Altitude.Top),
+
+		]
+		public void The_altitude_analyser_should_return_the_first_element_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().GetFirst(values.CastAs<decimal>(), altitudes, altitude);
+			Assert.Equal((decimal?)expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The altitude analyser should return the highest element index given altitudes"),
+			InlineData(null, new double[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(null, new double[] { 0, 0 }, new Altitude[] { Altitude.Bottom }, Altitude.Bottom),
+			InlineData(3, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Top }, Altitude.Top),
+			InlineData(0, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral }, Altitude.Top),
+			InlineData(0, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(4, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(0, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(1, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(2, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(2, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+
+		]
+		public void The_altitude_analyser_should_return_the_highest_element_index_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().GetHigherIndex(values.CastAs<decimal>(), altitudes, altitude);
+			Assert.Equal((decimal?)expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The altitude analyser should return the lowest element index given altitudes"),
+			InlineData(null, new double[] { 0 }, new Altitude[] { Altitude.Neutral }, Altitude.Top),
+			InlineData(null, new double[] { 0, 0 }, new Altitude[] { Altitude.Bottom }, Altitude.Bottom),
+			InlineData(4, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Top }, Altitude.Top),
+			InlineData(1, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral }, Altitude.Top),
+			InlineData(4, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(0, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral }, Altitude.Top),
+			InlineData(4, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Top, Altitude.Neutral, Altitude.Neutral, Altitude.Neutral, Altitude.Top }, Altitude.Top),
+			InlineData(1, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Top, Altitude.Neutral, Altitude.Top, Altitude.Neutral }, Altitude.Top),
+			InlineData(2, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Neutral }, Altitude.Top),
+			InlineData(1, new double[] { 6, 4, 5, 7, 2 }, new Altitude[] { Altitude.Neutral, Altitude.Top, Altitude.Top, Altitude.Top, Altitude.Neutral }, Altitude.Top),
+
+		]
+		public void The_altitude_analyser_should_return_the_lowest_element_index_given_altitudes(double? expected, double[] values, Altitude[] altitudes, Altitude altitude)
+		{
+			var actual = new AltitudeAnalyser().GetLowerIndex(values.CastAs<decimal>(), altitudes, altitude);
+			Assert.Equal((decimal?)expected, actual);
 		}
 
 

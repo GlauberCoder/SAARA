@@ -55,14 +55,14 @@ namespace Domain.Services
 		}
 		private Trend IdentifyByFirstVsLast(IList<decimal> values, IList<Altitude> altitudes)
 		{
-			var first = GetFirst(values, altitudes, Altitude);
-			var last = GetLast(values, altitudes, Altitude);
+			var first = new AltitudeAnalyser().GetFirst(values, altitudes, Altitude);
+			var last = new AltitudeAnalyser().GetLast(values, altitudes, Altitude);
 			return GetTrend(last, first);
 		}
 		private Trend IdentifyByHigherHighLowerLow(IList<decimal> values, IList<Altitude> altitudes)
 		{
-			var higherIndex = GetHigherIndex(values, altitudes, Altitude);
-			var lowerIndex = GetLowerIndex(values, altitudes, Altitude);
+			var higherIndex = new AltitudeAnalyser().GetHigherIndex(values, altitudes, Altitude);
+			var lowerIndex = new AltitudeAnalyser().GetLowerIndex(values, altitudes, Altitude);
 			return GetTrend(values, higherIndex, lowerIndex);
 			
 		}
@@ -89,51 +89,6 @@ namespace Domain.Services
 			var previous = previousIndex ?? -1;
 			return recentIndex > previousIndex ? GetTrend(values[recent], values[previous]) : GetTrend(values[previous], values[recent]);
 		}
-		private decimal? GetLast(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
-		{
-			if (values.Count != altitudes.Count)
-				return null;
-			for (int i = altitudes.Count - 1; i >= 0; i--)
-				if (altitudes[i] == altitude)
-					return values[i];
-			return null;
-		}
-		private decimal? GetFirst(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
-		{
-			if (values.Count != altitudes.Count)
-				return null;
-			for (int i = 0; i < altitudes.Count; i++)
-				if (altitudes[i] == altitude)
-					return values[i];
-			return null;
-		}
-		private int? GetHigherIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
-		{
-			var indexes = new AltitudeAnalyser().IndexesFrom(altitudes, altitude);
-
-			if (values.Count != altitudes.Count || indexes.Count == 0)
-				return null;
-
-			var higherIndex = 0;
-			for (int i = 1; i < indexes.Count; i++)
-				if (values[i] > values[higherIndex])
-					higherIndex = i;
-			return higherIndex;
-		}
-		private int? GetLowerIndex(IList<decimal> values, IList<Altitude> altitudes, Altitude altitude)
-		{
-			var indexes = new AltitudeAnalyser().IndexesFrom(altitudes, altitude);
-
-			if (values.Count != altitudes.Count || indexes.Count == 0)
-				return null;
-
-			var lowerIndex = 0;
-			for (int i = 1; i < indexes.Count; i++)
-				if (values[i] < values[lowerIndex])
-					lowerIndex = i;
-			return lowerIndex;
-		}
-
 
 	}
 }
