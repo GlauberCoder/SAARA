@@ -70,7 +70,7 @@ namespace Domain.Services
 		{
 			for (int i = altitudes.Count - 1; i >= 0; i--)
 				if(altitudes[i] == Altitude)
-					for (int j = i; j >= 0; j--)
+					for (int j = i - 1; j >= 0; j--)
 						if(altitudes[j] == Altitude)
 							return GetTrend(values[i], values[j]);
 			return Trend.Neutral;
