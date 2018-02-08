@@ -12,23 +12,23 @@ namespace Domain.Services
 	public class AltitudeAnalyser<T> : IAltitudeAnalyser<T>, IAltitudeAnalyserConfigured<T>
 		where T : ICanBeClassifiedByAltitude
 	{
-		public decimal minTopIdentifier { get; set; }
-		public decimal minBottomIdentifier { get; set; }
+		public decimal MinTopIdentifier { get; set; }
+		public decimal MinBottomIdentifier { get; set; }
 		AltitudeAnalyserMode Mode { get; set; }
 		
 		public virtual IAltitudeAnalyserConfigured<T> ByLength(int minTopLength, int minBottomLength)
 		{
 			Mode = AltitudeAnalyserMode.Length;
-			minTopIdentifier = minTopLength;
-			minBottomIdentifier = minBottomLength;
+			MinTopIdentifier = minTopLength;
+			MinBottomIdentifier = minBottomLength;
 
 			return this;
 		}
 		public virtual IAltitudeAnalyserConfigured<T> ByVariation(decimal minTopVariation, decimal minBottomVariation)
 		{
 			Mode = AltitudeAnalyserMode.Variation;
-			minTopIdentifier = minTopVariation;
-			minBottomIdentifier = minBottomVariation;
+			MinTopIdentifier = minTopVariation;
+			MinBottomIdentifier = minBottomVariation;
 
 			return this;
 		}
@@ -39,7 +39,7 @@ namespace Domain.Services
 		
 		public virtual IList<T> Identify(IList<T> values)
 		{
-			return Mode == AltitudeAnalyserMode.Variation ? IdentifyByVariation(values, minTopIdentifier, minBottomIdentifier) : IdentifyByLength(values, (int)minTopIdentifier, (int)minBottomIdentifier);
+			return Mode == AltitudeAnalyserMode.Variation ? IdentifyByVariation(values, MinTopIdentifier, MinBottomIdentifier) : IdentifyByLength(values, (int)MinTopIdentifier, (int)MinBottomIdentifier);
 		}
 		private IList<T> IdentifyByVariation(IList<T> values, decimal minTopVariation, decimal minBottomVariation)
 		{
