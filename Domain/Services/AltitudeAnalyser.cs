@@ -33,7 +33,7 @@ namespace Domain.Services
 			return this;
 		}
 		public virtual IAltitudeAnalyserConfigured<T> Configure(IAltitudeAnalyserConfig config)
-		{//TODO: testar cast int -> decimal
+		{
 			return config.Mode == AltitudeAnalyserMode.Length ? ByLength((int)config.MinTop, (int)config.MinBottom) : ByVariation(config.MinTop, config.MinBottom);
 		}
 		

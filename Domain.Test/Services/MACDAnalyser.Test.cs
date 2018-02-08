@@ -23,7 +23,7 @@ namespace Domain.Test.Services
 
 		private MACDConfig GetConfig(int shortEMA, int longEMA, int signalEMA)
 		{
-			return new MACDConfig { EMA1 = shortEMA, EMA2 = longEMA, SignalEMA = signalEMA };
+			return new MACDConfig { EMAConfig = new EMAConfig { EMA1 = shortEMA, EMA2 = longEMA }, SignalEMA = signalEMA };
 		}
 
 		private CandleAnalyser GetCandleAnalyser(decimal[] closeValueCandle)

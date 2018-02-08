@@ -54,8 +54,8 @@ namespace Domain.Services
 		}
 		private IMACDAnalyser calculateMACD(IMACDConfig config, ICandleAnalyser analysis)
 		{
-			LongEMA = analysis.EMA(config.LongEMA);
-			ShortEMA = analysis.EMA(config.ShortEMA);
+			LongEMA = analysis.EMA(config.EMAConfig.LongEMA);
+			ShortEMA = analysis.EMA(config.EMAConfig.ShortEMA);
 			MACD = ShortEMA - LongEMA;
 
 			return this;
@@ -63,7 +63,7 @@ namespace Domain.Services
 		private IMACDAnalyser calculateSignal(IMACDConfig config, ICandleAnalyser analysis, ICandle candle)
 		{
 			var candles = analysis.Previous;
-			var length = candles.Count - config.LongEMA;
+			var length = candles.Count - config.EMAConfig.LongEMA;
 			var previous = candles.TakeUntil(candle, length);
 
 			Signal = previous
@@ -85,7 +85,7 @@ namespace Domain.Services
 		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, ICandleAnalyser analysis)
 		{
 			var candles = analysis.Previous;
-			var length = candles.Count - config.LongEMA - config.SignalEMA;
+			var length = candles.Count - config.EMAConfig.LongEMA - config.SignalEMA;
 			var previous = candles.TakeUntil(candles.Last(), length);
 
 			var macds = new List<decimal>();
@@ -146,7 +146,7 @@ namespace Domain.Services
 			var macds = new List<decimal>();
 
 			var candles = analysis.Previous;
-			var length = candles.Count - config.LongEMA;
+			var length = candles.Count - config.EMAConfig.LongEMA;
 			var previous = candles.TakeUntil(candles.Last(), length);
 
 			macds = previous
