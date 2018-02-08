@@ -35,7 +35,7 @@ namespace Infra.Test
 			InlineData("BTC", CandleTimespan.OneHour, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:00:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
 		]
 		public void The_BitcoinTrade_URL_Should_Be(string symbolName, CandleTimespan timespan, string expected)
-		{
+		{//TODO: olhar o tempo para tras, ex 10 timespan 15 -> 45-00 e nao 0-15.
 			var actual = new BitcoinTradeDataReader().GetUrlFrom(new Symbol() { Name = symbolName }, timespan, dateTime);
 			Assert.Equal(expected, actual);
 		}

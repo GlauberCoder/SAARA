@@ -31,7 +31,7 @@ namespace Domain.Services
 			if (tops.Count() > 1)
 			{
 				var result = IdentifyRecentAndPrevious()(tops);
-				GetTrend(result.recent, result.previous);
+				return GetTrend(result.recent, result.previous);
 			}
 			return Trend.Neutral;
 		}
