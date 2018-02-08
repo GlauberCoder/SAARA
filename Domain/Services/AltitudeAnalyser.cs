@@ -12,8 +12,8 @@ namespace Domain.Services
 	public class AltitudeAnalyser<T> : IAltitudeAnalyser<T>, IAltitudeAnalyserConfigured<T>
 		where T : ICanBeClassifiedByAltitude
 	{
-		decimal minTopIdentifier { get; set; }
-		decimal minBottomIdentifier { get; set; }
+		public decimal minTopIdentifier { get; set; }
+		public decimal minBottomIdentifier { get; set; }
 		AltitudeAnalyserMode Mode { get; set; }
 		
 		public virtual IAltitudeAnalyserConfigured<T> ByLength(int minTopLength, int minBottomLength)

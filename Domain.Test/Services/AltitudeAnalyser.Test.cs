@@ -123,5 +123,17 @@ namespace Domain.Test.Services
 			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().IndexesFrom(values, altitude);
 			Assert.Equal(expected, actual);
 		}
+
+
+		[
+			Theory(DisplayName = "The cast in altitude analyser configured should be correct"),
+			InlineData(3, 3.4, 3.4)
+		]
+		public void The_cast_in_altitude_analyser_configured_should_be_correct(int expected, decimal minTopLength, decimal minBottomLength)
+		{
+			var config = new AltitudeAnalyserConfig { Mode = AltitudeAnalyserMode.Length, MinTop = minTopLength, MinBottom = minBottomLength };
+			var actual =  ((AltitudeAnalyser<FoolICanBeClassifiedByAltitude>) new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config)).minBottomIdentifier;
+			Assert.Equal(expected, actual);
+		}
 	}
 }
