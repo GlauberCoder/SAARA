@@ -12,7 +12,7 @@ namespace Domain.Abstractions.Services
 		/// <summary>
 		/// Sets the analyser to identify trend by first versus last tops (or bottoms)
 		/// </summary>
-		/// <param name="altitude">Altitude used, it can be top or bottom</param>
+		/// <param name="config">Configuration used</param>
 		/// <returns>This analyser</returns>
 		ITrendAnalyserConfigured<T> Configure(ITrendAnalyserConfig config);
 	}

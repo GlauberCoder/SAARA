@@ -2,9 +2,9 @@
 {
 	public enum TrendAnalyserMode
 	{
-		FirstAndLast,
-		MostRecents,
-		HighestAndLowest,
-		HigherTops
+		FirstAndLast = 1,
+		MostRecents = 2,
+		HighestAndLowest = 3,
+		HigherTops = 4
 	}
 }
