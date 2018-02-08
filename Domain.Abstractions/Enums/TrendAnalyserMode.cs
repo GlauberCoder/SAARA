@@ -1,9 +1,10 @@
 ﻿namespace Domain.Abstractions.Enums
 {
-	public enum TrendAnalyserTechnic
+	public enum TrendAnalyserMode
 	{
 		FirstAndLast,
 		MostRecents,
-		HighestAndLowest
+		HighestAndLowest,
+		HigherTops
 	}
 }

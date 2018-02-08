@@ -13,5 +13,6 @@ namespace Domain.Entitys.AnalisysConfig
 		public virtual int SignalEMA { get; set; }
 		public virtual decimal CrossoverTolerance { get; set; }
 		public virtual decimal CrossunderTolerance { get; set; }
+		public int CandlesCountToCrossover { get; set; }
 	}
 }

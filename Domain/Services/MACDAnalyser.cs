@@ -10,7 +10,7 @@ using Util.Extensions;
 
 namespace Domain.Services
 {
-	public class MACDAnalyser : IMACDAnalyser
+	public class MACDAnalyser : IMACDAnalyser, ICanBeClassifiedByAltitude
 	{
 		public virtual decimal LongEMA { get; set; }
 		public virtual decimal ShortEMA { get; set; }
@@ -21,7 +21,8 @@ namespace Domain.Services
 		public virtual TradeSignal CrossSignal { get; set; }
 		public virtual TradeSignal CenteCrossSignal { get; set; }
 		public virtual TradeSignal DivergenceSignal { get; set; }
-		
+
+		public Altitude Altitude { get; set; }
 
 		public MACDAnalyser()
 		{
@@ -47,7 +48,7 @@ namespace Domain.Services
 			Trend = CalculateTrend(MACD, Signal);
 			CrossSignal = CalculateCrossSignal(config, analysis);
 			CenteCrossSignal = CalculateCenterCrossSignal(config, analysis);
-			DivergenceSignal = CalculateDivergenceSignal(config, analysis);
+			//DivergenceSignal = CalculateDivergenceSignal(config, analysis);
 
 			return this;
 		}
@@ -100,7 +101,6 @@ namespace Domain.Services
 				signals.Add(macd.Signal);
 			}
 			return CalculateCrossSignal(config, macds, signals);
-
 		}
 		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, decimal macd, decimal signal, Trend trend)
 		{
@@ -161,64 +161,16 @@ namespace Domain.Services
 				return macdLine.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
 			return TradeSignal.Hold;
 		}
-		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis)
-		{
-			var macds = new List<decimal>();
-			var prices = new List<decimal>();
 
-			var candles = analysis.Previous;
-			var length = candles.Count - config.LongEMA;
-			var previous = candles.TakeUntil(candles.Last(), length);
 
-			macds = previous
-							.Select(c => new MACDAnalyser().calculateMACD(config, new CandleAnalyser { Previous = candles.TakeUntil(c) }).MACD)
-							.ToList();
-			foreach (var item in previous)
-				prices.Add(item.Close);
-
-			return CalculateDivergenceSignal(prices, macds);
-		}
-		public virtual TradeSignal CalculateDivergenceSignal(IList<decimal> price, IList<decimal> macd)
+		public decimal ValueForAltitude()
 		{
-			var bearishDivergence = BearishDivergenceSignal(price, macd);
-			var bullishDivergence = BullishDivergenceSignal(price, macd);
-
-			if (bearishDivergence == TradeSignal.Hold && bullishDivergence != TradeSignal.Hold)
-				return bullishDivergence;
-			if (bearishDivergence != TradeSignal.Hold && bullishDivergence == TradeSignal.Hold)
-				return bearishDivergence;
-			return TradeSignal.Hold;
-		}
-		public virtual TradeSignal BearishDivergenceSignal(IList<decimal> price, IList<decimal> macd)
-		{
-			var altitude = Altitude.Top;
-			var analyser = new TrendAnalyser().ByMostRecents(altitude);
-			var priceTrend = analyser.Identify(price);
-			var macdTrend = analyser.Identify(macd);
-
-			if (BearishDivergence(priceTrend, macdTrend))
-				return TradeSignal.Short;
-			return TradeSignal.Hold;
-		}
-		private bool BearishDivergence(Trend price, Trend macd)
-		{
-			return price == Trend.Up && macd == Trend.Down;
-		}
-		public virtual TradeSignal BullishDivergenceSignal(IList<decimal> price, IList<decimal> macd)
-		{
-			var altitude = Altitude.Bottom;
-			var analyser = new TrendAnalyser().ByMostRecents(altitude);
-			var priceTrend = analyser.Identify(price);
-			var macdTrend = analyser.Identify(macd);
-
-			if (BullishDivergence(priceTrend, macdTrend))
-				return TradeSignal.Short;
-			return TradeSignal.Hold;
-		}
-		private bool BullishDivergence(Trend price, Trend macd)
-		{
-			return price == Trend.Down && macd == Trend.Up;
+			return MACD;
 		}
 
+		public void ClassifyByAltitude(Altitude altitude)
+		{
+			Altitude = altitude;
+		}
 	}
 }

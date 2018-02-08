@@ -1,6 +1,6 @@
 ﻿namespace Domain.Abstractions.Enums
 {
-	public enum AltitudeAnalyserTechnic
+	public enum AltitudeAnalyserMode
 	{
 		Variation,
 		Length

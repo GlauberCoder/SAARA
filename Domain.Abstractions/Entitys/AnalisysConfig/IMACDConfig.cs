@@ -12,5 +12,6 @@ namespace Domain.Abstractions.Entitys.AnalisysConfig
 		int SignalEMA { get; set; }
 		decimal CrossoverTolerance { get; set; }
 		decimal CrossunderTolerance { get; set; }
+		int CandlesCountToCrossover { get; set; }
 	}
 }

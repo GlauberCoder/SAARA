@@ -1,79 +1,71 @@
-﻿using Domain.Abstractions.Enums;
+﻿using Domain.Abstractions.Entitys.AnalisysConfig;
+using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Util.Extensions;
 
 namespace Domain.Services
 {
-	public class TrendAnalyser : ITrendAnalyser
+	public class TrendAnalyser<T> : ITrendAnalyser<T>, ITrendAnalyserConfigured<T>
+		where T : ICanBeClassifiedByAltitude
 	{
 		Altitude Altitude { get; set; }
-		TrendAnalyserTechnic Technic { get; set; }
-		IAltitudeAnalyser DefaultAltitudeAnalyser { get => new AltitudeAnalyser().ByLength(3, 3); }
+		TrendAnalyserMode Mode { get; set; }
+		IAltitudeAnalyserConfigured<T> AltitudeAnalyser { get; set; }
 
-		public virtual ITrendAnalyser ByFirstAndLast(Altitude altitude)
+		public virtual ITrendAnalyserConfigured<T> Configure(ITrendAnalyserConfig config)
 		{
-			Technic = TrendAnalyserTechnic.FirstAndLast;
-			Altitude = altitude;
-
-			return this;
-		}
-		public virtual ITrendAnalyser ByHighestAndLowest(Altitude altitude)
-		{
-			Technic = TrendAnalyserTechnic.HighestAndLowest;
-			Altitude = altitude;
+			Mode = config.Mode;
+			Altitude = Altitude.Top;
+			AltitudeAnalyser = new AltitudeAnalyser<T>().Configure(config.AltitudeAnalyserConfig);
 
 			return this;
 		}
-		public virtual ITrendAnalyser ByMostRecents(Altitude altitude)
+		public virtual Trend Identify(IList<T> values)
 		{
-			Technic = TrendAnalyserTechnic.MostRecents;
-			Altitude = altitude;
-
-			return this;
-		}
-		public virtual Trend Identify(IList<decimal> values)
-		{
-			return Identify(values, DefaultAltitudeAnalyser);
-		}
-		public Trend Identify(IList<decimal> values, IAltitudeAnalyser altitudeAnalyser)
-		{
-			var altitudes = altitudeAnalyser.Identify(values);
-			switch (Technic)
+			var altitudes = AltitudeAnalyser.Identify(values);
+			var tops = altitudes.Where(v => v.Altitude == Altitude).ToList();
+			if (tops.Count() > 1)
 			{
-				case TrendAnalyserTechnic.FirstAndLast:
-					return IdentifyByFirstAndLast(values, altitudes);
-				case TrendAnalyserTechnic.MostRecents:
-					return IdentifyByMostRecents(values, altitudes);
-				case TrendAnalyserTechnic.HighestAndLowest:
-					return IdentifyByHighestAndLowest(values, altitudes);
+				var result = IdentifyRecentAndPrevious()(tops);
+				GetTrend(result.recent, result.previous);
+			}
+			return Trend.Neutral;
+		}
+		private Func<IList<T>, (decimal recent, decimal previous)> IdentifyRecentAndPrevious()
+		{
+			switch (Mode)
+			{
+				case TrendAnalyserMode.FirstAndLast:
+					return IdentifyByFirstAndLast;
+				case TrendAnalyserMode.MostRecents:
+					return IdentifyByMostRecents;
+				case TrendAnalyserMode.HighestAndLowest:
+					return IdentifyByHighestAndLowest;
 				default:
 					throw new Exception("The technic should be defined ");
 			};
 		}
-		private Trend IdentifyByFirstAndLast(IList<decimal> values, IList<Altitude> altitudes)
+		private (decimal recent, decimal previous) IdentifyByFirstAndLast(IList<T> tops)
 		{
-			var first = new AltitudeAnalyser().GetFirst(values, altitudes, Altitude);
-			var last = new AltitudeAnalyser().GetLast(values, altitudes, Altitude);
-			return GetTrend(last, first);
+			var recent = tops.Last().ValueForAltitude();
+			var previous = tops.First().ValueForAltitude();
+			return (recent, previous);
 		}
-		private Trend IdentifyByHighestAndLowest(IList<decimal> values, IList<Altitude> altitudes)
+		private (decimal recent, decimal previous) IdentifyByHighestAndLowest(IList<T> tops)
 		{
-			var higherIndex = new AltitudeAnalyser().GetIndexOfHighest(values, altitudes, Altitude);
-			var lowerIndex = new AltitudeAnalyser().GetIndexOfLowest(values, altitudes, Altitude);
-			return GetTrend(values, higherIndex, lowerIndex);
-			
+			var biggestTopIndex = tops.IndexOfMax(v => v.ValueForAltitude());
+			var lowestTopIndex = tops.IndexOfMin(v => v.ValueForAltitude());
+			return biggestTopIndex > lowestTopIndex ? (tops[biggestTopIndex].ValueForAltitude(), tops[lowestTopIndex].ValueForAltitude()) : (tops[lowestTopIndex].ValueForAltitude(), tops[biggestTopIndex].ValueForAltitude());
 		}
-		private Trend IdentifyByMostRecents(IList<decimal> values, IList<Altitude> altitudes)
+		private (decimal recent, decimal previous) IdentifyByMostRecents(IList<T> tops)
 		{
-			for (int i = altitudes.Count - 1; i >= 0; i--)
-				if(altitudes[i] == Altitude)
-					for (int j = i - 1; j >= 0; j--)
-						if(altitudes[j] == Altitude)
-							return GetTrend(values[i], values[j]);
-			return Trend.Neutral;
+			var recent = tops.Last().ValueForAltitude();
+			var previous = tops[tops.Count() - 2].ValueForAltitude();
+			return (recent, previous);
 		}
 		private Trend GetTrend(decimal? recent, decimal? previous)
 		{
@@ -81,14 +73,5 @@ namespace Domain.Services
 				return Trend.Neutral;
 			return recent > previous ? Trend.Up : Trend.Down;
 		}
-		private Trend GetTrend(IList<decimal> values, int? recentIndex, int? previousIndex)
-		{
-			if (recentIndex == previousIndex || recentIndex == null || previousIndex == null || recentIndex > values.Count || previousIndex > values.Count)
-				return Trend.Neutral;
-			var recent = recentIndex ?? -1;
-			var previous = previousIndex ?? -1;
-			return recentIndex > previousIndex ? GetTrend(values[recent], values[previous]) : GetTrend(values[previous], values[recent]);
-		}
-
 	}
 }
