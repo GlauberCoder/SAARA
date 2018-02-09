@@ -13,43 +13,59 @@ namespace Domain.Test.Services
 {
 	public class AltitudeAnalyserTest
 	{
+		IList<IList<decimal>> values
+		{
+			get
+			{
+				var data = new List<IList<decimal>>();
+				data.Add(new List<decimal> { 100m, 101m, 103m, 105m, 90m, 92m, 89m, 90m, 100m });
+				data.Add(new List<decimal> { 100m, 94m, 98m, 94m, 94m, 96m, 102m, 98m, 94m, 100m, 96m, 104m, 92m, 104m, 94m, 100m, 110m, 104m, 100m, 98m });
+				data.Add(new List<decimal> { 1m, 1.2m, 2m, 1.3m, 1.4m, 1.2m, 1.5m, 1.6m, 1.5m });
+				data.Add(new List<decimal> { 1m, 1.2m, 2m, 1.3m });
+				data.Add(new List<decimal> { 1.2m, 2m, 1.3m, 1.2m });
+				data.Add(new List<decimal> { 2m, 1.3m, 1.4m, 1.2m });
+				data.Add(new List<decimal> { 1.3m, 1.4m, 1.2m, 1.5m });
+				data.Add(new List<decimal> { 1.2m, 1.5m, 1.6m, 1.5m });
+				return data;
+			}
+		}
 		[
 			Theory(DisplayName = "The altitude analyser should return a correct altitude list on analysing by vatiation"),
-			InlineData(Altitude.Neutral, 0, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 1, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 2, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Top, 3, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 4, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 5, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Bottom, 6, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 7, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
-			InlineData(Altitude.Neutral, 8, 0.10, 0.10, new double[] { 100, 101, 103, 105, 90, 92, 89, 90, 100 }),
+			InlineData(Altitude.Neutral, 0, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 1, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 2, 0.10, 0.10, 0),
+			InlineData(Altitude.Top, 3, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 4, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 5, 0.10, 0.10, 0),
+			InlineData(Altitude.Bottom, 6, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 7, 0.10, 0.10, 0),
+			InlineData(Altitude.Neutral, 8, 0.10, 0.10, 0),
 
-			InlineData(Altitude.Top, 0, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 1, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 2, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 3, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 4, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 5, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 6, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 7, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 8, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 9, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 10, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 11, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 12, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 13, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 14, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 15, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 16, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 17, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 18, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 19, 0.05, 0.05, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 })
+			InlineData(Altitude.Top, 0, 0.05, 0.05, 1),
+			InlineData(Altitude.Bottom, 1, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 2, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 3, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 4, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 5, 0.05, 0.05, 1),
+			InlineData(Altitude.Top, 6, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 7, 0.05, 0.05, 1),
+			InlineData(Altitude.Bottom, 8, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 9, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 10, 0.05, 0.05, 1),
+			InlineData(Altitude.Top, 11, 0.05, 0.05, 1),
+			InlineData(Altitude.Bottom, 12, 0.05, 0.05, 1),
+			InlineData(Altitude.Top, 13, 0.05, 0.05, 1),
+			InlineData(Altitude.Bottom, 14, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 15, 0.05, 0.05, 1),
+			InlineData(Altitude.Top, 16, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 17, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 18, 0.05, 0.05, 1),
+			InlineData(Altitude.Neutral, 19, 0.05, 0.05, 1)
 		]
-		public void The_altitude_analyser_should_return_a_correct_altitude_list_on_analysing_by_variation(Altitude expected, int index, decimal minTopLength, decimal minBottomLength, double[] values)
+		public void The_altitude_analyser_should_return_a_correct_altitude_list_on_analysing_by_variation(Altitude expected, int index, decimal minTopLength, decimal minBottomLength, int dataIndex)
 		{
 			var config = new AltitudeAnalyserConfig { Mode = AltitudeAnalyserMode.Variation, MinTop = minTopLength, MinBottom = minBottomLength };
-			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config).Identify(FoolICanBeClassifiedByAltitude.From(values))[index].Altitude;
+			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config).Identify(FoolICanBeClassifiedByAltitude.From(values[dataIndex]))[index].Altitude;
 			Assert.Equal(expected, actual);
 		}
 
@@ -70,60 +86,60 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The altitude analyser should return a correct altitude list on analysing by length"),
-			InlineData(Altitude.Neutral, 0, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 1, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Top, 2, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 3, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 4, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Bottom, 5, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 6, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 7, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
-			InlineData(Altitude.Neutral, 8, 3, 3, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }),
+			InlineData(Altitude.Neutral, 0, 3, 3, 2),
+			InlineData(Altitude.Neutral, 1, 3, 3, 2),
+			InlineData(Altitude.Top, 2, 3, 3, 2),
+			InlineData(Altitude.Neutral, 3, 3, 3, 2),
+			InlineData(Altitude.Neutral, 4, 3, 3, 2),
+			InlineData(Altitude.Bottom, 5, 3, 3, 2),
+			InlineData(Altitude.Neutral, 6, 3, 3, 2),
+			InlineData(Altitude.Neutral, 7, 3, 3, 2),
+			InlineData(Altitude.Neutral, 8, 3, 3, 2),
 
-			InlineData(Altitude.Top, 0, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 1, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 2, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 3, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 4, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 5, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 6, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 7, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 8, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 9, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 10, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 11, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Bottom, 12, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 13, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 14, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 15, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Top, 16, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 17, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 18, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 }),
-			InlineData(Altitude.Neutral, 19, 3, 3, new double[] { 100, 94, 98, 94, 94, 96, 102, 98, 94, 100, 96, 104, 92, 104, 94, 100, 110, 104, 100, 98 })
+			InlineData(Altitude.Top, 0, 3, 3, 1),
+			InlineData(Altitude.Bottom, 1, 3, 3, 1),
+			InlineData(Altitude.Top, 2, 3, 3, 1),
+			InlineData(Altitude.Bottom, 3, 3, 3, 1),
+			InlineData(Altitude.Neutral, 4, 3, 3, 1),
+			InlineData(Altitude.Neutral, 5, 3, 3, 1),
+			InlineData(Altitude.Top, 6, 3, 3, 1),
+			InlineData(Altitude.Neutral, 7, 3, 3, 1),
+			InlineData(Altitude.Bottom, 8, 3, 3, 1),
+			InlineData(Altitude.Neutral, 9, 3, 3, 1),
+			InlineData(Altitude.Neutral, 10, 3, 3, 1),
+			InlineData(Altitude.Top, 11, 3, 3, 1),
+			InlineData(Altitude.Bottom, 12, 3, 3, 1),
+			InlineData(Altitude.Neutral, 13, 3, 3, 1),
+			InlineData(Altitude.Neutral, 14, 3, 3, 1),
+			InlineData(Altitude.Neutral, 15, 3, 3, 1),
+			InlineData(Altitude.Top, 16, 3, 3, 1),
+			InlineData(Altitude.Neutral, 17, 3, 3, 1),
+			InlineData(Altitude.Neutral, 18, 3, 3, 1),
+			InlineData(Altitude.Neutral, 19, 3, 3, 1)
 		]
-		public void The_altitude_analyser_should_return_a_correct_altitude_list_on_analysing_by_length(Altitude expected, int index, int minTopLength, int minBottomLength, double[] values)
+		public void The_altitude_analyser_should_return_a_correct_altitude_list_on_analysing_by_length(Altitude expected, int index, int minTopLength, int minBottomLength, int dataIndex)
 		{
 			var config = new AltitudeAnalyserConfig { Mode = AltitudeAnalyserMode.Length, MinTop = minTopLength, MinBottom = minBottomLength };
-			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config).Identify(FoolICanBeClassifiedByAltitude.From(values))[index].Altitude;
+			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config).Identify(FoolICanBeClassifiedByAltitude.From(values[dataIndex]))[index].Altitude;
 			Assert.Equal(expected, actual);
 		}
 
 		[
 			Theory(DisplayName = "The relative index used on analysing by length should be correct"),
-			InlineData(1, new double[] { 1, 1.2, 2, 1.3 }, Altitude.Top, 0, 3),
-			InlineData(1, new double[] { 1.2, 2, 1.3, 1.2 }, Altitude.Top, 0, 3),
-			InlineData(0, new double[] { 2, 1.3, 1.4, 1.2 }, Altitude.Top, 0, 3),
-			InlineData(2, new double[] { 1.3, 1.4, 1.2, 1.5 }, Altitude.Bottom, 0, 3),
-			InlineData(0, new double[] { 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 0, 3),
-			InlineData(1, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 0, 3),
-			InlineData(2, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 1, 3),
-			InlineData(2, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Top, 2, 3),
-			InlineData(5, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 3, 3),
-			InlineData(5, new double[] { 1, 1.2, 2, 1.3, 1.4, 1.2, 1.5, 1.6, 1.5 }, Altitude.Bottom, 5, 3)
+			InlineData(1, 3, Altitude.Top, 0, 3),
+			InlineData(1, 4, Altitude.Top, 0, 3),
+			InlineData(0, 5, Altitude.Top, 0, 3),
+			InlineData(2, 6, Altitude.Bottom, 0, 3),
+			InlineData(0, 7, Altitude.Bottom, 0, 3),
+			InlineData(1, 2, Altitude.Top, 0, 3),
+			InlineData(2, 2, Altitude.Top, 1, 3),
+			InlineData(2, 2, Altitude.Top, 2, 3),
+			InlineData(5, 2, Altitude.Bottom, 3, 3),
+			InlineData(5, 2, Altitude.Bottom, 5, 3)
 		]
-		public void The_relative_index_used_on_analysing_by_length_should_be_correct(int expected, double[] values, Altitude altitude, int index, int length)
+		public void The_relative_index_used_on_analysing_by_length_should_be_correct(int expected, int dataIndex, Altitude altitude, int index, int length)
 		{
-			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().RelativeIndexFrom(FoolICanBeClassifiedByAltitude.From(values), altitude, index, length);
+			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().RelativeIndexFrom(FoolICanBeClassifiedByAltitude.From(values[dataIndex]), altitude, index, length);
 			Assert.Equal(expected, actual);
 		}
 

@@ -3,6 +3,7 @@ using Domain.Abstractions.Services;
 using Domain.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Domain.Test.Mock
@@ -20,14 +21,9 @@ namespace Domain.Test.Mock
 		{
 			return Value;
 		}
-		public static IList<FoolICanBeClassifiedByAltitude> From(IList<double> values)
+		public static IList<FoolICanBeClassifiedByAltitude> From(IList<decimal> values)
 		{
-			var result = new List<FoolICanBeClassifiedByAltitude>();
-			foreach (var value in values.CastAs<decimal>())
-				result.Add(new FoolICanBeClassifiedByAltitude { Value = value });
-			return result;
+			return values.Select(v => new FoolICanBeClassifiedByAltitude { Value = v }).ToList();
 		}
-
-		
 	}
 }

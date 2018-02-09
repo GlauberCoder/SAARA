@@ -69,5 +69,9 @@ namespace Util.Extensions
 		{
 			return source.IndexOf(source.WithMin(selector));
 		}
+		public static IList<T> Add<T>(this IList<T> list, params T[] items )
+		{
+			return list.Concat(items).ToList();
+		}
 	}
 }

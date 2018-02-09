@@ -21,8 +21,9 @@ namespace Domain.Services
 		public virtual TradeSignal CrossSignal { get; set; }
 		public virtual TradeSignal CenteCrossSignal { get; set; }
 		public virtual TradeSignal DivergenceSignal { get; set; }
+		private decimal valueForAltitudeAnalyser { get; set; }
 
-		public Altitude Altitude { get; set; }
+		public virtual Altitude Altitude { get; set; }
 
 		public MACDAnalyser()
 		{
@@ -161,14 +162,11 @@ namespace Domain.Services
 				return macdLine.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
 			return TradeSignal.Hold;
 		}
-
-
-		public decimal ValueForAltitude()
+		public virtual decimal ValueForAltitude()
 		{
-			return MACD;
+			return valueForAltitudeAnalyser;
 		}
-
-		public void ClassifyByAltitude(Altitude altitude)
+		public virtual void ClassifyByAltitude(Altitude altitude)
 		{
 			Altitude = altitude;
 		}
