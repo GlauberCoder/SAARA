@@ -28,10 +28,10 @@ namespace Infra.Test
 			Theory(DisplayName = "The BitcoinTrade URL should be"),
 			
 
-			InlineData("BTC", CandleTimespan.OneMinute, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T10:09:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
-			InlineData("BTC", CandleTimespan.FiveMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T10:05:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
-			InlineData("BTC", CandleTimespan.FifteenMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:45:00-03:00&end_time=2017-12T10:00:00-03:00&page_size=200&current_page=1"),
-			InlineData("BTC", CandleTimespan.ThirtyMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:30:00-03:00&end_time=2017-12T10:00:00-03:00&page_size=200&current_page=1"),
+			InlineData("BTC", CandleTimespan.OneMinute, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T10:09:00-03:00&end_time=2017-12-12T10:10:00-03:00&page_size=200&current_page=1"),
+			InlineData("BTC", CandleTimespan.FiveMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T10:05:00-03:00&end_time=2017-12-12T10:10:00-03:00&page_size=200&current_page=1"),
+			InlineData("BTC", CandleTimespan.FifteenMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:45:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
+			InlineData("BTC", CandleTimespan.ThirtyMinutes, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:30:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
 			InlineData("BTC", CandleTimespan.OneHour, "https://api.bitcointrade.com.br/v1/public/BTC/trades?start_time=2017-12-12T09:00:00-03:00&end_time=2017-12-12T10:00:00-03:00&page_size=200&current_page=1"),
 		]
 		public void The_BitcoinTrade_URL_Should_Be(string symbolName, CandleTimespan timespan, string expected)
