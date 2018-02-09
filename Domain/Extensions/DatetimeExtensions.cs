@@ -14,6 +14,11 @@ namespace Domain.Extensions
 			return date.AddMinutes((int)candleTimespan);
 		}
 
+		public static DateTime Subtract(this DateTime date, CandleTimespan candleTimespan)
+		{
+			return date.AddMinutes((-1) * ((int)candleTimespan));
+		}
+
 		public static DateTime FirstMinute(this DateTime date, CandleTimespan candleTimespan)
 		{
 			return date.FloorToMinute(candleTimespan.FirstMinute(date.Minute));
@@ -45,10 +50,10 @@ namespace Domain.Extensions
 				case CandleTimespan.FiveMinutes:
 				case CandleTimespan.FifteenMinutes:
 				case CandleTimespan.ThirtyMinutes:
-					return date.FirstMinute(timespan);
+					return date.FirstMinute(timespan).Subtract(timespan);
 
 				case CandleTimespan.OneHour:
-					return date.FloorToHour();
+					return date.FloorToHour().Subtract(timespan);
 
 				default:
 					throw new InvalidCastException("Timespan not recognized");
