@@ -26,61 +26,49 @@ namespace Domain.Test.Services
 				data.Add(new List<decimal> { 2m, 1.3m, 1.4m, 1.2m });
 				data.Add(new List<decimal> { 1.3m, 1.4m, 1.2m, 1.5m });
 				data.Add(new List<decimal> { 1.2m, 1.5m, 1.6m, 1.5m });
+				data.Add(new List<decimal> { 82m, 94m, 98m, 100m, 94m, 89m, 102m, 104m, 94m, 100m, 106m, 104m, 103m, 98m, 108m, 102m, 100m, 108m, 110m, 111m });
+				data.Add(new List<decimal> { 111m, 110m, 108m, 100m, 102m, 108m, 98m, 103m, 104m, 106m, 100m, 94m, 104m, 102m, 89m, 94m, 100m, 98m, 94m, 82m });
+				data.Add(new List<decimal> { 94m, 108m, 102m, 100m, 104m, 111m, 104m, 94m, 110m, 100m, 89m, 103m, 100m, 94m, 82m, 98m, 106m, 102m, 98m, 108m });
 				return data;
 			}
 		}
 		[
-			Theory(DisplayName = "The altitude analyser should return a correct altitude list on analysing by vatiation"),
-			InlineData(Altitude.Neutral, 0, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 1, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 2, 0.10, 0.10, 0),
-			InlineData(Altitude.Top, 3, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 4, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 5, 0.10, 0.10, 0),
-			InlineData(Altitude.Bottom, 6, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 7, 0.10, 0.10, 0),
-			InlineData(Altitude.Neutral, 8, 0.10, 0.10, 0),
+			Theory(DisplayName = "The altitude analyser should return a correct altitude list on analysing by variation"),
+			InlineData(Altitude.Neutral, 0, 10, 10, 0),
+			InlineData(Altitude.Neutral, 1, 10, 10, 0),
+			InlineData(Altitude.Neutral, 2, 10, 10, 0),
+			InlineData(Altitude.Top, 3, 10, 10, 0),
+			InlineData(Altitude.Neutral, 4, 10, 10, 0),
+			InlineData(Altitude.Neutral, 5, 10, 10, 0),
+			InlineData(Altitude.Bottom, 6, 10, 10, 0),
+			InlineData(Altitude.Neutral, 7, 10, 10, 0),
+			InlineData(Altitude.Top, 8, 10, 10, 0),
 
-			InlineData(Altitude.Top, 0, 0.05, 0.05, 1),
-			InlineData(Altitude.Bottom, 1, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 2, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 3, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 4, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 5, 0.05, 0.05, 1),
-			InlineData(Altitude.Top, 6, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 7, 0.05, 0.05, 1),
-			InlineData(Altitude.Bottom, 8, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 9, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 10, 0.05, 0.05, 1),
-			InlineData(Altitude.Top, 11, 0.05, 0.05, 1),
-			InlineData(Altitude.Bottom, 12, 0.05, 0.05, 1),
-			InlineData(Altitude.Top, 13, 0.05, 0.05, 1),
-			InlineData(Altitude.Bottom, 14, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 15, 0.05, 0.05, 1),
-			InlineData(Altitude.Top, 16, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 17, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 18, 0.05, 0.05, 1),
-			InlineData(Altitude.Neutral, 19, 0.05, 0.05, 1)
+			InlineData(Altitude.Top, 0, 5, 5, 1),
+			InlineData(Altitude.Bottom, 1, 5, 5, 1),
+			InlineData(Altitude.Neutral, 2, 5, 5, 1),
+			InlineData(Altitude.Neutral, 3, 5, 5, 1),
+			InlineData(Altitude.Neutral, 4, 5, 5, 1),
+			InlineData(Altitude.Neutral, 5, 5, 5, 1),
+			InlineData(Altitude.Top, 6, 5, 5, 1),
+			InlineData(Altitude.Neutral, 7, 5, 5, 1),
+			InlineData(Altitude.Bottom, 8, 5, 5, 1),
+			InlineData(Altitude.Neutral, 9, 5, 5, 1),
+			InlineData(Altitude.Neutral, 10, 5, 5, 1),
+			InlineData(Altitude.Top, 11, 5, 5, 1),
+			InlineData(Altitude.Bottom, 12, 5, 5, 1),
+			InlineData(Altitude.Top, 13, 5, 5, 1),
+			InlineData(Altitude.Bottom, 14, 5, 5, 1),
+			InlineData(Altitude.Neutral, 15, 5, 5, 1),
+			InlineData(Altitude.Top, 16, 5, 5, 1),
+			InlineData(Altitude.Neutral, 17, 5, 5, 1),
+			InlineData(Altitude.Neutral, 18, 5, 5, 1),
+			InlineData(Altitude.Bottom, 19, 5, 5, 1),
 		]
 		public void The_altitude_analyser_should_return_a_correct_altitude_list_on_analysing_by_variation(Altitude expected, int index, decimal minTopLength, decimal minBottomLength, int dataIndex)
 		{
 			var config = new AltitudeAnalyserConfig { Mode = AltitudeAnalyserMode.Variation, MinTop = minTopLength, MinBottom = minBottomLength };
 			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().Configure(config).Identify(FoolICanBeClassifiedByAltitude.From(values[dataIndex]))[index].Altitude;
-			Assert.Equal(expected, actual);
-		}
-
-		[
-			Theory(DisplayName = "The altitude from reference and variation should be"),
-			InlineData(Altitude.Neutral, 91, 100, 0.10, 0.10),
-			InlineData(Altitude.Bottom, 90, 100, 0.10, 0.10),
-			InlineData(Altitude.Bottom, 89, 100, 0.10, 0.10),
-			InlineData(Altitude.Neutral, 109, 100, 0.10, 0.10),
-			InlineData(Altitude.Top, 110, 100, 0.10, 0.10),
-			InlineData(Altitude.Top, 111, 100, 0.10, 0.10)
-		]
-		public void The_altitude_from_reference_and_variation_should_be(Altitude expected, decimal value, decimal reference, decimal topMinVariation, decimal bottomMinVariation)
-		{
-			var actual = new AltitudeAnalyser<FoolICanBeClassifiedByAltitude>().AltitudeFrom(value, reference, topMinVariation, bottomMinVariation);
 			Assert.Equal(expected, actual);
 		}
 

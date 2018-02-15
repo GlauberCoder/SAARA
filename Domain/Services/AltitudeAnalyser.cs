@@ -43,62 +43,31 @@ namespace Domain.Services
 		}
 		private IList<T> IdentifyByVariation(IList<T> values, decimal minTopVariation, decimal minBottomVariation)
 		{
-			var indexReference = 0;
-			var indexCandidate = 0;
-			var altitude = Altitude.Top;
-
-			for (var i = 1; i < values.Count; i++)
+			var lastValue = values.FirstOrDefault();
+			lastValue?.ClassifyByAltitude(Altitude.Top);
+			foreach (var value in values)
 			{
-				var j = i;
-				while (FitsAltitude(values[i].ValueForAltitude(), values[i - 1].ValueForAltitude(), altitude) && i < values.Count)
-					i++;
-				indexCandidate = i - 1;
-				values[i - 1].ClassifyByAltitude(altitude);
-
-				while(i < values.Count - 1)
+				var lastAltitude = lastValue.Altitude;
+				var actualValue = value.ValueForAltitude() * (int)lastAltitude;
+				var previousValue = lastValue.ValueForAltitude() * (int)lastAltitude;
+				var (tolerance, inverseAltitude) = lastAltitude == Altitude.Top ? (minTopVariation, Altitude.Bottom) : (minBottomVariation, Altitude.Top); 
+				if (actualValue > previousValue)
 				{
-					if (FitsAltitude(values[i].ValueForAltitude(), values[indexCandidate].ValueForAltitude(), altitude))
+					lastValue.ClassifyByAltitude(Altitude.Neutral);
+					value.ClassifyByAltitude(lastAltitude);
+					lastValue = value;
+				}
+				else
+				{
+					var variation = lastValue.ValueForAltitude().AbsolutePercentageOfChange(value.ValueForAltitude());
+					if (actualValue < previousValue && variation >= tolerance)
 					{
-						values[indexCandidate].ClassifyByAltitude(Altitude.Neutral);
-						i--;
-						break;
+						value.ClassifyByAltitude(inverseAltitude);
+						lastValue = value;
 					}
-					else if(AltitudeFrom(values[i].ValueForAltitude(), values[indexReference].ValueForAltitude(), minTopVariation, minBottomVariation) == OppositeOf(altitude))
-					{
-						altitude = OppositeOf(altitude);
-						indexReference = i;
-						i--;
-						break;
-					}
-					i++;
 				}
 			}
 			return values;
-		}
-		public virtual Altitude OppositeOf(Altitude altitude)
-		{
-			switch (altitude)	
-			{
-				case Altitude.Top:
-					return Altitude.Bottom;
-				case Altitude.Bottom:
-					return Altitude.Top;
-				default:
-					return Altitude.Neutral;
-			}
-		}
-		public virtual Altitude AltitudeFrom(decimal value, decimal reference, decimal minTopVariation, decimal minBottomVariation)
-		{
-			var topReference = (1 + minTopVariation) * reference;
-			var bottomReference = (1 - minBottomVariation) * reference;
-
-			if (value >= topReference)
-				return Altitude.Top;
-
-			if (value <= bottomReference)
-				return Altitude.Bottom;
-
-			return Altitude.Neutral;
 		}
 		private IList<T> IdentifyByLength(IList<T> values, int minTopLength, int minBottomLength)
 		{
