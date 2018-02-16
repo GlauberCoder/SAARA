@@ -1,10 +1,8 @@
 ﻿using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Util.Extensions;
 
 namespace Domain.Services
@@ -74,7 +72,7 @@ namespace Domain.Services
 			var altitude = Altitude.Top;
 			var minLength = minTopLength;
 
-			for (var i = 0; i < values.Count - minLength; )
+			for (var i = 0; i < values.Count; )
 			{
 				var index = RelativeIndexFrom(values, altitude, i, minLength);
 				if (index == i)

@@ -1,13 +1,9 @@
 ﻿using Domain.Abstractions.Entitys;
-using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Entitys;
 using Domain.Entitys.AnalisysConfig;
 using Domain.Services;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace Domain.Test.Services
