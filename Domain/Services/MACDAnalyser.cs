@@ -70,7 +70,6 @@ namespace Domain.Services
 			macds.Reverse();
 			return macds;
 		}
-		
 		public virtual TradeSignal CalculateCrossSignal()
 		{
 			if (MACDs.Select(m => m.Value - m.Signal).ToList().LastValueIsCrossing())
@@ -78,7 +77,6 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
-
 		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config)
 		{
 			if (MACDs.SelectList(m => m.Value).LastValueIsCrossing())
@@ -86,7 +84,6 @@ namespace Domain.Services
 
 			return TradeSignal.Hold;
 		}
-		
 		public virtual Trend CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis)
 		{
 			var macdsTrend = new TrendAnalyser<IMACD>().Configure(config.MACDTrendAnalyserConfig).Identify(MACDs);

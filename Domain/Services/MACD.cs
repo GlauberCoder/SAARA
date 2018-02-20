@@ -44,15 +44,15 @@ namespace Domain.Services
 		}
 
 		public virtual Trend Trend => (Value > Signal) ? Trend.Up : Trend.Down;
-		public virtual TradeSignal CrossTradeSignal => Trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
-		public virtual TradeSignal TradeSignal
+		public virtual TradeSignal TradeSignal => Trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
+		public virtual TradeSignal CrossTradeSignal
 		{
 			get
 			{
-				if (CrossTradeSignal == TradeSignal.Long)
+				if (TradeSignal == TradeSignal.Long)
 					return Value > 0 ? TradeSignal.StrongLong : TradeSignal.WeakLong;
 
-				if (CrossTradeSignal == TradeSignal.Short)
+				if (TradeSignal == TradeSignal.Short)
 					return Value < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
 
 				return TradeSignal.Hold;
