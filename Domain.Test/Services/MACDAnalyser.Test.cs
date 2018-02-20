@@ -52,7 +52,7 @@ namespace Domain.Test.Services
 		]
 		public void The_LongEMA_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).LongEMA;
+			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).MACD.LongEMA;
 			Assert.Equal(expected, actual);
 		}
 
@@ -70,7 +70,7 @@ namespace Domain.Test.Services
 		]
 		public void The_ShortEMA_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).ShortEMA;
+			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).MACD.ShortEMA;
 			Assert.Equal(expected, actual);
 		}
 
@@ -92,7 +92,7 @@ namespace Domain.Test.Services
 		]
 		public void The_MACD_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).MACD;
+			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA).MACD.Value;
 			Assert.Equal(expected, actual);
 		}
 
@@ -119,7 +119,7 @@ namespace Domain.Test.Services
 		]
 		public void The_Signal_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle).Signal;
+			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle).MACD.Signal;
 			Assert.Equal(expected, actual);
 		}
 
@@ -145,7 +145,7 @@ namespace Domain.Test.Services
 		]
 		public void The_Histogram_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
-			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle).Histogram;
+			var actual = generateCandleAnalyser( GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle).MACD.Histogram;
 			Assert.Equal(expected, actual);
 		}
 

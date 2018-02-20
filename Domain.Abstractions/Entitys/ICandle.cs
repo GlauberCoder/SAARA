@@ -1,9 +1,10 @@
 ﻿using Domain.Abstractions.Enums;
+using Domain.Abstractions.Services;
 using System;
 
 namespace Domain.Abstractions.Entitys
 {
-	public interface ICandle : IBaseEntity<ICandle>
+	public interface ICandle : IBaseEntity<ICandle>, ICanBeClassifiedByAltitude
 	{
 		IExchangerSymbol Symbol { get; set; }
 		decimal Open { get; set; }

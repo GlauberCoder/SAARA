@@ -9,5 +9,7 @@ namespace Domain.Entitys.AnalisysConfig
 		public virtual decimal CrossoverTolerance { get; set; }
 		public virtual decimal CrossunderTolerance { get; set; }
 		public int CandlesCountToCrossover { get; set; }
+		public ITrendAnalyserConfig PriceTrendAnalyserConfig { get; set; }
+		public ITrendAnalyserConfig MACDTrendAnalyserConfig { get; set; }
 	}
 }

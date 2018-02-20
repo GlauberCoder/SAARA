@@ -12,5 +12,7 @@ namespace Domain.Abstractions.Entitys.AnalisysConfig
 		decimal CrossoverTolerance { get; set; }
 		decimal CrossunderTolerance { get; set; }
 		int CandlesCountToCrossover { get; set; }
+		ITrendAnalyserConfig PriceTrendAnalyserConfig { get; set; }
+		ITrendAnalyserConfig MACDTrendAnalyserConfig { get; set; }
 	}
 }

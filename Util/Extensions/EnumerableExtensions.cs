@@ -73,5 +73,19 @@ namespace Util.Extensions
 		{
 			return list.Concat(items).ToList();
 		}
+		public static IList<T> Foreach<T>(this IList<T> list, Action<T> action)
+		{
+			foreach (var item in list) action(item);
+			return list;
+		}
+
+		public static IList<TResult> SelectList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
+		{
+			return source.Select(selector).ToList();
+		}
+		public static IList<TResult> SelectList<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> selector)
+		{
+			return source.Select(selector).ToList();
+		}
 	}
 }

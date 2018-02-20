@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
+using Domain.Abstractions.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,10 @@ namespace Domain.Extensions
 {
 	public static class EnumerableExtensions
 	{
+		public static decimal EMA(this IList<IMACD> macds, int length)
+		{
+			return macds.Select(c => c.Value).ToList().EMA(length);
+		}
 		public static decimal EMA(this IList<ICandle> candles, int length)
 		{
 			return candles.Select(c => c.Close).ToList().EMA(length);

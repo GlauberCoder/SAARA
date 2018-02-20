@@ -142,11 +142,11 @@ namespace Domain.Test.Services
 		[
 			Theory(DisplayName = "The EMA average distance signal should be"),
 			InlineData(TradeSignal.Hold, 0, 0, 0, Trend.Neutral),
-			InlineData(TradeSignal.Long, 30, 26, 15, Trend.Up),
+			InlineData(TradeSignal.Hold, 30, 26, 15, Trend.Up),
 			InlineData(TradeSignal.Hold, 30, 25, 15, Trend.Up),
 			InlineData(TradeSignal.Long, 11111, 10000, 15, Trend.Up),
 			InlineData(TradeSignal.Hold, 11111,  9400, 15, Trend.Up),
-			InlineData(TradeSignal.Short, 26, 30, 15, Trend.Down),
+			InlineData(TradeSignal.Hold, 26, 30, 15, Trend.Down),
 			InlineData(TradeSignal.Hold, 25, 30, 15, Trend.Down),
 			InlineData(TradeSignal.Short, 10000, 11111, 15, Trend.Down),
 			InlineData(TradeSignal.Hold, 9400, 11111, 15, Trend.Down)
