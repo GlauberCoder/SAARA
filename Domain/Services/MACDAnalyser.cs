@@ -2,6 +2,7 @@
 using Domain.Abstractions.Entitys.AnalisysConfig;
 using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
+using Domain.Entitys.AnalisysConfig;
 using Domain.Extensions;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace Domain.Services
 			Trend = CalculateTrend(MACD, Signal);
 			CrossSignal = CalculateCrossSignal(config, analysis);
 			CenteCrossSignal = CalculateCenterCrossSignal(config, analysis);
-			//DivergenceSignal = CalculateDivergenceSignal(config, analysis);
+			DivergenceSignal = CalculateDivergenceSignal(config, analysis);
 
 			return this;
 		}
@@ -103,20 +104,6 @@ namespace Domain.Services
 			}
 			return CalculateCrossSignal(config, macds, signals);
 		}
-		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, decimal macd, decimal signal, Trend trend)
-		{
-			var variation = trend == Trend.Up ? signal.PercentageOfChange(macd) : macd.PercentageOfChange(signal);
-			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
-
-			if (trend == Trend.Up && variation <= tolerance)
-				return macd > 0 ? TradeSignal.StrongLong : TradeSignal.WeakLong;
-
-			if (trend == Trend.Down && variation <= tolerance)
-				return signal < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
-
-			return TradeSignal.Hold;
-		}
-
 		public virtual TradeSignal CalculateCrossSignal(IMACDConfig config, IList<decimal> macdLine, IList<decimal> signalLine)
 		{
 			if (! macdLine.LastValueIsCrossing(signalLine))
@@ -130,15 +117,6 @@ namespace Domain.Services
 
 			if (macd < signal)
 				return signal < 0 ? TradeSignal.StrongShort : TradeSignal.WeakShort;
-
-			return TradeSignal.Hold;
-		}
-		public virtual TradeSignal CalculateCenterCrossSignal(IMACDConfig config, decimal macdLine, Trend trend)
-		{
-			var tolerance = trend == Trend.Up ? config.CrossoverTolerance : config.CrossunderTolerance;
-
-			if (trend != Trend.Neutral && macdLine <= tolerance)
-				return trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 
 			return TradeSignal.Hold;
 		}
@@ -161,6 +139,57 @@ namespace Domain.Services
 			if (macdLine.LastValueIsCrossing())
 				return macdLine.Last() > 0 ? TradeSignal.Long : TradeSignal.Short;
 			return TradeSignal.Hold;
+		}
+		
+		public virtual TradeSignal CalculateDivergenceSignal(IMACDConfig config, ICandleAnalyser analysis)
+		{
+			var crossSignal = CalculateCrossSignal(config, analysis);
+			if (crossSignal == TradeSignal.Hold)
+				return TradeSignal.Hold;
+
+			var candles = analysis.Previous;
+			var length = candles.Count - config.EMAConfig.LongEMA - config.SignalEMA;
+			var previous = candles.TakeUntil(candles.Last(), length);
+
+			var macds = new List<MACDAnalyser>();
+			var prices = new List<MACDAnalyser>();
+
+			for (int i = 0; i < length; i++)
+			{
+				var analyser = new CandleAnalyser { Previous = candles.SkipLast(i).ToList() };
+				MACDAnalyser macd = (MACDAnalyser)new MACDAnalyser().calculateMACD(config, analyser);
+				macd.valueForAltitudeAnalyser = macd.MACD;
+				macds.Add(macd);
+				prices.Add(new MACDAnalyser { valueForAltitudeAnalyser = candles.Last().Close });
+			}
+
+			var altitudeAnalyserConfig = new AltitudeAnalyserConfig { Mode = AltitudeAnalyserMode.Variation, MinTop = 5, MinBottom = 5};
+			var trendAnalyserConfig = new TrendAnalyserConfig { AltitudeAnalyserConfig = altitudeAnalyserConfig, Mode = TrendAnalyserMode.FirstAndLast };
+
+			var macdsTrend = new TrendAnalyser<MACDAnalyser>().Configure(trendAnalyserConfig).Identify(macds);
+			var pricesTrend = new TrendAnalyser<MACDAnalyser>().Configure(trendAnalyserConfig).Identify(prices);
+
+			if (BearishDivergence(pricesTrend, macdsTrend, crossSignal))
+				return TradeSignal.Short;
+			if (BullishDivergence(pricesTrend, macdsTrend, crossSignal))
+				return TradeSignal.Long;
+			return TradeSignal.Hold;
+		}
+		private bool BearishDivergence(Trend price, Trend macd, TradeSignal crossSignal)
+		{
+			return price == Trend.Up && macd == Trend.Down && IsBearishSignal(crossSignal);
+		}
+		private bool BullishDivergence(Trend price, Trend macd, TradeSignal crossSignal)
+		{
+			return price == Trend.Down && macd == Trend.Up && IsBullishSignal(crossSignal);
+		}
+		private bool IsBullishSignal(TradeSignal signal)
+		{
+			return (signal == TradeSignal.Long || signal == TradeSignal.StrongLong || signal == TradeSignal.WeakLong);
+		}
+		private bool IsBearishSignal(TradeSignal signal)
+		{
+			return (signal == TradeSignal.Short || signal == TradeSignal.StrongShort || signal == TradeSignal.WeakShort);
 		}
 		public virtual decimal ValueForAltitude()
 		{
