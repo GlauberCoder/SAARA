@@ -69,6 +69,22 @@ namespace Util.Extensions
 		{
 			return source.IndexOf(source.WithMin(selector));
 		}
+		public static T WithMax<T, TKey>(this IList<T> source, Func<T, TKey> selector, int index)
+		{
+			return source != null && source.Any() ? source.OrderByDescending(selector).ElementAtOrDefault(index) : default(T);
+		}
+		public static T WithMin<T, TKey>(this IList<T> source, Func<T, TKey> selector, int index)
+		{
+			return source != null && source.Any() ? source.OrderBy(selector).ElementAtOrDefault(index) : default(T);
+		}
+		public static int IndexOfMax<T, TKey>(this IList<T> source, Func<T, TKey> selector, int index)
+		{
+			return source.IndexOf(source.WithMax(selector, index));
+		}
+		public static int IndexOfMin<T, TKey>(this IList<T> source, Func<T, TKey> selector, int index)
+		{
+			return source.IndexOf(source.WithMin(selector, index));
+		}
 		public static IList<T> Add<T>(this IList<T> list, params T[] items )
 		{
 			return list.Concat(items).ToList();

@@ -45,6 +45,8 @@ namespace Domain.Services
 					return IdentifyByMostRecents;
 				case TrendAnalyserMode.HighestAndLowest:
 					return IdentifyByHighestAndLowest;
+				case TrendAnalyserMode.Highest:
+					return IdentifyByHighest;
 				default:
 					throw new Exception("The technic should be defined ");
 			};
@@ -55,17 +57,23 @@ namespace Domain.Services
 			var previous = tops.First().ValueForAltitude();
 			return (recent, previous);
 		}
-		private (decimal recent, decimal previous) IdentifyByHighestAndLowest(IList<T> tops)
-		{
-			var biggestTopIndex = tops.IndexOfMax(v => v.ValueForAltitude());
-			var lowestTopIndex = tops.IndexOfMin(v => v.ValueForAltitude());
-			return biggestTopIndex > lowestTopIndex ? (tops[biggestTopIndex].ValueForAltitude(), tops[lowestTopIndex].ValueForAltitude()) : (tops[lowestTopIndex].ValueForAltitude(), tops[biggestTopIndex].ValueForAltitude());
-		}
 		private (decimal recent, decimal previous) IdentifyByMostRecents(IList<T> tops)
 		{
 			var recent = tops.Last().ValueForAltitude();
 			var previous = tops[tops.Count() - 2].ValueForAltitude();
 			return (recent, previous);
+		}
+		private (decimal recent, decimal previous) IdentifyByHighestAndLowest(IList<T> tops)
+		{
+			var highest = tops.IndexOfMax(v => v.ValueForAltitude());
+			var lowest = tops.IndexOfMin(v => v.ValueForAltitude());
+			return highest > lowest ? (tops[highest].ValueForAltitude(), tops[lowest].ValueForAltitude()) : (tops[lowest].ValueForAltitude(), tops[highest].ValueForAltitude());
+		}
+		private (decimal recent, decimal previous) IdentifyByHighest(IList<T> tops)
+		{
+			var indexOfHighest = tops.IndexOfMax(v => v.ValueForAltitude());
+			var indexOfSecondHighest = tops.IndexOfMax(v => v.ValueForAltitude(), 1);
+			return indexOfHighest > indexOfSecondHighest ? (tops[indexOfHighest].ValueForAltitude(), tops[indexOfSecondHighest].ValueForAltitude()) : (tops[indexOfSecondHighest].ValueForAltitude(), tops[indexOfHighest].ValueForAltitude());
 		}
 		private Trend GetTrend(decimal? recent, decimal? previous)
 		{

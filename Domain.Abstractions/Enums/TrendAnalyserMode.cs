@@ -5,6 +5,6 @@
 		FirstAndLast = 1,
 		MostRecents = 2,
 		HighestAndLowest = 3,
-		HigherTops = 4
+		Highest = 4
 	}
 }
