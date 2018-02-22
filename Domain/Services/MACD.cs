@@ -43,7 +43,7 @@ namespace Domain.Services
 			Altitude = altitude;
 		}
 
-		public virtual Trend Trend => (Value > Signal) ? Trend.Up : Trend.Down;
+		public virtual Trend Trend => (Value > Signal) ? Trend.Up : (Value < Signal) ? Trend.Down : Trend.Neutral;
 		public virtual TradeSignal TradeSignal => Trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 		public virtual TradeSignal CrossTradeSignal
 		{
