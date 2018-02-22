@@ -14,9 +14,16 @@ namespace Domain.Test
 
 		[
 			Theory(DisplayName = "The EMA Should be correct"),
-			InlineData(22.22, 10, 10),
 			InlineData(23.34, 20, 10),
 			InlineData(23.43, 21, 10),
+			InlineData(23.51, 22, 10),
+			InlineData(23.53, 23, 10),
+			InlineData(23.47, 24, 10),
+			InlineData(23.39, 25, 10),
+			InlineData(23.37, 26, 10),
+			InlineData(23.23, 27, 10),
+			InlineData(23.20, 28, 10),
+			InlineData(23.05, 29, 10),
 			InlineData(23.46, 22, 11),
 			InlineData(23.41, 24, 12),
 			InlineData(23.33, 26, 13),
@@ -34,7 +41,9 @@ namespace Domain.Test
 		[
 			Theory(DisplayName = "The EMA should throw argument exception when the number of values are bellow the minimum"),
 			InlineData(4, 10),
-			InlineData(9, 10)
+			InlineData(9, 10),
+			InlineData(19, 10)
+
 		]
 		public void The_EMA_Should_Throw_Argument_Exception_When_The_Number_Of_Values_Are_Bellow_The_Minimum(int numberOfValues, int length)
 		{

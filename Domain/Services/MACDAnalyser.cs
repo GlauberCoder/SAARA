@@ -39,7 +39,7 @@ namespace Domain.Services
 		private IMACDAnalyser calculateMACDs(IMACDConfig config, ICandleAnalyser analysis)
 		{
 			MACDs = calculateMACDsBaseValues(config, analysis);
-			var signalCantBeCalculated = config.SignalEMA - 1;
+			var signalCantBeCalculated = 2 * config.SignalEMA - 1;
 			foreach (var macd in MACDs.Skip(signalCantBeCalculated))
 				macd
 					.CalculateSignal(MACDs.TakeUntil(macd), config.SignalEMA)
@@ -51,7 +51,7 @@ namespace Domain.Services
 		{
 			var macds = new List<IMACD>();
 			var candles = analysis.Previous.ToList();
-			var macdCantBeCalculated = config.EMAConfig.LongEMA - 1;
+			var macdCantBeCalculated = 2 * config.EMAConfig.LongEMA - 1;
 
 			foreach (var candle in candles.Skip(macdCantBeCalculated))
 			{

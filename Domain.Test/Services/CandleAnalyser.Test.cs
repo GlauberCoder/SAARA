@@ -21,7 +21,16 @@ namespace Domain.Test.Services
 			InlineData(23.51, 22, 10),
 			InlineData(23.53, 23, 10),
 			InlineData(23.47, 24, 10),
-
+			InlineData(23.39, 25, 10),
+			InlineData(23.37, 26, 10),
+			InlineData(23.23, 27, 10),
+			InlineData(23.20, 28, 10),
+			InlineData(23.05, 29, 10),
+			InlineData(23.46, 22, 11),
+			InlineData(23.41, 24, 12),
+			InlineData(23.33, 26, 13),
+			InlineData(23.21, 28, 14),
+			InlineData(22.97, 30, 15)
 		]
 		public void The_EMA_from_candle_list_should_be(decimal expected, int numberOfValues, int length)
 		{
@@ -32,9 +41,10 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The EMA from Candle List should raise exception"),
-			InlineData(  9, 10),
-			InlineData( 4, 10)
-			
+			InlineData(9, 10),
+			InlineData(4, 10),
+			InlineData(19, 10)
+
 		]
 		public void The_EMA_from_candle_list_should_raise_exception(int numberOfValues, int length)
 		{

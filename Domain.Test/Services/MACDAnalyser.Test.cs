@@ -44,14 +44,16 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The LongEMA from MACD Analyses after Calculate method should be"),
-			InlineData(23.34, 20, 6, 10),
-			InlineData(23.43, 21, 6, 10),
-			InlineData(23.51, 22, 6, 10),
-			InlineData(23.53, 23, 6, 10),
 			InlineData(23.47, 24, 6, 10),
-			InlineData(23.46, 22, 6, 11),
-			InlineData(23.41, 24, 6, 12),
-			InlineData(23.33, 26, 6, 13)
+			InlineData(23.39, 25, 6, 10),
+			InlineData(23.37, 26, 6, 10),
+			InlineData(23.23, 27, 6, 10),
+			InlineData(23.20, 28, 6, 10),
+			InlineData(23.05, 29, 6, 10),
+			InlineData(22.90, 30, 6, 10),
+			InlineData(23.20, 28, 6, 12),
+			InlineData(23.07, 29, 6, 12),
+			InlineData(22.93, 30, 6, 12) 
 		]
 		public void The_LongEMA_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
@@ -62,14 +64,16 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The ShortEMA from MACD Analyses after Calculate method should be"),
-			InlineData(23.59, 20, 6, 10),
-			InlineData(23.66, 21, 6, 10),
-			InlineData(23.72, 22, 6, 10),
-			InlineData(23.70, 23, 6, 10),
-			InlineData(23.55, 24, 6, 10),
-			InlineData(23.60, 21, 7, 10),
-			InlineData(23.54, 21, 8, 10),
-			InlineData(23.48, 21, 9, 10)
+			InlineData(23.54, 24, 6, 10),
+			InlineData(23.43, 25, 6, 10),
+			InlineData(23.42, 26, 6, 10),
+			InlineData(23.22, 27, 6, 10),
+			InlineData(23.18, 28, 6, 10),
+			InlineData(22.96, 29, 6, 10),
+			InlineData(22.74, 30, 6, 10),
+			InlineData(23.18, 28, 6, 12),
+			InlineData(22.96, 29, 6, 12),
+			InlineData(22.74, 30, 6, 12),
 		]
 		public void The_ShortEMA_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
@@ -80,18 +84,16 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The MACD value from MACD Analyses after Calculate method should be"),
-			InlineData(0.25, 20, 6, 10),
-			InlineData(0.23, 21, 6, 10),
-			InlineData(0.21, 22, 6, 10),
-			InlineData(0.17, 23, 6, 10),
-			InlineData(0.08, 24, 6, 10),
-			InlineData(0.26, 22, 6, 11),
-			InlineData(0.14, 24, 6, 12),
-			InlineData(0.07, 26, 6, 13),
-			InlineData(0.17, 21, 7, 10),
-			InlineData(0.11, 21, 8, 10),
-			InlineData(0.05, 21, 9, 10)
-
+			InlineData(0.07, 24, 6, 10),
+			InlineData(0.04, 25, 6, 10),
+			InlineData(0.05, 26, 6, 10),
+			InlineData(-0.01, 27, 6, 10),
+			InlineData(-0.02, 28, 6, 10),
+			InlineData(-0.09, 29, 6, 10),
+			InlineData(-0.16, 30, 6, 10),
+			InlineData(-0.02, 28, 6, 12),
+			InlineData(-0.11, 29, 6, 12),
+			InlineData(-0.19, 30, 6, 12)
 		]
 		public void The_MACD_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA)
 		{
@@ -102,23 +104,13 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The Signal from MACD Analyses after Calculate method should be"),
-			InlineData( 0.04, 14, 6, 10, 4, 14),
-			InlineData( 0.09, 15, 6, 10, 4, 15),
-			InlineData( 0.16, 16, 6, 10, 4, 16),
-			InlineData( 0.21, 17, 6, 10, 4, 17),
-			InlineData( 0.24, 18, 6, 10, 4, 18),
-			InlineData( 0.26, 19, 6, 10, 4, 19),
-			InlineData( 0.26, 20, 6, 10, 4, 20),
-			InlineData( 0.25, 21, 6, 10, 4, 21),
-			InlineData( 0.23, 22, 6, 10, 4, 22),
-			InlineData( 0.21, 23, 6, 10, 4, 23),
-			InlineData( 0.16, 24, 6, 10, 4, 24),
-			InlineData( 0.10, 25, 6, 10, 4, 25),
-			InlineData( 0.07, 26, 6, 10, 4, 26),
-			InlineData( 0.01, 27, 6, 10, 4, 27),
-			InlineData(-0.02, 28, 6, 10, 4, 28),
-			InlineData(-0.06, 29, 6, 10, 4, 29),
-			InlineData(-0.12, 30, 6, 10, 4, 30)
+
+			InlineData(0.08, 25, 6, 10, 3, 25),
+			InlineData(0.07, 26, 6, 10, 3, 26),
+			InlineData(0.03, 27, 6, 10, 3, 27),
+			InlineData(-0.0, 28, 6, 10, 3, 28),
+			InlineData(-0.04, 29, 6, 10, 3, 29),
+			InlineData(-0.10, 30, 6, 10, 3, 30),
 		]
 		public void The_Signal_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
@@ -128,23 +120,10 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The Histogram from MACD Analyses after Calculate method should be"),
-			InlineData( 0.02, 14, 6, 10, 4, 14),
-			InlineData( 0.06, 15, 6, 10, 4, 15),
-			InlineData( 0.10, 16, 6, 10, 4, 16),
-			InlineData( 0.08, 17, 6, 10, 4, 17),
-			InlineData( 0.05, 18, 6, 10, 4, 18),
-			InlineData( 0.03, 19, 6, 10, 4, 19),
-			InlineData(-0.01, 20, 6, 10, 4, 20),
-			InlineData(-0.02, 21, 6, 10, 4, 21),
-			InlineData(-0.02, 22, 6, 10, 4, 22),
-			InlineData(-0.04, 23, 6, 10, 4, 23),
-			InlineData(-0.08, 24, 6, 10, 4, 24),
-			InlineData(-0.08, 25, 6, 10, 4, 25),
-			InlineData(-0.06, 26, 6, 10, 4, 26),
-			InlineData(-0.08, 27, 6, 10, 4, 27),
-			InlineData(-0.04, 28, 6, 10, 4, 28),
-			InlineData(-0.07, 29, 6, 10, 4, 29),
-			InlineData(-0.08, 30, 6, 10, 4, 30)
+			InlineData(-0.04, 27, 6, 10, 3, 27),
+			InlineData(-0.02, 28, 6, 10, 3, 28),
+			InlineData(-0.05, 29, 6, 10, 3, 29),
+			InlineData(-0.06, 30, 6, 10, 3, 30),
 		]
 		public void The_Histogram_from_MACDAnalyses_after_Calculate_method_should_be(decimal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{

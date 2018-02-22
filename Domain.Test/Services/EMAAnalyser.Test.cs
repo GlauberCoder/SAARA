@@ -54,11 +54,11 @@ namespace Domain.Test.Services
 
 		[
 			Theory(DisplayName = "The ShortEMA after Calculate method should be"),
-			InlineData(23.59, 20, 6, 10),
-			InlineData(23.66, 21, 6, 10),
-			InlineData(23.72, 22, 6, 10),
-			InlineData(23.70, 23, 6, 10),
-			InlineData(23.55, 24, 6, 10),
+			InlineData(23.58, 20, 6, 10),
+			InlineData(23.64, 21, 6, 10),
+			InlineData(23.68, 22, 6, 10),
+			InlineData(23.68, 23, 6, 10),
+			InlineData(23.54, 24, 6, 10),
 			InlineData(23.60, 21, 7, 10),
 			InlineData(23.54, 21, 8, 10),
 			InlineData(23.48, 21, 9, 10)
@@ -92,7 +92,9 @@ namespace Domain.Test.Services
 		[
 			Theory(DisplayName = "The_EMAAnalyser_should_raise_exception when candle count is not greater than longEMA"),
 			InlineData(5, 6, 10),
-			InlineData(9, 6, 10)
+			InlineData(9, 6, 10),
+			InlineData(19, 6, 10),
+
 		]
 		public void The_EMAAnalyser_should_raise_exception_when_candlecount_is_not_greater_than_longEMA(int candleCount, int shortEMA, int longEMA)
 		{
