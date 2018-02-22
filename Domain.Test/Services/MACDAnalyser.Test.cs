@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions.Entitys;
+using Domain.Abstractions.Enums;
 using Domain.Abstractions.Services;
 using Domain.Entitys;
 using Domain.Entitys.AnalisysConfig;
@@ -19,7 +20,9 @@ namespace Domain.Test.Services
 
 		private MACDConfig GetConfig(int shortEMA, int longEMA, int signalEMA)
 		{
-			return new MACDConfig { EMAConfig = new EMAConfig { EMA1 = shortEMA, EMA2 = longEMA }, SignalEMA = signalEMA };
+			var altitudeAnalyserConfig = new AltitudeAnalyserConfig { MinBottom = 3, MinTop = 3, Mode = AltitudeAnalyserMode.Length };
+			var trendAnalyserConfig = new TrendAnalyserConfig { AltitudeAnalyserConfig = altitudeAnalyserConfig, Mode = TrendAnalyserMode.MostRecents };
+			return new MACDConfig { EMAConfig = new EMAConfig { EMA1 = shortEMA, EMA2 = longEMA }, SignalEMA = signalEMA, MACDTrendAnalyserConfig = trendAnalyserConfig , PriceTrendAnalyserConfig = trendAnalyserConfig };
 		}
 
 		private CandleAnalyser GetCandleAnalyser(decimal[] closeValueCandle)
@@ -100,8 +103,8 @@ namespace Domain.Test.Services
 		[
 			Theory(DisplayName = "The Signal from MACD Analyses after Calculate method should be"),
 			InlineData( 0.04, 14, 6, 10, 4, 14),
-			InlineData( 0.08, 15, 6, 10, 4, 15),
-			InlineData( 0.15, 16, 6, 10, 4, 16),
+			InlineData( 0.09, 15, 6, 10, 4, 15),
+			InlineData( 0.16, 16, 6, 10, 4, 16),
 			InlineData( 0.21, 17, 6, 10, 4, 17),
 			InlineData( 0.24, 18, 6, 10, 4, 18),
 			InlineData( 0.26, 19, 6, 10, 4, 19),
@@ -126,8 +129,8 @@ namespace Domain.Test.Services
 		[
 			Theory(DisplayName = "The Histogram from MACD Analyses after Calculate method should be"),
 			InlineData( 0.02, 14, 6, 10, 4, 14),
-			InlineData( 0.07, 15, 6, 10, 4, 15),
-			InlineData( 0.11, 16, 6, 10, 4, 16),
+			InlineData( 0.06, 15, 6, 10, 4, 15),
+			InlineData( 0.10, 16, 6, 10, 4, 16),
 			InlineData( 0.08, 17, 6, 10, 4, 17),
 			InlineData( 0.05, 18, 6, 10, 4, 18),
 			InlineData( 0.03, 19, 6, 10, 4, 19),

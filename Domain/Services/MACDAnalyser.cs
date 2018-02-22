@@ -38,9 +38,9 @@ namespace Domain.Services
 		}
 		private IMACDAnalyser calculateMACDs(IMACDConfig config, ICandleAnalyser analysis)
 		{
-			var MACDs = calculateMACDsBaseValues(config, analysis);
-
-			foreach (var macd in MACDs)
+			MACDs = calculateMACDsBaseValues(config, analysis);
+			var signalCantBeCalculated = config.SignalEMA - 1;
+			foreach (var macd in MACDs.Skip(signalCantBeCalculated))
 				macd
 					.CalculateSignal(MACDs.TakeUntil(macd), config.SignalEMA)
 					.CalculateHistogram();
@@ -50,24 +50,20 @@ namespace Domain.Services
 		private IList<IMACD> calculateMACDsBaseValues(IMACDConfig config, ICandleAnalyser analysis)
 		{
 			var macds = new List<IMACD>();
-			var allCandles = analysis.Previous.ToList();
-			allCandles.Add(analysis.Main);
-			allCandles.Reverse();
-			var previousCandles = allCandles.ToList();
+			var candles = analysis.Previous.ToList();
+			var macdCantBeCalculated = config.EMAConfig.LongEMA - 1;
 
-			foreach (var candle in allCandles)
+			foreach (var candle in candles.Skip(macdCantBeCalculated))
 			{
-				previousCandles.Remove(candle);
 				var macd = new MACD
 				{
 					Candle = candle,
-					LongEMA = previousCandles.EMA(config.EMAConfig.LongEMA),
-					ShortEMA = previousCandles.EMA(config.EMAConfig.ShortEMA)
+					LongEMA = candles.TakeUntil(candle).EMA(config.EMAConfig.LongEMA),
+					ShortEMA = candles.TakeUntil(candle).EMA(config.EMAConfig.ShortEMA)
 				}
 				.CalculateValue();
 				macds.Add(macd);
 			}
-			macds.Reverse();
 			return macds;
 		}
 		public virtual TradeSignal CalculateCrossSignal()
