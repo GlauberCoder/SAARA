@@ -131,7 +131,48 @@ namespace Domain.Test.Services
 			Assert.Equal(expected, actual);
 		}
 
+		[
+			Theory(DisplayName = "The Center cross signal should be"),
+			InlineData(TradeSignal.StrongShort, 27, 6, 10, 3, 27),
+			InlineData(TradeSignal.Hold, 28, 6, 10, 3, 28),
+			InlineData(TradeSignal.Hold, 29, 6, 10, 3, 29),
+			InlineData(TradeSignal.Hold, 30, 6, 10, 3, 30),
+		]
+		public void The_Center_Cross_Signal_should_be(TradeSignal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
+		{
+			var actual = ((MACDAnalyser) generateCandleAnalyser(GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle))
+				.CalculateCenterCrossSignal();
+			Assert.Equal(expected, actual);
+		}
 
+
+		[
+			Theory(DisplayName = "The Cross signal should be"),
+			InlineData(TradeSignal.Hold, 27, 6, 10, 3, 27),
+			InlineData(TradeSignal.Hold, 28, 6, 10, 3, 28),
+			InlineData(TradeSignal.Hold, 29, 6, 10, 3, 29),
+			InlineData(TradeSignal.Hold, 30, 6, 10, 3, 30),
+		]
+		public void The_Cross_Signal_should_be(TradeSignal expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
+		{
+			var actual = ((MACDAnalyser)generateCandleAnalyser(GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle))
+				.CalculateCrossSignal();
+			Assert.Equal(expected, actual);
+		}
+
+		[
+			Theory(DisplayName = "The Divergence signal should be"),
+			InlineData(Trend.Neutral, 27, 6, 10, 3, 27),
+			InlineData(Trend.Neutral, 28, 6, 10, 3, 28),
+			InlineData(Trend.Neutral, 29, 6, 10, 3, 29),
+			InlineData(Trend.Neutral, 30, 6, 10, 3, 30),
+		]
+		public void The_Divergence_Signal_should_be(Trend expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
+		{
+			var actual = ((MACDAnalyser)generateCandleAnalyser(GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle))
+				.CalculateDivergenceSignal();
+			Assert.Equal(expected, actual);
+		}
 
 	}
 }
