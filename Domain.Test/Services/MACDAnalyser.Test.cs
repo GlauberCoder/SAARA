@@ -169,8 +169,9 @@ namespace Domain.Test.Services
 		]
 		public void The_Divergence_Signal_should_be(Trend expected, int candleCount, int shortEMA, int longEMA, int signalEMA, int referenceCandle)
 		{
+
 			var actual = ((MACDAnalyser)generateCandleAnalyser(GetCloseCandleValues(candleCount), shortEMA, longEMA, signalEMA, referenceCandle))
-				.CalculateDivergenceSignal();
+				.CalculateDivergenceSignal(GetConfig(shortEMA, longEMA, signalEMA), GetCandleAnalyser(GetCloseCandleValues(30)));
 			Assert.Equal(expected, actual);
 		}
 

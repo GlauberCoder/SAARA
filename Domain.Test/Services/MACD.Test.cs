@@ -11,8 +11,6 @@ namespace Domain.Test.Services
 {
 	public class MACDTest
 	{
-		//		private IList<decimal> macds => new List<decimal>(new decimal[] { 0.25m, 0.23m, 0.21m, 0.17m, 0.08m, 0.26m, 0.14m, 0.07m, 0.17m, 0.11m, 0.05m });
-
 		decimal[] values => new decimal[] { 0.25m, 0.23m, 0.21m, 0.17m, 0.08m, 0.26m, 0.14m, 0.07m, 0.17m, 0.11m, 0.05m };
 		List<IMACD> Macds
 		{
@@ -116,6 +114,5 @@ namespace Domain.Test.Services
 			var actual = new MACD() { Value = value, Signal = signal }.CrossTradeSignal;
 			Assert.Equal(expected, actual);
 		}
-
 	}
 }
