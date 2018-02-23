@@ -149,14 +149,18 @@ namespace Util.Extensions
 		}
 
 		/// <summary>
+		/// Calculates the absolute percentage of the diference of this number for another
+		/// </summary>
+		/// <param name="inThis">Absolute Percentage variation of a number in another</param>
+		/// <returns>Absolute Percentage variation of the 'number' for 'inThis'</returns>
+		public static decimal AbsolutePercentageOfChange(this decimal number, decimal inThis) => (inThis - number).Percentage(number).Abs();
+
+		/// <summary>
 		/// Calculates the percentage of the diference of this number for another
 		/// </summary>
 		/// <param name="inThis">Percentage variation of a number in another</param>
 		/// <returns>Percentage variation of the 'number' for 'inThis'</returns>
-		public static decimal PercentageOfChange(this decimal number, decimal inThis)
-		{
-			return (inThis - number).Percentage(inThis);
-		}
+		public static decimal PercentageOfChange(this decimal number, decimal inThis) => (inThis - number).Percentage(number);
 
 		/// <summary>
 		/// Calculates the percentagem of this number in another

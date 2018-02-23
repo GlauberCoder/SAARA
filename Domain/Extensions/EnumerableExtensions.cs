@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
+using Domain.Abstractions.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,17 +10,22 @@ namespace Domain.Extensions
 {
 	public static class EnumerableExtensions
 	{
+		public static decimal EMA(this IList<IMACD> macds, int length)
+		{
+			return macds.Select(c => c.Value).ToList().EMA(length);
+		}
 		public static decimal EMA(this IList<ICandle> candles, int length)
 		{
 			return candles.Select(c => c.Close).ToList().EMA(length);
 		}
 		public static decimal EMA(this IList<decimal> values, int length, int precision = 2)
 		{
-			var minNumberOfValues = length;
+			var minNumberOfValues = 2*length;
 
 			if (values.Count < minNumberOfValues)
 				throw new ArgumentException("Number of values is bellow to the minimal for this length.");
 
+			values = values.TakeLast(minNumberOfValues).ToList();
 			var matureValues = values.Skip(length);
 			var ema = values.Take(length).Average();
 

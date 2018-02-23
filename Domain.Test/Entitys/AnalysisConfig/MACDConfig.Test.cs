@@ -17,7 +17,7 @@ namespace Domain.Test.Entitys.AnalysisConfig
 		]
 		public void The_short_EMA_of_MACD_config_should_be_the_lowest_value(int expected, int value1, int value2)
 		{
-			var actual = new MACDConfig { EMA1 = value1, EMA2 = value2 }.ShortEMA;
+			var actual = new MACDConfig { EMAConfig = new EMAConfig { EMA1 = value1, EMA2 = value2 } }.EMAConfig.ShortEMA;
 			Assert.Equal(expected, actual);
 		}
 
@@ -30,7 +30,7 @@ namespace Domain.Test.Entitys.AnalysisConfig
 		]
 		public void The_long_EMA_of_MACD_config_should_be_the_greatest_value(int expected, int value1, int value2)
 		{
-			var actual = new MACDConfig { EMA1 = value1, EMA2 = value2 }.LongEMA;
+			var actual = new MACDConfig { EMAConfig = new EMAConfig { EMA1 = value1, EMA2 = value2 } }.EMAConfig.LongEMA;
 			Assert.Equal(expected, actual);
 		}
 	}

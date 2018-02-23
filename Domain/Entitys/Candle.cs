@@ -14,5 +14,17 @@ namespace Domain.Entitys
 		public virtual decimal Vol { get; set; }
 		public virtual CandleTimespan TimespanType { get; set; }
 		public virtual DateTime Date { get; set; }
+
+		public Altitude Altitude { get; private set; }
+
+		public void ClassifyByAltitude(Altitude altitude)
+		{
+			Altitude = altitude;
+		}
+
+		public decimal ValueForAltitude()
+		{
+			return Close;
+		}
 	}
 }
