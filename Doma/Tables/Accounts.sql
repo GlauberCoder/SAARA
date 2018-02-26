@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Accounts]
+(
+	[ID] BIGINT NOT NULL PRIMARY KEY IDENTITY, 
+    [Name] NVARCHAR(150) NOT NULL, 
+    [Exclusion] DATETIME NULL
+)

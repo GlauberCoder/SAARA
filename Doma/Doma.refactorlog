@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="731866ba-9e21-4152-a4a3-ad7e36e0ac07" ChangeDateTime="02/26/2018 15:36:45">
+    <Property Name="ElementName" Value="[dbo].[Exchanger].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Exchanger]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="6fbded17-b0bf-4432-8594-070047fe3a33" ChangeDateTime="02/26/2018 17:52:28">
+    <Property Name="ElementName" Value="[dbo].[Symbol].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Symbol]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="e2afbb3a-ef13-43dd-b724-27884a846080" ChangeDateTime="02/26/2018 17:54:14">
+    <Property Name="ElementName" Value="[dbo].[Symbol].[Description]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Symbol]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Exclusion" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="206e1c53-5824-408b-acf4-ecfb01ab2705" ChangeDateTime="02/26/2018 19:10:35">
+    <Property Name="ElementName" Value="[dbo].[Accounts].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Accounts]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="ID" />
+  </Operation>
+</Operations>

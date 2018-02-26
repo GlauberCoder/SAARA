@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Infra.Extensions;
 
 namespace SAARA
 {
@@ -18,6 +20,7 @@ namespace SAARA
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
+			services.AddInfra(Configuration.GetConnectionString("SAARAContext"));
 			//JobScheduler.Start();
 		}
 
