@@ -33,16 +33,8 @@ namespace Domain.Services
 			return this;
 		}
 
-		public virtual decimal ValueForAltitude()
-		{
-			return Value;
-		}
-
-		public virtual void ClassifyByAltitude(Altitude altitude)
-		{
-			Altitude = altitude;
-		}
-
+		public virtual decimal ValueForAltitude() => Value;
+		public virtual void ClassifyByAltitude(Altitude altitude) => Altitude = altitude;
 		public virtual Trend Trend => (Value > Signal) ? Trend.Up : Trend.Down;
 		public virtual TradeSignal CrossTradeSignal => Trend == Trend.Up ? TradeSignal.Long : TradeSignal.Short;
 		public virtual TradeSignal TradeSignal
