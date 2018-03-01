@@ -18,7 +18,9 @@ namespace Domain.Services
 		public virtual decimal LeadingSpanA { get; private set; }
 		public virtual decimal LeadingSpanB { get; private set; }
 		public virtual decimal LaggingSpan { get; private set; }
-
+		public virtual IList<IIchimokuCloudAnalyser> Previous { get; private set; }
+		public virtual IList<IIchimokuCloudAnalyser> Next { get; private set; }
+		//TODO: identify lagging
 		public IchimokuCloudAnalyser()
 		{
 		}
@@ -41,8 +43,8 @@ namespace Domain.Services
 		private decimal CalculateAverageBetweenHighAndLow(IList<ICandle> candles, int takeLast)
 		{
 			candles = candles.TakeLast(takeLast).ToList();
-			var high = candles.Max().Close;
-			var low = candles.Min().Close;
+			var high = candles.Max(c => c.Close);
+			var low = candles.Min(c => c.Close);
 			return CalculateMidPoint(high, low);
 		}
 		private decimal CalculateMidPoint(decimal point, decimal otherPoint)
