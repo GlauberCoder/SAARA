@@ -13,13 +13,14 @@ namespace Domain.Services
 {
 	public class IchimokuCloudAnalyser : IIchimokuCloudAnalyser
 	{
-		public virtual decimal ConversionLine { get; private set; }
-		public virtual decimal BaseLine { get; private set; }
-		public virtual decimal LeadingSpanA { get; private set; }
-		public virtual decimal LeadingSpanB { get; private set; }
-		public virtual decimal LaggingSpan { get; private set; }
-		public virtual IList<IIchimokuCloudAnalyser> Previous { get; private set; }
-		public virtual IList<IIchimokuCloudAnalyser> Next { get; private set; }
+		public virtual decimal ConversionLine { get; set; }
+		public virtual decimal BaseLine { get; set; }
+		public virtual decimal LeadingSpanA { get; set; }
+		public virtual decimal LeadingSpanB { get; set; }
+		public virtual decimal LaggingSpan { get; set; }
+		public virtual IList<IIchimokuCloudAnalyser> Previous { get; set; }
+		public virtual IIchimokuCloudAnalyser ReferenceToCloud { get; set; }
+		public virtual ICandle Candle { get; set; }
 		//TODO: identify lagging
 		public IchimokuCloudAnalyser()
 		{
@@ -31,12 +32,18 @@ namespace Domain.Services
 		public virtual IIchimokuCloudAnalyser Calculate(IIchimokuCloudConfig config, ICandleAnalyser analysis)
 		{
 			var candles = analysis.Previous;
+			CalculateIchimokuCloudBase(config, candles);
+			//calculatePreviousIchimokuCloud(config, candles);
 
-			ConversionLine = CalculateAverageBetweenHighAndLow(candles, config.ConversionLine);
-			BaseLine = CalculateAverageBetweenHighAndLow(candles, config.BaseLine);
+			return this;
+		}
+		public virtual IIchimokuCloudAnalyser CalculateIchimokuCloudBase(IIchimokuCloudConfig config, IList<ICandle> previousCandles)
+		{
+			ConversionLine = CalculateAverageBetweenHighAndLow(previousCandles, config.ConversionLine);
+			BaseLine = CalculateAverageBetweenHighAndLow(previousCandles, config.BaseLine);
 			LeadingSpanA = CalculateMidPoint(ConversionLine, BaseLine);
-			LeadingSpanB = CalculateAverageBetweenHighAndLow(candles, config.LeadingSpanB);
-			LaggingSpan = TakeLastCloseCandleValue(candles, config.LaggingSpan);
+			LeadingSpanB = CalculateAverageBetweenHighAndLow(previousCandles, config.LeadingSpanB);
+			LaggingSpan = TakeLastCloseCandleValue(previousCandles, config.LaggingSpan);
 
 			return this;
 		}
@@ -55,6 +62,55 @@ namespace Domain.Services
 		{
 			return candles.TakeLast(pastCount).FirstOrDefault().Close;
 		}
-
+		public virtual TradeSignal CalculateConversionBaseCrossover()
+		{
+			var candles = Previous;
+			Previous.Add(this);
+			if (candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing())
+			{
+				if(ConversionLine > BaseLine)
+				{
+					if (isBellowTheCloud(ConversionLine))
+						return TradeSignal.WeakLong;
+					if (isAboveTheCloud(ConversionLine))
+						return TradeSignal.StrongLong;
+				}
+				else
+				{
+					if (isBellowTheCloud(ConversionLine))
+						return TradeSignal.StrongShort;
+					if (isAboveTheCloud(ConversionLine))
+						return TradeSignal.WeakShort;
+				}
+			}
+			return TradeSignal.Hold;
+		}
+		private IIchimokuCloudAnalyser calculatePreviousIchimokuCloud(IIchimokuCloudConfig config, IList<ICandle> candles)
+		{
+			Previous = new List<IIchimokuCloudAnalyser>();
+			foreach (var candle in candles)
+				Previous.Add( new IchimokuCloudAnalyser { Candle = candle }
+										.CalculateIchimokuCloudBase(config, candles.TakePrevious(candle, candles.Count)) );
+			ReferenceToCloud = Previous.TakeLast(config.LaggingSpan).FirstOrDefault();
+			return this;
+		}
+		private IchimokuCloud ichimokuCloudColor(IIchimokuCloudConfig config)
+		{
+			if (ReferenceToCloud.LeadingSpanA == ReferenceToCloud.LeadingSpanB)
+				return IchimokuCloud.Neutral;
+			return ReferenceToCloud.LeadingSpanA > ReferenceToCloud.LeadingSpanB ? IchimokuCloud.Green : IchimokuCloud.Red;
+		}
+		private bool isInsideTheCloud(decimal value)
+		{
+			return !isAboveTheCloud(value) && !isBellowTheCloud(value);
+		}
+		private bool isBellowTheCloud(decimal value)
+		{
+			return value < ReferenceToCloud.LeadingSpanA && value < ReferenceToCloud.LeadingSpanB;
+		}
+		private bool isAboveTheCloud(decimal value)
+		{
+			return value > ReferenceToCloud.LeadingSpanA && value > ReferenceToCloud.LeadingSpanB;
+		}
 	}
 }

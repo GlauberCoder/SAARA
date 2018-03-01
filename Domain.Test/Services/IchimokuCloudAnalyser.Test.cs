@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions.Entitys;
 using Domain.Abstractions.Enums;
+using Domain.Abstractions.Services;
 using Domain.Entitys;
 using Domain.Entitys.AnalisysConfig;
 using Domain.Services;
@@ -24,7 +25,6 @@ namespace Domain.Test.Services
 		{
 			return new IchimokuCloudConfig { ConversionLine = conversionLine, BaseLine = baseLine, LeadingSpanB = leadingSpanB, LaggingSpan = lagggingSpan };
 		}
-
 		private CandleAnalyser GetCandleAnalyser(decimal[] closeValueCandle)
 		{
 			var i = 1;
@@ -38,6 +38,29 @@ namespace Domain.Test.Services
 			var analyser = GetCandleAnalyser(closeValueCandle);
 
 			return new IchimokuCloudAnalyser(config, analyser);
+		}
+		private IchimokuCloudAnalyser generateIchimokuCrossover(decimal conversionLine, decimal baseLine, decimal leadingSpanA, decimal leadingSpanB)
+		{
+			return new IchimokuCloudAnalyser
+			{
+				ConversionLine = conversionLine,
+				BaseLine = baseLine,
+
+				Previous = new List<IIchimokuCloudAnalyser>()
+								{
+									new IchimokuCloudAnalyser
+									{
+										ConversionLine = baseLine,
+										BaseLine = conversionLine
+									}
+								},
+				ReferenceToCloud = new IchimokuCloudAnalyser
+				{
+					LeadingSpanA = leadingSpanA,
+					LeadingSpanB = leadingSpanB
+				}
+
+			};
 		}
 
 		[
@@ -135,6 +158,7 @@ namespace Domain.Test.Services
 			Assert.Equal(expected, actual);
 		}
 
+
 		[
 			Theory(DisplayName = "The Leading Span B from Ichimoku Cloud after Calculate method should be"),
 			InlineData(23.065, 19, 6, 9, 18, 9),
@@ -153,6 +177,22 @@ namespace Domain.Test.Services
 		public void The_Leading_Span_B_from_Ichimoku_Cloud_after_Calculate_method_should_be(decimal expected, int candleCount, int conversionLine, int baseLine, int leadingSpanB, int lagggingSpan)
 		{
 			var actual = generateCandleAnalyser(GetCloseCandleValues(candleCount), conversionLine, baseLine, leadingSpanB, lagggingSpan).LeadingSpanB;
+			Assert.Equal(expected, actual);
+		}
+
+
+		[
+			Theory(DisplayName = "The Conversion Base Crossover from Ichimoku Cloud should return the correct trade signal"),
+			InlineData(TradeSignal.StrongLong, 19, 17, 9, 16),
+			InlineData(TradeSignal.WeakLong, 19, 17, 20, 24),
+			InlineData(TradeSignal.Hold, 19, 17, 15, 20),
+			InlineData(TradeSignal.WeakShort, 17, 19, 9, 16),
+			InlineData(TradeSignal.StrongShort, 17, 19, 20, 24),
+			InlineData(TradeSignal.Hold, 17, 19, 15, 20),
+		]
+		public void The_Conversion_Base_Crossover_from_Ichimoku_Cloud_should_return_the_correct_trade_signal(TradeSignal expected, decimal conversionLine, decimal baseLine, decimal leadingSpanA, decimal leadingSpanB)
+		{
+			var actual = generateIchimokuCrossover(conversionLine, baseLine, leadingSpanA, leadingSpanB).CalculateConversionBaseCrossover();
 			Assert.Equal(expected, actual);
 		}
 	}
