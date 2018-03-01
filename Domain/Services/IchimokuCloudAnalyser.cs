@@ -73,8 +73,10 @@ namespace Domain.Services
 		private bool conversionAndBaseAreCrossing()
 		{
 			var candles = Previous;
-			Previous.Add(this);
-			return candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing();
+			candles.Add(this);
+			var result = candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing();
+			candles.Remove(this);
+			return result;
 		}
 		private IIchimokuCloudAnalyser calculatePreviousIchimokuCloud(IIchimokuCloudConfig config, IList<ICandle> candles)
 		{
