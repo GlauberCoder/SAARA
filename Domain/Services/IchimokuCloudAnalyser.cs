@@ -33,7 +33,7 @@ namespace Domain.Services
 		{
 			var candles = analysis.Previous;
 			CalculateIchimokuCloudBase(config, candles);
-			//calculatePreviousIchimokuCloud(config, candles);
+			calculatePreviousIchimokuCloud(config, candles);
 
 			return this;
 		}
@@ -79,9 +79,10 @@ namespace Domain.Services
 			return result;
 		}
 		private IIchimokuCloudAnalyser calculatePreviousIchimokuCloud(IIchimokuCloudConfig config, IList<ICandle> candles)
-		{
+		{// TODO: levantar exceção para quando não puder ser calculado
 			Previous = new List<IIchimokuCloudAnalyser>();
-			foreach (var candle in candles)
+			var baseLineCantBeCalculated = config.BaseLine;
+			foreach (var candle in candles.Skip(baseLineCantBeCalculated))
 				Previous.Add( new IchimokuCloudAnalyser { Candle = candle }
 										.CalculateIchimokuCloudBase(config, candles.TakePrevious(candle, candles.Count)) );
 			ReferenceToCloud = Previous.TakeLast(config.LaggingSpan).FirstOrDefault();
