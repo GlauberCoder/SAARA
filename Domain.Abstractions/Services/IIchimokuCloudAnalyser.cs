@@ -1,4 +1,5 @@
-﻿using Domain.Abstractions.Entitys.AnalisysConfig;
+﻿using Domain.Abstractions.Entitys;
+using Domain.Abstractions.Entitys.AnalisysConfig;
 
 namespace Domain.Abstractions.Services
 {
@@ -32,6 +33,8 @@ namespace Domain.Abstractions.Services
 		/// Also known as Chikou Span, Close plotted 26 days in the past
 		/// </summary>
 		decimal LaggingSpan { get; }
+
+		ICandle Candle { get; }
 
 		IIchimokuCloudAnalyser Calculate(IIchimokuCloudConfig config, ICandleAnalyser analysis);
 	}

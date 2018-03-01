@@ -71,10 +71,26 @@ namespace Domain.Services
 			return TradeSignal.Hold;
 		}
 		private bool conversionAndBaseAreCrossing()
-		{
+		{// TODO: melhorar esse Add e Remove
 			var candles = Previous;
 			candles.Add(this);
 			var result = candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing();
+			candles.Remove(this);
+			return result;
+		}
+		public virtual TradeSignal CalculatePriceBaseCrossover()
+		{
+			if (priceAndBaseAreCrossing() && Candle.Close > BaseLine)
+				return isBellowTheCloud(Candle.Close) ? TradeSignal.WeakLong : isAboveTheCloud(Candle.Close) ? TradeSignal.StrongLong : TradeSignal.Hold;
+			if (priceAndBaseAreCrossing() && ConversionLine < BaseLine)
+				return isBellowTheCloud(Candle.Close) ? TradeSignal.StrongShort : isAboveTheCloud(Candle.Close) ? TradeSignal.WeakShort : TradeSignal.Hold;
+			return TradeSignal.Hold;
+		}
+		private bool priceAndBaseAreCrossing()
+		{// TODO: melhorar esse Add e Remove
+			var candles = Previous;
+			candles.Add(this);
+			var result = candles.Select(p => p.Candle.Close - p.BaseLine).ToList().LastValueIsCrossing();
 			candles.Remove(this);
 			return result;
 		}
