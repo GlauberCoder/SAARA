@@ -64,26 +64,17 @@ namespace Domain.Services
 		}
 		public virtual TradeSignal CalculateConversionBaseCrossover()
 		{
+			if(conversionAndBaseAreCrossing() && ConversionLine > BaseLine)
+				return isBellowTheCloud(ConversionLine) ? TradeSignal.WeakLong : isAboveTheCloud(ConversionLine) ? TradeSignal.StrongLong : TradeSignal.Hold;
+			if(conversionAndBaseAreCrossing() && ConversionLine < BaseLine)
+				return isBellowTheCloud(ConversionLine) ? TradeSignal.StrongShort : isAboveTheCloud(ConversionLine) ? TradeSignal.WeakShort : TradeSignal.Hold;
+			return TradeSignal.Hold;
+		}
+		private bool conversionAndBaseAreCrossing()
+		{
 			var candles = Previous;
 			Previous.Add(this);
-			if (candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing())
-			{
-				if(ConversionLine > BaseLine)
-				{
-					if (isBellowTheCloud(ConversionLine))
-						return TradeSignal.WeakLong;
-					if (isAboveTheCloud(ConversionLine))
-						return TradeSignal.StrongLong;
-				}
-				else
-				{
-					if (isBellowTheCloud(ConversionLine))
-						return TradeSignal.StrongShort;
-					if (isAboveTheCloud(ConversionLine))
-						return TradeSignal.WeakShort;
-				}
-			}
-			return TradeSignal.Hold;
+			return candles.Select(p => p.ConversionLine - p.BaseLine).ToList().LastValueIsCrossing();
 		}
 		private IIchimokuCloudAnalyser calculatePreviousIchimokuCloud(IIchimokuCloudConfig config, IList<ICandle> candles)
 		{

@@ -41,26 +41,10 @@ namespace Domain.Test.Services
 		}
 		private IchimokuCloudAnalyser generateIchimokuCrossover(decimal conversionLine, decimal baseLine, decimal leadingSpanA, decimal leadingSpanB)
 		{
-			return new IchimokuCloudAnalyser
-			{
-				ConversionLine = conversionLine,
-				BaseLine = baseLine,
-
-				Previous = new List<IIchimokuCloudAnalyser>()
-								{
-									new IchimokuCloudAnalyser
-									{
-										ConversionLine = baseLine,
-										BaseLine = conversionLine
-									}
-								},
-				ReferenceToCloud = new IchimokuCloudAnalyser
-				{
-					LeadingSpanA = leadingSpanA,
-					LeadingSpanB = leadingSpanB
-				}
-
-			};
+			var previous = new List<IIchimokuCloudAnalyser>();
+			previous.Add(new IchimokuCloudAnalyser { ConversionLine = baseLine, BaseLine = conversionLine });
+			var refenrence = new IchimokuCloudAnalyser { LeadingSpanA = leadingSpanA, LeadingSpanB = leadingSpanB };
+			return new IchimokuCloudAnalyser { ConversionLine = conversionLine, BaseLine = baseLine, Previous = previous, ReferenceToCloud = refenrence };
 		}
 
 		[
