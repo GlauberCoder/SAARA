@@ -2,6 +2,7 @@
 using Domain.Abstractions.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using Util.Extensions;
 
 namespace Domain.Extensions
 {

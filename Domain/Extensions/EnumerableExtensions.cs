@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Util.Extensions;
 
 namespace Domain.Extensions
 {
@@ -17,6 +18,10 @@ namespace Domain.Extensions
 		public static decimal EMA(this IList<ICandle> candles, int length)
 		{
 			return candles.Select(c => c.Close).ToList().EMA(length);
+		}
+		public static decimal MaxMinAverage(this IList<ICandle> candles)
+		{
+			return candles.Select(c => c.Close).ToList().MaxMinAverage();
 		}
 		public static decimal EMA(this IList<decimal> values, int length, int precision = 2)
 		{

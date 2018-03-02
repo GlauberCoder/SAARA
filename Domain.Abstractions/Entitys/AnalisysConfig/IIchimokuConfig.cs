@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Domain.Abstractions.Entitys.AnalisysConfig
 {
-	public interface IIchimokuCloudConfig : IBaseEntity<IIchimokuCloudConfig>
+	public interface IIchimokuConfig : IBaseEntity<IIchimokuConfig>
 	{
 		int ConversionLine { get; }
 		int BaseLine { get; }

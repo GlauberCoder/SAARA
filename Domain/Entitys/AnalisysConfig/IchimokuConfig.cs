@@ -2,7 +2,7 @@
 
 namespace Domain.Entitys.AnalisysConfig
 {
-	public class IchimokuCloudConfig : BaseEntity<IchimokuCloudConfig>, IIchimokuCloudConfig
+	public class IchimokuConfig : BaseEntity<IchimokuConfig>, IIchimokuConfig
 	{
 		public virtual int ConversionLine { get; set; }
 		public virtual int BaseLine { get; set; }

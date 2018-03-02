@@ -21,9 +21,9 @@ namespace Domain.Test.Services
 			return CloseCandleValues.Take(length).ToArray();
 		}
 
-		private IchimokuCloudConfig GetConfig(int conversionLine = 0, int baseLine = 0, int leadingSpanB = 0, int lagggingSpan = 0)
+		private IchimokuConfig GetConfig(int conversionLine = 0, int baseLine = 0, int leadingSpanB = 0, int lagggingSpan = 0)
 		{
-			return new IchimokuCloudConfig { ConversionLine = conversionLine, BaseLine = baseLine, LeadingSpanB = leadingSpanB, LaggingSpan = lagggingSpan };
+			return new IchimokuConfig { ConversionLine = conversionLine, BaseLine = baseLine, LeadingSpanB = leadingSpanB, LaggingSpan = lagggingSpan };
 		}
 		private CandleAnalyser GetCandleAnalyser(decimal[] closeValueCandle)
 		{
@@ -32,19 +32,19 @@ namespace Domain.Test.Services
 			var previousCandles = closeValueCandle.Take(previousLength).Select(a => new Candle() { ID = i++, Close = a }).ToList<ICandle>();
 			return new CandleAnalyser { Previous = previousCandles, Main = new Candle() { Close = closeValueCandle.Last() } };
 		}
-		private IchimokuCloudAnalyser generateCandleAnalyser(decimal[] closeValueCandle, int conversionLine = 0, int baseLine = 0, int leadingSpanB = 0, int lagggingSpan = 0)
+		private IchimokuAnalyser generateCandleAnalyser(decimal[] closeValueCandle, int conversionLine = 0, int baseLine = 0, int leadingSpanB = 0, int lagggingSpan = 0)
 		{
 			var config = GetConfig(conversionLine, baseLine, leadingSpanB, lagggingSpan);
 			var analyser = GetCandleAnalyser(closeValueCandle);
 
-			return new IchimokuCloudAnalyser(config, analyser);
+			return new IchimokuAnalyser(config, analyser);
 		}
-		private IchimokuCloudAnalyser generateIchimokuCrossover(decimal conversionLine, decimal baseLine, decimal leadingSpanA, decimal leadingSpanB)
+		private IchimokuAnalyser generateIchimokuCrossover(decimal conversionLine, decimal baseLine, decimal leadingSpanA, decimal leadingSpanB)
 		{
-			var previous = new List<IIchimokuCloudAnalyser>();
-			previous.Add(new IchimokuCloudAnalyser { ConversionLine = baseLine, BaseLine = conversionLine });
-			var refenrence = new IchimokuCloudAnalyser { LeadingSpanA = leadingSpanA, LeadingSpanB = leadingSpanB };
-			return new IchimokuCloudAnalyser { ConversionLine = conversionLine, BaseLine = baseLine, Previous = previous, ReferenceToCloud = refenrence };
+			var previous = new List<IIchimokuAnalyser>();
+			previous.Add(new IchimokuAnalyser { ConversionLine = baseLine, BaseLine = conversionLine });
+			var refenrence = new IchimokuAnalyser { LeadingSpanA = leadingSpanA, LeadingSpanB = leadingSpanB };
+			return new IchimokuAnalyser { ConversionLine = conversionLine, BaseLine = baseLine, Previous = previous, Reference = refenrence };
 		}
 
 		[

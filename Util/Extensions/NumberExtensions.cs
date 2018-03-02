@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Util.Extensions
@@ -148,6 +149,18 @@ namespace Util.Extensions
 			return number.ToPrecision(2).ToString("N2");
 		}
 
+		public static decimal MaxMinAverage(this IList<decimal> values)
+		{
+			var high = values.Max();
+			var low = values.Min();
+			return (high + low) / 2;
+		}
+
+		public static decimal Avarage(this decimal number, params decimal[] values)
+		{
+			var divisor = values.Count() + 1;
+			return (number + values.Sum()) / divisor;
+		}
 		/// <summary>
 		/// Calculates the absolute percentage of the diference of this number for another
 		/// </summary>
