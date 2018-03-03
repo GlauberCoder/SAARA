@@ -49,6 +49,12 @@ namespace Util.Extensions
 
 			return values.Take(index + 1).TakeLast(length).ToList();
 		}
+		public static T ElementAtBackwardIndex<T>(this IList<T> values, int backwardIndex)
+		{
+			var index = values.Count - backwardIndex - 1;
+			return values.ElementAt(index);
+		}
+
 		public static IList<T> SkipAndTake<T>(this IList<T> values, int skip, int take)
 		{
 			return values.Skip(skip).Take(take).ToList();
