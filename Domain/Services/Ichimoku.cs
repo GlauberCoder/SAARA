@@ -18,6 +18,7 @@ namespace Domain.Services
 		public virtual decimal LeadingSpanA { get; }
 		public virtual decimal LeadingSpanB { get; }
 		public virtual decimal LaggingSpan { get; }
+		public virtual decimal LaggingSpanXPriceDiff { get; }
 		public virtual ICandle Candle { get; }
 		public virtual bool SpanAIsGreaterThanB { get; } 
 		public virtual bool SpansAreCrossing { get; }
@@ -25,9 +26,12 @@ namespace Domain.Services
 		public virtual bool ConversionAndBaseAreCrossing { get; }
 		public virtual bool Mature { get; }
 		public virtual Trend PriceXCloudPosition { get; }
+		public virtual Trend LaggedXPricePosition { get; }
+		public virtual bool LaggingAreCrossingPrice { get; }
 		public virtual bool IsAboveTheCloud => PriceXCloudPosition == Trend.Up;
 		public virtual bool IsBellowTheCloud => PriceXCloudPosition == Trend.Down;
 		public virtual bool IsInsideTheCloud => PriceXCloudPosition == Trend.Neutral;
+		public virtual bool IsLaggedAboveThePrice => LaggedXPricePosition == Trend.Up;
 
 		public Ichimoku(IList<IIchimoku> references, int conversionLinePeriods, int baseLinePeriods, int laggingSpan2Periods, int displacement)
 		{
@@ -55,6 +59,11 @@ namespace Domain.Services
 				PriceAndBaseAreCrossing = references.SelectList(i => i.Candle.Close - i.BaseLine).LastValueIsCrossing();
 				ConversionAndBaseAreCrossing = references.SelectList(i => i.ConversionLine - i.BaseLine).LastValueIsCrossing();
 				PriceXCloudPosition = calculateCloseXCloudPosition(reference.LeadingSpanA, reference.LeadingSpanB);
+
+				LaggingSpanXPriceDiff = Candle.Close - reference.Candle.Close;
+				SpansAreCrossing = references.SelectList(i => i.LaggingSpanXPriceDiff).LastValueIsCrossing();
+				LaggedXPricePosition = calculatePriceXLaggingPosition();
+
 				Mature = true;
 			}
 		}
@@ -65,7 +74,13 @@ namespace Domain.Services
 			if (Candle.Close < referenceLeadingA && Candle.Close < referenceLeadingB) return Trend.Down;
 			return Trend.Neutral;
 		}
-		
+		private Trend calculatePriceXLaggingPosition()
+		{
+			if (LaggingSpanXPriceDiff > 0) return Trend.Up;
+			if (LaggingSpanXPriceDiff < 0) return Trend.Down;
+			return Trend.Neutral;
+		}
+
 		public Ichimoku(IList<IIchimoku> references, IIchimokuConfig config) : this(references, config.ConversionLine, config.BaseLine, config.LeadingSpanB, config.LaggingSpan)
 		{
 

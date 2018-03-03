@@ -20,7 +20,9 @@ namespace Domain.Services
 		public virtual TradeSignal PriceXBaseLineSignal { get; set; }
 		public virtual Trend SpanCrossSignal { get; private set; }
 		public virtual Trend PriceXCloudSignal { get; private set; }
+		public virtual Trend LaggedXPriceSignal { get; private set; }
 		public virtual TradeSignal SpanCrossTradeSignal { get; private set; }
+		public virtual TradeSignal LaggingCrossPriceTradeSignal { get; private set; }
 		public IchimokuAnalyser()
 		{
 		}
@@ -39,13 +41,15 @@ namespace Domain.Services
 			PriceXBaseLineSignal = CalculatePriceXBaseLineSignal();
 			SpanCrossSignal = calculateSpanAXSpanBSignal();
 			PriceXCloudSignal = Ichimoku.PriceXCloudPosition;
-			SpanCrossTradeSignal = calculateSpanCrossTradeSignal();
+			LaggedXPriceSignal = Ichimoku.LaggedXPricePosition;
+			SpanCrossTradeSignal = getCrossSignal(Ichimoku.SpansAreCrossing, Ichimoku.SpanAIsGreaterThanB );
+			LaggingCrossPriceTradeSignal = getCrossSignal(Ichimoku.LaggingAreCrossingPrice, Ichimoku.IsLaggedAboveThePrice);
 			return this;
 		}
-		private TradeSignal calculateSpanCrossTradeSignal()
+		private TradeSignal getCrossSignal(bool isCrossing, bool isRinsing)
 		{
-			if (Ichimoku.SpansAreCrossing)
-				return Ichimoku.SpanAIsGreaterThanB ? signalToTheCloud(TradeSignal.StrongShort, TradeSignal.WeakShort, TradeSignal.Short) : signalToTheCloud(TradeSignal.WeakLong, TradeSignal.StrongLong, TradeSignal.Long); ;
+			if (isCrossing)
+				return isRinsing ? signalToTheCloud(TradeSignal.StrongShort, TradeSignal.WeakShort, TradeSignal.Short) : signalToTheCloud(TradeSignal.WeakLong, TradeSignal.StrongLong, TradeSignal.Long);
 
 			return TradeSignal.Hold;
 		}

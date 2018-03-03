@@ -15,6 +15,8 @@ namespace Domain.Abstractions.Services
 		Trend SpanCrossSignal { get; }
 		Trend PriceXCloudSignal { get; }
 		TradeSignal SpanCrossTradeSignal { get; }
+		TradeSignal LaggingCrossPriceTradeSignal { get; }
 		IIchimokuAnalyser Calculate(IIchimokuConfig config, ICandleAnalyser analysis);
+
 	}
 }

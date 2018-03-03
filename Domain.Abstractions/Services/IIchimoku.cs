@@ -37,6 +37,8 @@ namespace Domain.Abstractions.Services
 		/// Also known as Chikou Span, Close plotted 26 days in the past
 		/// </summary>
 		ICandle Candle { get; }
+		decimal LaggingSpanXPriceDiff { get; }
+		bool LaggingAreCrossingPrice { get; }
 		bool Mature { get; }
 		bool SpanAIsGreaterThanB { get; }
 		bool SpansAreCrossing { get; }
@@ -46,5 +48,7 @@ namespace Domain.Abstractions.Services
 		bool IsBellowTheCloud { get; }
 		bool IsInsideTheCloud { get; }
 		Trend PriceXCloudPosition { get; }
+		bool IsLaggedAboveThePrice { get; }
+		Trend LaggedXPricePosition { get; }
 	}
 }
